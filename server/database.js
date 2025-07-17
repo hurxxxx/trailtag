@@ -27,7 +27,7 @@ class Database {
 
         // Enable foreign keys
         this.db.run('PRAGMA foreign_keys = ON');
-        
+
         // Initialize schema
         this.initializeSchema();
     }
@@ -42,7 +42,6 @@ class Database {
                 full_name VARCHAR(100) NOT NULL,
                 email VARCHAR(100) UNIQUE NOT NULL,
                 phone VARCHAR(20) NOT NULL,
-                address TEXT NOT NULL,
                 user_type TEXT CHECK(user_type IN ('student', 'parent', 'admin')) NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -146,14 +145,14 @@ class Database {
 
     createDefaultAdmin() {
         const bcrypt = require('bcryptjs');
-        
+
         // Check if admin already exists
         this.db.get('SELECT id FROM users WHERE username = ?', ['admin'], (err, row) => {
             if (err) {
                 console.error('Error checking for admin user:', err);
                 return;
             }
-            
+
             if (!row) {
                 // Create default admin user
                 const saltRounds = 10;
@@ -162,28 +161,27 @@ class Database {
                         console.error('Error hashing admin password:', err);
                         return;
                     }
-                    
+
                     const stmt = this.db.prepare(`
-                        INSERT INTO users (username, password_hash, full_name, email, phone, address, user_type)
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO users (username, password_hash, full_name, email, phone, user_type)
+                        VALUES (?, ?, ?, ?, ?, ?)
                     `);
-                    
+
                     stmt.run([
                         'admin',
                         hash,
                         'System Administrator',
                         'admin@trailtag.com',
-                        '+1234567890',
-                        'System',
+                        '1234567890',
                         'admin'
-                    ], function(err) {
+                    ], function (err) {
                         if (err) {
                             console.error('Error creating admin user:', err);
                         } else {
                             console.log('Default admin user created (username: admin, password: admin123)');
                         }
                     });
-                    
+
                     stmt.finalize();
                 });
             } else {
@@ -195,7 +193,7 @@ class Database {
     // Helper method to run queries with promises
     run(sql, params = []) {
         return new Promise((resolve, reject) => {
-            this.db.run(sql, params, function(err) {
+            this.db.run(sql, params, function (err) {
                 if (err) {
                     reject(err);
                 } else {

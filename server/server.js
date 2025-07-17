@@ -20,6 +20,11 @@ const searchRoutes = require('./routes/search');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Trust proxy for rate limiting (when behind reverse proxy)
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+}
+
 // Security middleware
 app.use(helmet({
     contentSecurityPolicy: false, // Disable for development
