@@ -80,11 +80,11 @@ const ParentDashboard = () => {
             <AppBar position="sticky" elevation={2}>
                 <Toolbar>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        TrailTag Parent
+                        TrailTag 학부모
                     </Typography>
                     <Button color="inherit" onClick={handleLogout}>
                         <Logout sx={{ mr: 1 }} />
-                        Logout
+                        로그아웃
                     </Button>
                 </Toolbar>
             </AppBar>
@@ -116,19 +116,19 @@ const ParentDashboard = () => {
                         showLabels
                     >
                         <BottomNavigationAction
-                            label="Home"
+                            label="홈"
                             icon={<Home />}
                         />
                         <BottomNavigationAction
-                            label="Search"
+                            label="검색"
                             icon={<Search />}
                         />
                         <BottomNavigationAction
-                            label="Monitor"
+                            label="모니터링"
                             icon={<Visibility />}
                         />
                         <BottomNavigationAction
-                            label="Profile"
+                            label="프로필"
                             icon={<Person />}
                         />
                     </BottomNavigation>
@@ -164,10 +164,10 @@ const ParentHome = ({ onStudentSelect }) => {
         <Box>
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    Welcome, {user?.full_name}!
+                    환영합니다, {user?.full_name}님!
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                    Monitor your students' learning program participation and activities.
+                    자녀의 학습 프로그램 참여와 활동을 모니터링하세요.
                 </Typography>
             </Paper>
 
@@ -186,10 +186,10 @@ const ParentHome = ({ onStudentSelect }) => {
                         <CardContent sx={{ textAlign: 'center', py: 4 }}>
                             <Search sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
                             <Typography variant="h6" gutterBottom>
-                                Find Students
+                                학생 찾기
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                Search and add students to monitor
+                                모니터링할 학생을 검색하고 추가하세요
                             </Typography>
                         </CardContent>
                     </Card>
@@ -208,10 +208,10 @@ const ParentHome = ({ onStudentSelect }) => {
                         <CardContent sx={{ textAlign: 'center', py: 4 }}>
                             <TrendingUp sx={{ fontSize: 60, color: 'secondary.main', mb: 2 }} />
                             <Typography variant="h6" gutterBottom>
-                                Monitor Activity
+                                활동 모니터링
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                View student participation history
+                                학생의 참여 기록을 확인하세요
                             </Typography>
                         </CardContent>
                     </Card>
@@ -221,7 +221,7 @@ const ParentHome = ({ onStudentSelect }) => {
             {/* My Students */}
             <Paper elevation={2} sx={{ p: 3 }}>
                 <Typography variant="h6" gutterBottom>
-                    My Students ({myStudents.length})
+                    내 학생들 ({myStudents.length})
                 </Typography>
 
                 {loading ? (
@@ -232,17 +232,17 @@ const ParentHome = ({ onStudentSelect }) => {
                     <Box textAlign="center" py={4}>
                         <People sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
                         <Typography variant="h6" color="text.secondary" gutterBottom>
-                            No students added yet
+                            아직 추가된 학생이 없습니다
                         </Typography>
                         <Typography variant="body2" color="text.secondary" mb={3}>
-                            Search for students to start monitoring their learning activities.
+                            학생을 검색하여 학습 활동 모니터링을 시작하세요.
                         </Typography>
                         <Button
                             variant="contained"
                             startIcon={<Search />}
                             onClick={() => navigate('/parent/search')}
                         >
-                            Find Students
+                            학생 찾기
                         </Button>
                     </Box>
                 ) : (
@@ -282,7 +282,7 @@ const ParentHome = ({ onStudentSelect }) => {
                                                     onStudentSelect && onStudentSelect(student);
                                                 }}
                                             >
-                                                Monitor
+                                                모니터링
                                             </Button>
                                         </Box>
                                     </CardContent>
@@ -298,8 +298,8 @@ const ParentHome = ({ onStudentSelect }) => {
 
 const ParentProfile = () => (
     <Paper elevation={2} sx={{ p: 4 }}>
-        <Typography variant="h5" gutterBottom>Profile</Typography>
-        <Typography>Parent profile management will be implemented here.</Typography>
+        <Typography variant="h5" gutterBottom>프로필</Typography>
+        <Typography>학부모 프로필 관리 기능이 여기에 구현될 예정입니다.</Typography>
     </Paper>
 );
 

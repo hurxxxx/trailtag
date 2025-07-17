@@ -77,7 +77,7 @@ const StudentSearch = ({ onStudentSelect }) => {
 
             // Filter out students already connected to this parent
             const myStudentIds = myStudents.map(s => s.id);
-            const filteredResults = results.filter(student => 
+            const filteredResults = results.filter(student =>
                 !myStudentIds.includes(student.id)
             );
 
@@ -109,15 +109,15 @@ const StudentSearch = ({ onStudentSelect }) => {
             if (result.changes > 0) {
                 // Refresh my students list
                 loadMyStudents();
-                
+
                 // Remove from search results
-                setSearchResults(prev => 
+                setSearchResults(prev =>
                     prev.filter(s => s.id !== selectedStudent.id)
                 );
 
                 setShowAddDialog(false);
                 setSelectedStudent(null);
-                
+
                 // Show success message
                 setError('');
             } else {
@@ -144,10 +144,10 @@ const StudentSearch = ({ onStudentSelect }) => {
         <Box>
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    Student Search
+                    학생 검색
                 </Typography>
                 <Typography variant="body1" color="text.secondary" mb={3}>
-                    Search for students by name or phone number to monitor their learning activities.
+                    이름이나 전화번호로 학생을 검색하여 학습 활동을 모니터링하세요.
                 </Typography>
 
                 {error && (
@@ -161,34 +161,38 @@ const StudentSearch = ({ onStudentSelect }) => {
                     <Grid item xs={12} sm={6}>
                         <TextField
                             fullWidth
-                            label="Student Name"
+                            label="학생 이름"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             onKeyPress={handleKeyPress}
-                            placeholder="Enter student's full name"
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <Person />
-                                    </InputAdornment>
-                                ),
+                            placeholder="학생의 전체 이름을 입력하세요"
+                            slotProps={{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <Person />
+                                        </InputAdornment>
+                                    ),
+                                }
                             }}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
                             fullWidth
-                            label="Phone Number"
+                            label="전화번호"
                             value={phoneSearch}
                             onChange={(e) => setPhoneSearch(e.target.value)}
                             onKeyPress={handleKeyPress}
-                            placeholder="Enter phone number"
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <Phone />
-                                    </InputAdornment>
-                                ),
+                            placeholder="전화번호를 입력하세요"
+                            slotProps={{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <Phone />
+                                        </InputAdornment>
+                                    ),
+                                }
                             }}
                         />
                     </Grid>
@@ -201,7 +205,7 @@ const StudentSearch = ({ onStudentSelect }) => {
                             disabled={loading || (!searchTerm.trim() && !phoneSearch.trim())}
                             fullWidth
                         >
-                            {loading ? 'Searching...' : 'Search Students'}
+                            {loading ? '검색 중...' : '학생 검색'}
                         </Button>
                     </Grid>
                 </Grid>
@@ -211,7 +215,7 @@ const StudentSearch = ({ onStudentSelect }) => {
             {myStudents.length > 0 && (
                 <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                     <Typography variant="h6" gutterBottom>
-                        My Students ({myStudents.length})
+                        내 학생들 ({myStudents.length})
                     </Typography>
                     <Grid container spacing={2}>
                         {myStudents.map((student) => (
@@ -233,9 +237,9 @@ const StudentSearch = ({ onStudentSelect }) => {
                                                 {student.phone}
                                             </Typography>
                                         </Box>
-                                        <Chip 
-                                            label={student.relationship_type} 
-                                            color="primary" 
+                                        <Chip
+                                            label={student.relationship_type}
+                                            color="primary"
                                             size="small"
                                         />
                                     </CardContent>
@@ -281,9 +285,9 @@ const StudentSearch = ({ onStudentSelect }) => {
                                                 {student.phone}
                                             </Typography>
                                         </Box>
-                                        <Chip 
-                                            label="Available" 
-                                            color="success" 
+                                        <Chip
+                                            label="Available"
+                                            color="success"
                                             size="small"
                                         />
                                     </CardContent>
@@ -320,7 +324,7 @@ const StudentSearch = ({ onStudentSelect }) => {
                             <Typography variant="body1" gutterBottom>
                                 Are you sure you want to add this student to your monitoring list?
                             </Typography>
-                            
+
                             <Card variant="outlined" sx={{ mt: 2 }}>
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
@@ -345,7 +349,7 @@ const StudentSearch = ({ onStudentSelect }) => {
                     <Button onClick={() => setShowAddDialog(false)}>
                         Cancel
                     </Button>
-                    <Button 
+                    <Button
                         onClick={confirmAddStudent}
                         variant="contained"
                         startIcon={<PersonAdd />}
