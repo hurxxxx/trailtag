@@ -61,6 +61,11 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Static files for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Serve static files from the React app build (production only)
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../dist')));
+}
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/programs', programRoutes);
@@ -105,12 +110,31 @@ app.use((err, req, res, next) => {
     });
 });
 
+// Catch all handler: send back React's index.html file (production only)
+if (process.env.NODE_ENV === 'production') {
+    // Handle React Router routes - serve index.html for all non-API routes
+    app.use((req, res, next) => {
+        // Skip if it's an API route
+        if (req.path.startsWith('/api/')) {
+            return next();
+        }
+        res.sendFile(path.join(__dirname, '../dist/index.html'));
+    });
+}
+
 // 404 handler
 app.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        message: 'API endpoint not found'
-    });
+    if (req.path.startsWith('/api/')) {
+        res.status(404).json({
+            success: false,
+            message: 'API endpoint not found'
+        });
+    } else {
+        res.status(404).json({
+            success: false,
+            message: 'Endpoint not found'
+        });
+    }
 });
 
 // Graceful shutdown

@@ -6,12 +6,16 @@
     "dev": "vite",
     "dev:https": "vite --https",
     "build": "vite build",
+    "build:prod": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview",
     "server": "node server/server.js",
     "server:dev": "nodemon server/server.js",
+    "server:prod": "NODE_ENV=production node server/server.js",
     "start": "concurrently \"npm run server\" \"npm run dev\"",
-    "start:https": "concurrently \"npm run server\" \"npm run dev:https\""
+    "start:https": "concurrently \"npm run server\" \"npm run dev:https\"",
+    "start:prod": "concurrently \"npm run server:prod\" \"npm run preview\"",
+    "deploy": "npm run build:prod && npm run server:prod"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
