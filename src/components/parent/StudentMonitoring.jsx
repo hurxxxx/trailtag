@@ -69,7 +69,7 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
         try {
             const students = browserDatabase.getStudentsByParentId(user.id);
             setMyStudents(students);
-            
+
             // If no student is selected and we have students, select the first one
             if (!selectedStudent && students.length > 0) {
                 setSelectedStudent(students[0]);
@@ -153,10 +153,10 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
         return (
             <Paper elevation={2} sx={{ p: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    Student Monitoring
+                    학생 모니터링
                 </Typography>
                 <Alert severity="info">
-                    You haven't added any students to monitor yet. Use the Student Search feature to find and add students.
+                    아직 모니터링할 학생을 추가하지 않았습니다. 학생 검색 기능을 사용하여 학생을 찾고 추가하세요.
                 </Alert>
             </Paper>
         );
@@ -166,20 +166,20 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
         <Box>
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    Student Monitoring
+                    학생 모니터링
                 </Typography>
                 <Typography variant="body1" color="text.secondary" mb={3}>
-                    Monitor your students' learning program participation and activity.
+                    학생의 학습 프로그램 참여와 활동을 모니터링하세요.
                 </Typography>
 
                 {/* Student Selector */}
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 3 }}>
                     <FormControl sx={{ minWidth: 200 }}>
-                        <InputLabel>Select Student</InputLabel>
+                        <InputLabel>학생 선택</InputLabel>
                         <Select
                             value={selectedStudent?.id || ''}
                             onChange={handleStudentChange}
-                            label="Select Student"
+                            label="학생 선택"
                         >
                             {myStudents.map((student) => (
                                 <MenuItem key={student.id} value={student.id}>
@@ -195,7 +195,7 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
                         onClick={loadStudentData}
                         disabled={loading || !selectedStudent}
                     >
-                        Refresh
+                        새로고침
                     </Button>
                 </Box>
 
@@ -216,9 +216,9 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
                                     </Typography>
                                 </Box>
                                 <Box sx={{ ml: 'auto' }}>
-                                    <Chip 
-                                        label={selectedStudent.relationship_type} 
-                                        color="primary" 
+                                    <Chip
+                                        label={selectedStudent.relationship_type}
+                                        color="primary"
                                         size="small"
                                     />
                                 </Box>
@@ -315,7 +315,7 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
                                                 <Typography variant="subtitle1" gutterBottom>
                                                     {program.program_name}
                                                 </Typography>
-                                                <Chip 
+                                                <Chip
                                                     label={`${program.visit_count} visits`}
                                                     color="primary"
                                                     size="small"
@@ -330,19 +330,19 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
 
                     {/* Activity Tabs */}
                     <Paper elevation={2}>
-                        <Tabs 
-                            value={tabValue} 
+                        <Tabs
+                            value={tabValue}
                             onChange={handleTabChange}
                             sx={{ borderBottom: 1, borderColor: 'divider' }}
                         >
-                            <Tab 
-                                icon={<Today />} 
-                                label={`Today (${todayCheckIns.length})`} 
+                            <Tab
+                                icon={<Today />}
+                                label={`Today (${todayCheckIns.length})`}
                                 iconPosition="start"
                             />
-                            <Tab 
-                                icon={<History />} 
-                                label={`All History (${checkIns.length})`} 
+                            <Tab
+                                icon={<History />}
+                                label={`All History (${checkIns.length})`}
                                 iconPosition="start"
                             />
                         </Tabs>
@@ -353,7 +353,7 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
                                     <Typography variant="h6" gutterBottom>
                                         Today's Activity
                                     </Typography>
-                                    
+
                                     {todayCheckIns.length === 0 ? (
                                         <Box textAlign="center" py={4}>
                                             <Typography variant="body1" color="text.secondary">
@@ -378,9 +378,9 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
                                                                 </Box>
                                                             }
                                                         />
-                                                        <Chip 
-                                                            label="Today" 
-                                                            color="primary" 
+                                                        <Chip
+                                                            label="Today"
+                                                            color="primary"
                                                             size="small"
                                                         />
                                                     </ListItem>
@@ -397,7 +397,7 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
                                     <Typography variant="h6" gutterBottom>
                                         Complete History
                                     </Typography>
-                                    
+
                                     {checkIns.length === 0 ? (
                                         <Box textAlign="center" py={4}>
                                             <Typography variant="body1" color="text.secondary">
@@ -433,7 +433,7 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
                                             ))}
                                             {checkIns.length > 20 && (
                                                 <ListItem>
-                                                    <ListItemText 
+                                                    <ListItemText
                                                         primary={
                                                             <Typography variant="body2" color="text.secondary" textAlign="center">
                                                                 Showing latest 20 check-ins of {checkIns.length} total
