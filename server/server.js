@@ -46,8 +46,16 @@ if (process.env.NODE_ENV === 'production') {
 // CORS configuration
 app.use(cors({
     origin: process.env.NODE_ENV === 'production'
-        ? ['https://your-domain.com']
-        : ['http://localhost:5173', 'http://localhost:3000'],
+        ? function (origin, callback) {
+            // 프로덕션에서는 같은 서버에서 서빙하므로 origin이 없을 수 있음
+            // 또는 특정 도메인들을 허용
+            if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+                callback(null, true);
+            } else {
+                callback(null, true); // 임시로 모든 origin 허용 (보안상 주의!)
+            }
+        }
+        : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:9883'],
     credentials: true
 }));
 
@@ -161,10 +169,12 @@ process.on('SIGTERM', async () => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`TrailTag API Server running on port ${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`Health check: http://localhost:${PORT}/api/health`);
+    console.log(`External access: http://[YOUR_IP]:${PORT}/api/health`);
+    console.log(`Listening on all interfaces (0.0.0.0:${PORT})`);
 });
 
 module.exports = app;
