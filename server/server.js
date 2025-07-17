@@ -80,7 +80,18 @@ app.use('/api/search', searchRoutes);
 
 // Serve static files from the React app build (production only)
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../dist')));
+    const staticPath = path.join(__dirname, '../dist');
+    console.log('Static files path:', staticPath);
+    app.use(express.static(staticPath, {
+        setHeaders: (res, path) => {
+            console.log('Serving static file:', path);
+            if (path.endsWith('.js')) {
+                res.setHeader('Content-Type', 'text/javascript');
+            } else if (path.endsWith('.css')) {
+                res.setHeader('Content-Type', 'text/css');
+            }
+        }
+    }));
 }
 
 // Health check endpoint
@@ -122,14 +133,20 @@ app.use((err, req, res, next) => {
 if (process.env.NODE_ENV === 'production') {
     // Handle React Router routes - serve index.html for all non-API and non-static routes
     app.use((req, res, next) => {
+        console.log('Catch-all handler - Request path:', req.path);
+
         // Skip if it's an API route
         if (req.path.startsWith('/api/')) {
+            console.log('Skipping API route:', req.path);
             return next();
         }
         // Skip if it's a static asset (already handled by express.static)
         if (req.path.startsWith('/assets/') || req.path.startsWith('/uploads/')) {
+            console.log('Skipping static asset:', req.path);
             return next();
         }
+
+        console.log('Serving index.html for:', req.path);
         res.sendFile(path.join(__dirname, '../dist/index.html'));
     });
 }

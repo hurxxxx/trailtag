@@ -78,10 +78,11 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
                 setLoading(true);
                 setError('');
 
-                const result = await qrCodeService.createQRCode({
-                    program_id: program.id,
-                    location_name: locationName.trim()
-                });
+                const result = await qrCodeService.createQRCode(
+                    program.id,
+                    locationName.trim(),
+                    1 // userId - 실제 앱에서는 auth context에서 가져와야 함
+                );
 
                 if (result.success) {
                     onSuccess && onSuccess(result.qrCode);
