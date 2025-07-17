@@ -69,12 +69,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Static files for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Serve static files from the React app build (production only)
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../dist')));
-}
-
-// API Routes
+// API Routes (먼저 처리)
 app.use('/api/auth', authRoutes);
 app.use('/api/programs', programRoutes);
 app.use('/api/qrcodes', qrCodeRoutes);
@@ -82,6 +77,11 @@ app.use('/api/checkins', checkInRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/search', searchRoutes);
+
+// Serve static files from the React app build (production only)
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../dist')));
+}
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -120,10 +120,14 @@ app.use((err, req, res, next) => {
 
 // Catch all handler: send back React's index.html file (production only)
 if (process.env.NODE_ENV === 'production') {
-    // Handle React Router routes - serve index.html for all non-API routes
+    // Handle React Router routes - serve index.html for all non-API and non-static routes
     app.use((req, res, next) => {
         // Skip if it's an API route
         if (req.path.startsWith('/api/')) {
+            return next();
+        }
+        // Skip if it's a static asset (already handled by express.static)
+        if (req.path.startsWith('/assets/') || req.path.startsWith('/uploads/')) {
             return next();
         }
         res.sendFile(path.join(__dirname, '../dist/index.html'));
