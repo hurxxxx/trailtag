@@ -105,19 +105,11 @@ const QRScanner = () => {
                 return;
             }
 
-            // Initialize scanner with improved config
+            // Initialize scanner with minimal config
             const config = {
                 fps: 10,
                 qrbox: { width: 250, height: 250 },
-                aspectRatio: 1.0,
-                disableFlip: false,
-                supportedScanTypes: [Html5QrcodeScanner.SCAN_TYPE_CAMERA],
-                showTorchButtonIfSupported: true,
-                showZoomSliderIfSupported: true,
-                defaultZoomValueIfSupported: 2,
-                experimentalFeatures: {
-                    useBarCodeDetectorIfSupported: true
-                }
+                aspectRatio: 1.0
             };
 
             html5QrcodeScannerRef.current = new Html5QrcodeScanner(
