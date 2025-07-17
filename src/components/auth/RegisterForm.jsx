@@ -34,9 +34,16 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        // 전화번호 필드는 숫자만 허용
+        let processedValue = value;
+        if (name === 'phone') {
+            processedValue = value.replace(/\D/g, ''); // 숫자가 아닌 문자 제거
+        }
+
         setFormData(prev => ({
             ...prev,
-            [name]: value
+            [name]: processedValue
         }));
 
         // Clear field error when user starts typing
@@ -88,12 +95,14 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
             errors.email = '올바른 이메일 주소를 입력해주세요';
         }
 
-        // Phone validation
-        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+        // Phone validation (숫자만, 3자 이상)
+        const phoneDigits = formData.phone.replace(/\D/g, ''); // 숫자만 추출
         if (!formData.phone.trim()) {
             errors.phone = '전화번호를 입력해주세요';
-        } else if (!phoneRegex.test(formData.phone.replace(/[\s\-\(\)]/g, ''))) {
-            errors.phone = '올바른 전화번호를 입력해주세요';
+        } else if (phoneDigits.length < 3) {
+            errors.phone = '전화번호는 최소 3자 이상이어야 합니다';
+        } else if (!/^\d+$/.test(phoneDigits)) {
+            errors.phone = '전화번호는 숫자만 입력해주세요';
         }
 
         // User type validation
@@ -261,9 +270,10 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
                     value={formData.phone}
                     onChange={handleChange}
                     error={!!formErrors.phone}
-                    helperText={formErrors.phone}
+                    helperText={formErrors.phone || '숫자만 입력해주세요 (최소 3자)'}
                     margin="normal"
                     required
+                    placeholder="01012345678"
                     slotProps={{
                         input: {
                             startAdornment: (

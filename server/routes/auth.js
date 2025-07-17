@@ -11,10 +11,10 @@ const JWT_EXPIRES_IN = '24h';
 // Register new user
 router.post('/register', async (req, res) => {
     try {
-        const { username, password, full_name, email, phone, address, user_type } = req.body;
+        const { username, password, full_name, email, phone, user_type } = req.body;
 
         // Validate required fields
-        const requiredFields = ['username', 'password', 'full_name', 'email', 'phone', 'address', 'user_type'];
+        const requiredFields = ['username', 'password', 'full_name', 'email', 'phone', 'user_type'];
         for (const field of requiredFields) {
             if (!req.body[field]) {
                 return res.status(400).json({
@@ -30,6 +30,21 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: 'Invalid user type'
+            });
+        }
+
+        // Validate phone number (숫자만, 3자 이상)
+        const phoneDigits = phone.replace(/\D/g, '');
+        if (phoneDigits.length < 3) {
+            return res.status(400).json({
+                success: false,
+                message: 'Phone number must be at least 3 digits'
+            });
+        }
+        if (!/^\d+$/.test(phoneDigits)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Phone number must contain only digits'
             });
         }
 
@@ -57,13 +72,13 @@ router.post('/register', async (req, res) => {
 
         // Create user
         const result = await database.run(`
-            INSERT INTO users (username, password_hash, full_name, email, phone, address, user_type)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        `, [username, password_hash, full_name, email, phone, address, user_type]);
+            INSERT INTO users (username, password_hash, full_name, email, phone, user_type)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `, [username, password_hash, full_name, email, phoneDigits, user_type]);
 
         // Get the created user (without password)
         const newUser = await database.get(`
-            SELECT id, username, full_name, email, phone, address, user_type, created_at
+            SELECT id, username, full_name, email, phone, user_type, created_at
             FROM users WHERE id = ?
         `, [result.id]);
 
@@ -114,10 +129,10 @@ router.post('/login', async (req, res) => {
 
         // Generate JWT token
         const token = jwt.sign(
-            { 
-                userId: user.id, 
-                username: user.username, 
-                userType: user.user_type 
+            {
+                userId: user.id,
+                username: user.username,
+                userType: user.user_type
             },
             JWT_SECRET,
             { expiresIn: JWT_EXPIRES_IN }
@@ -153,7 +168,7 @@ router.post('/login', async (req, res) => {
 router.get('/me', authenticateToken, async (req, res) => {
     try {
         const user = await database.get(`
-            SELECT id, username, full_name, email, phone, address, user_type, created_at, updated_at
+            SELECT id, username, full_name, email, phone, user_type, created_at, updated_at
             FROM users WHERE id = ?
         `, [req.user.userId]);
 
@@ -182,7 +197,7 @@ router.get('/me', authenticateToken, async (req, res) => {
 router.post('/logout', authenticateToken, async (req, res) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
-        
+
         if (token) {
             await database.run('DELETE FROM user_sessions WHERE token_hash = ?', [token]);
         }
@@ -258,9 +273,9 @@ router.post('/change-password', authenticateToken, async (req, res) => {
 // Update profile
 router.put('/profile', authenticateToken, async (req, res) => {
     try {
-        const { full_name, email, phone, address } = req.body;
-        const allowedFields = { full_name, email, phone, address };
-        
+        const { full_name, email, phone } = req.body;
+        const allowedFields = { full_name, email, phone };
+
         // Filter out undefined fields
         const updates = {};
         Object.keys(allowedFields).forEach(key => {
@@ -296,7 +311,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
 
         // Get updated user
         const updatedUser = await database.get(`
-            SELECT id, username, full_name, email, phone, address, user_type, created_at, updated_at
+            SELECT id, username, full_name, email, phone, user_type, created_at, updated_at
             FROM users WHERE id = ?
         `, [req.user.userId]);
 

@@ -74,7 +74,7 @@ class AuthService {
     async register(userData) {
         try {
             // Validate required fields
-            const requiredFields = ['username', 'password', 'full_name', 'email', 'phone', 'address', 'user_type'];
+            const requiredFields = ['username', 'password', 'full_name', 'email', 'phone', 'user_type'];
             for (const field of requiredFields) {
                 if (!userData[field]) {
                     throw new Error(`${field} is required`);
@@ -332,7 +332,7 @@ class AuthService {
     // Update user profile
     async updateProfile(userId, updateData) {
         try {
-            const allowedFields = ['full_name', 'email', 'phone', 'address'];
+            const allowedFields = ['full_name', 'email', 'phone'];
             const updates = {};
 
             for (const field of allowedFields) {
