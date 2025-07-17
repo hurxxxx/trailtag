@@ -46,6 +46,18 @@ const QRScanner = () => {
         };
     }, []);
 
+    // scanning 상태가 true로 변경되면 스캐너 초기화
+    useEffect(() => {
+        if (scanning) {
+            // DOM 업데이트 후 스캐너 초기화
+            const timer = setTimeout(() => {
+                initializeScanner();
+            }, 100);
+
+            return () => clearTimeout(timer);
+        }
+    }, [scanning]);
+
     const checkCameraPermission = async () => {
         try {
             // 카메라 권한 요청
@@ -78,9 +90,21 @@ const QRScanner = () => {
             return;
         }
 
+        // scanning을 true로 설정하면 useEffect에서 스캐너 초기화
         setScanning(true);
+    };
 
+    const initializeScanner = () => {
         try {
+            // qr-reader 엘리먼트가 존재하는지 확인
+            const qrReaderElement = document.getElementById('qr-reader');
+            if (!qrReaderElement) {
+                console.error('qr-reader 엘리먼트를 찾을 수 없습니다');
+                setError('QR 스캐너 초기화에 실패했습니다. 페이지를 새로고침해주세요.');
+                setScanning(false);
+                return;
+            }
+
             // Initialize scanner with improved config
             const config = {
                 fps: 10,
