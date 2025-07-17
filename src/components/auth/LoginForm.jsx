@@ -29,7 +29,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
             ...prev,
             [name]: value
         }));
-        
+
         // Clear field error when user starts typing
         if (formErrors[name]) {
             setFormErrors(prev => ({
@@ -37,7 +37,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
                 [name]: ''
             }));
         }
-        
+
         clearError();
         setSubmitError('');
     };
@@ -46,11 +46,11 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
         const errors = {};
 
         if (!formData.username.trim()) {
-            errors.username = 'Username is required';
+            errors.username = '사용자명을 입력해주세요';
         }
 
         if (!formData.password) {
-            errors.password = 'Password is required';
+            errors.password = '비밀번호를 입력해주세요';
         }
 
         setFormErrors(errors);
@@ -59,14 +59,14 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             return;
         }
 
         try {
             const result = await login(formData.username, formData.password);
-            
+
             if (result.success) {
                 if (onSuccess) {
                     onSuccess();
@@ -75,7 +75,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
                 setSubmitError(result.message);
             }
         } catch (error) {
-            setSubmitError('Login failed. Please try again.');
+            setSubmitError('로그인에 실패했습니다. 다시 시도해주세요.');
         }
     };
 
@@ -86,11 +86,11 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
     return (
         <Paper elevation={3} sx={{ p: 4, maxWidth: 400, mx: 'auto', mt: 2 }}>
             <Typography variant="h4" component="h1" gutterBottom align="center" color="primary">
-                Sign In
+                로그인
             </Typography>
-            
+
             <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}>
-                Welcome back to TrailTag
+                TrailTag에 다시 오신 것을 환영합니다
             </Typography>
 
             {(error || submitError) && (
@@ -103,7 +103,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
                 <TextField
                     fullWidth
                     name="username"
-                    label="Username"
+                    label="사용자명"
                     value={formData.username}
                     onChange={handleChange}
                     error={!!formErrors.username}
@@ -111,19 +111,21 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
                     margin="normal"
                     required
                     autoFocus
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <Person />
-                            </InputAdornment>
-                        ),
+                    slotProps={{
+                        input: {
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Person />
+                                </InputAdornment>
+                            ),
+                        }
                     }}
                 />
 
                 <TextField
                     fullWidth
                     name="password"
-                    label="Password"
+                    label="비밀번호"
                     type={showPassword ? 'text' : 'password'}
                     value={formData.password}
                     onChange={handleChange}
@@ -131,23 +133,25 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
                     helperText={formErrors.password}
                     margin="normal"
                     required
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <Lock />
-                            </InputAdornment>
-                        ),
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={togglePasswordVisibility}
-                                    edge="end"
-                                >
-                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                            </InputAdornment>
-                        ),
+                    slotProps={{
+                        input: {
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Lock />
+                                </InputAdornment>
+                            ),
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="비밀번호 표시 전환"
+                                        onClick={togglePasswordVisibility}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }
                     }}
                 />
 
@@ -159,7 +163,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
                     disabled={loading}
                     sx={{ mt: 3, mb: 2, py: 1.5 }}
                 >
-                    {loading ? <CircularProgress size={24} /> : 'Sign In'}
+                    {loading ? <CircularProgress size={24} /> : '로그인'}
                 </Button>
 
                 <Box textAlign="center">
@@ -168,7 +172,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
                         onClick={onSwitchToRegister}
                         disabled={loading}
                     >
-                        Don't have an account? Register
+                        계정이 없으신가요? 회원가입
                     </Button>
                 </Box>
             </Box>

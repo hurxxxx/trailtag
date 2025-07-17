@@ -111,19 +111,19 @@ const StudentDashboard = () => {
                         showLabels
                     >
                         <BottomNavigationAction
-                            label="Home"
+                            label="홈"
                             icon={<Home />}
                         />
                         <BottomNavigationAction
-                            label="Scanner"
+                            label="스캔"
                             icon={<QrCodeScanner />}
                         />
                         <BottomNavigationAction
-                            label="History"
+                            label="기록"
                             icon={<History />}
                         />
                         <BottomNavigationAction
-                            label="Profile"
+                            label="프로필"
                             icon={<Person />}
                         />
                     </BottomNavigation>
@@ -169,10 +169,10 @@ const StudentHome = () => {
         <Box>
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    Welcome, {user?.full_name}!
+                    환영합니다, {user?.full_name}님!
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                    Ready to check into learning programs? Scan QR codes to track your participation.
+                    학습 프로그램에 참여할 준비가 되셨나요? QR 코드를 스캔하여 참여를 기록하세요.
                 </Typography>
             </Paper>
 
@@ -191,10 +191,10 @@ const StudentHome = () => {
                         <CardContent sx={{ textAlign: 'center', py: 4 }}>
                             <QrCodeScanner sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
                             <Typography variant="h6" gutterBottom>
-                                Scan QR Code
+                                QR 코드 스캔
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                Check into programs instantly
+                                프로그램에 즉시 체크인
                             </Typography>
                         </CardContent>
                     </Card>
@@ -213,10 +213,10 @@ const StudentHome = () => {
                         <CardContent sx={{ textAlign: 'center', py: 4 }}>
                             <History sx={{ fontSize: 60, color: 'secondary.main', mb: 2 }} />
                             <Typography variant="h6" gutterBottom>
-                                View History
+                                참여 기록
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                See your participation record
+                                나의 참여 기록 보기
                             </Typography>
                         </CardContent>
                     </Card>
@@ -226,7 +226,7 @@ const StudentHome = () => {
             {/* Today's Activity */}
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h6" gutterBottom>
-                    Today's Activity
+                    오늘의 활동
                 </Typography>
 
                 {loading ? (
@@ -236,7 +236,7 @@ const StudentHome = () => {
                 ) : todayCheckIns.length === 0 ? (
                     <Box textAlign="center" py={3}>
                         <Typography variant="body1" color="text.secondary">
-                            No check-ins today yet.
+                            아직 오늘 체크인한 프로그램이 없습니다.
                         </Typography>
                         <Button
                             variant="contained"
@@ -244,7 +244,7 @@ const StudentHome = () => {
                             onClick={() => navigate('/student/scanner')}
                             sx={{ mt: 2 }}
                         >
-                            Start Scanning
+                            스캔 시작하기
                         </Button>
                     </Box>
                 ) : (

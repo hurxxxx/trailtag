@@ -4,12 +4,14 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
+    "dev:https": "vite --https",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "server": "node server/server.js",
     "server:dev": "nodemon server/server.js",
-    "start": "concurrently \"npm run server\" \"npm run dev\""
+    "start": "concurrently \"npm run server\" \"npm run dev\"",
+    "start:https": "concurrently \"npm run server\" \"npm run dev:https\""
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

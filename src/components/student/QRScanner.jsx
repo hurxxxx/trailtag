@@ -46,30 +46,71 @@ const QRScanner = () => {
         };
     }, []);
 
-    const startScanning = () => {
+    const checkCameraPermission = async () => {
+        try {
+            // 카메라 권한 요청
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            // 권한이 있으면 스트림을 즉시 중지
+            stream.getTracks().forEach(track => track.stop());
+            return true;
+        } catch (error) {
+            console.error('카메라 권한 오류:', error);
+            if (error.name === 'NotAllowedError') {
+                setError('카메라 권한이 필요합니다. 설정에서 카메라 권한을 허용해주세요.');
+            } else if (error.name === 'NotFoundError') {
+                setError('카메라를 찾을 수 없습니다. 다른 앱에서 카메라를 사용 중인지 확인해주세요.');
+            } else if (error.name === 'NotSupportedError') {
+                setError('카메라 기능을 지원하지 않는 환경입니다.');
+            } else {
+                setError('카메라에 접근할 수 없습니다: ' + error.message);
+            }
+            return false;
+        }
+    };
+
+    const startScanning = async () => {
         setError('');
         setScanResult(null);
+
+        // 카메라 권한 확인
+        const hasPermission = await checkCameraPermission();
+        if (!hasPermission) {
+            return;
+        }
+
         setScanning(true);
 
-        // Initialize scanner
-        const config = {
-            fps: 10,
-            qrbox: { width: 250, height: 250 },
-            aspectRatio: 1.0,
-            disableFlip: false,
-            supportedScanTypes: [Html5QrcodeScanner.SCAN_TYPE_CAMERA]
-        };
+        try {
+            // Initialize scanner with improved config
+            const config = {
+                fps: 10,
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0,
+                disableFlip: false,
+                supportedScanTypes: [Html5QrcodeScanner.SCAN_TYPE_CAMERA],
+                showTorchButtonIfSupported: true,
+                showZoomSliderIfSupported: true,
+                defaultZoomValueIfSupported: 2,
+                experimentalFeatures: {
+                    useBarCodeDetectorIfSupported: true
+                }
+            };
 
-        html5QrcodeScannerRef.current = new Html5QrcodeScanner(
-            "qr-reader",
-            config,
-            false
-        );
+            html5QrcodeScannerRef.current = new Html5QrcodeScanner(
+                "qr-reader",
+                config,
+                false
+            );
 
-        html5QrcodeScannerRef.current.render(
-            onScanSuccess,
-            onScanFailure
-        );
+            html5QrcodeScannerRef.current.render(
+                onScanSuccess,
+                onScanFailure
+            );
+        } catch (error) {
+            console.error('스캐너 초기화 오류:', error);
+            setError('QR 스캐너를 시작할 수 없습니다: ' + error.message);
+            setScanning(false);
+        }
     };
 
     const stopScanning = () => {
@@ -87,7 +128,7 @@ const QRScanner = () => {
 
     const onScanSuccess = async (decodedText, decodedResult) => {
         setLoading(true);
-        
+
         try {
             // Stop scanning immediately
             if (html5QrcodeScannerRef.current) {
@@ -97,7 +138,7 @@ const QRScanner = () => {
 
             // Process check-in
             const result = await checkInService.processCheckIn(decodedText, user.id);
-            
+
             if (result.success) {
                 setScanResult({
                     success: true,
@@ -110,12 +151,12 @@ const QRScanner = () => {
                     message: result.message
                 });
             }
-            
+
             setShowResult(true);
         } catch (error) {
             setScanResult({
                 success: false,
-                message: 'Failed to process check-in. Please try again.'
+                message: '체크인 처리에 실패했습니다. 다시 시도해주세요.'
             });
             setShowResult(true);
         } finally {
@@ -146,10 +187,10 @@ const QRScanner = () => {
         <Box>
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    QR Code Scanner
+                    QR 코드 스캐너
                 </Typography>
                 <Typography variant="body1" color="text.secondary" mb={2}>
-                    Scan QR codes at program locations to check in automatically.
+                    프로그램 위치의 QR 코드를 스캔하여 자동으로 체크인하세요.
                 </Typography>
 
                 {error && (
@@ -167,11 +208,25 @@ const QRScanner = () => {
                             onClick={startScanning}
                             sx={{ mb: 2 }}
                         >
-                            Start Scanning
+                            스캔 시작
                         </Button>
-                        <Typography variant="body2" color="text.secondary">
-                            Position the QR code within the camera frame to scan
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                            QR 코드를 카메라 프레임 안에 위치시켜 스캔하세요
                         </Typography>
+
+                        {/* 모바일 카메라 사용 안내 */}
+                        <Card sx={{ mt: 2, bgcolor: 'info.50', border: '1px solid', borderColor: 'info.200' }}>
+                            <CardContent sx={{ py: 2 }}>
+                                <Typography variant="body2" color="info.main" sx={{ fontWeight: 500, mb: 1 }}>
+                                    📱 카메라 사용 안내
+                                </Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                    • 카메라 권한 요청 시 "허용"을 선택해주세요<br />
+                                    • 다른 앱에서 카메라 사용 중이면 종료 후 시도하세요<br />
+                                    • QR 코드를 화면 중앙에 맞춰주세요
+                                </Typography>
+                            </CardContent>
+                        </Card>
                     </Box>
                 )}
 
@@ -179,7 +234,7 @@ const QRScanner = () => {
                     <Box textAlign="center" py={4}>
                         <CircularProgress size={60} />
                         <Typography variant="h6" mt={2}>
-                            Processing check-in...
+                            체크인 처리 중...
                         </Typography>
                     </Box>
                 )}
@@ -193,20 +248,20 @@ const QRScanner = () => {
                                 startIcon={<Stop />}
                                 onClick={stopScanning}
                             >
-                                Stop Scanning
+                                스캔 중지
                             </Button>
                         </Box>
-                        
-                        <Paper 
-                            elevation={1} 
-                            sx={{ 
-                                p: 2, 
+
+                        <Paper
+                            elevation={1}
+                            sx={{
+                                p: 2,
                                 textAlign: 'center',
                                 bgcolor: 'grey.50'
                             }}
                         >
                             <Typography variant="body2" color="text.secondary" mb={2}>
-                                Point your camera at a QR code
+                                QR 코드를 화면 중앙의 사각형 안에 맞춰주세요
                             </Typography>
                             <div id="qr-reader" ref={scannerRef}></div>
                         </Paper>
@@ -238,14 +293,14 @@ const QRScanner = () => {
                 <DialogContent sx={{ textAlign: 'center', py: 3 }}>
                     {scanResult?.success ? (
                         <Box>
-                            <CheckCircle 
-                                sx={{ 
-                                    fontSize: 80, 
-                                    color: 'success.main', 
-                                    mb: 2 
-                                }} 
+                            <CheckCircle
+                                sx={{
+                                    fontSize: 80,
+                                    color: 'success.main',
+                                    mb: 2
+                                }}
                             />
-                            
+
                             <Typography variant="h6" gutterBottom>
                                 {scanResult.message}
                             </Typography>
@@ -256,7 +311,7 @@ const QRScanner = () => {
                                         <Typography variant="subtitle1" gutterBottom>
                                             Check-in Details:
                                         </Typography>
-                                        
+
                                         <Box mb={1}>
                                             <Typography variant="body2" color="text.secondary">
                                                 Program:
@@ -284,9 +339,9 @@ const QRScanner = () => {
                                             </Typography>
                                         </Box>
 
-                                        <Chip 
-                                            label="Checked In" 
-                                            color="success" 
+                                        <Chip
+                                            label="Checked In"
+                                            color="success"
                                             size="small"
                                             sx={{ mt: 1 }}
                                         />
@@ -296,18 +351,18 @@ const QRScanner = () => {
                         </Box>
                     ) : (
                         <Box>
-                            <Error 
-                                sx={{ 
-                                    fontSize: 80, 
-                                    color: 'error.main', 
-                                    mb: 2 
-                                }} 
+                            <Error
+                                sx={{
+                                    fontSize: 80,
+                                    color: 'error.main',
+                                    mb: 2
+                                }}
                             />
-                            
+
                             <Typography variant="h6" gutterBottom>
                                 {scanResult?.message || 'An error occurred'}
                             </Typography>
-                            
+
                             <Typography variant="body2" color="text.secondary">
                                 Please try scanning again or contact support if the problem persists.
                             </Typography>

@@ -81,14 +81,14 @@ const AuthPage = () => {
                             textShadow: '1px 1px 2px rgba(0,0,0,0.3)'
                         }}
                     >
-                        Learning Program Participation Tracking
+                        학습 프로그램 참여 추적 시스템
                     </Typography>
                 </Box>
 
                 {successMessage && (
                     <Fade in={!!successMessage}>
-                        <Alert 
-                            severity="success" 
+                        <Alert
+                            severity="success"
                             sx={{ mb: 2, maxWidth: 500, mx: 'auto' }}
                             onClose={() => setSuccessMessage('')}
                         >
