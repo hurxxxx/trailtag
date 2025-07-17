@@ -1,0 +1,266 @@
+/* TrailTag Mobile-First CSS */
+:root {
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+
+  /* Mobile-first approach */
+  font-size: 16px;
+
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+
+  /* Better text rendering */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* CSS Custom Properties for consistent theming */
+  --primary-color: #667eea;
+  --secondary-color: #764ba2;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --error-color: #f44336;
+  --background-color: #f5f5f5;
+  --surface-color: #ffffff;
+  --text-primary: rgba(0, 0, 0, 0.87);
+  --text-secondary: rgba(0, 0, 0, 0.6);
+
+  /* Spacing scale */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Border radius scale */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Shadow scale */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+
+  /* Prevent horizontal scroll on mobile */
+  overflow-x: hidden;
+}
+
+/* Smooth transitions for interactive elements */
+button,
+.MuiButton-root,
+.MuiCard-root,
+.MuiPaper-root {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Remove all outlines for cleaner UI */
+input:focus,
+textarea:focus,
+select:focus,
+button:focus,
+.MuiOutlinedInput-root.Mui-focused,
+.MuiOutlinedInput-input:focus,
+.MuiInputBase-input:focus,
+.MuiTextField-root input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Enhanced focus styles for accessibility (only for keyboard navigation) */
+button:focus-visible,
+.MuiButton-root:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Mobile-optimized touch targets */
+@media (max-width: 768px) {
+  .MuiButton-root {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+
+  .MuiIconButton-root {
+    padding: 12px !important;
+  }
+
+  .MuiListItem-root {
+    min-height: 48px !important;
+  }
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Loading animation */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.loading-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Slide in animation */
+@keyframes slideInUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-up {
+  animation: slideInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scale in animation */
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.scale-in {
+  animation: scaleIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover effects */
+.hover-lift {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+
+  /* Reduce margins and padding on mobile */
+  .MuiContainer-root {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Stack cards vertically on mobile */
+  .MuiGrid-item {
+    padding: 8px !important;
+  }
+
+  /* Larger text on mobile for better readability */
+  .MuiTypography-h4 {
+    font-size: 1.75rem !important;
+  }
+
+  .MuiTypography-h5 {
+    font-size: 1.5rem !important;
+  }
+
+  .MuiTypography-h6 {
+    font-size: 1.25rem !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --text-primary: #000000;
+    --text-secondary: #333333;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .MuiAppBar-root,
+  .MuiBottomNavigation-root,
+  .MuiFab-root {
+    display: none !important;
+  }
+}
