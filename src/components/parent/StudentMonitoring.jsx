@@ -36,6 +36,7 @@ import {
 } from '@mui/icons-material';
 import checkInService from '../../services/checkInService';
 import browserDatabase from '../../services/browserDatabase';
+import apiClient from '../../services/apiClient';
 import { useAuth } from '../../contexts/AuthContext';
 
 const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
@@ -65,16 +66,25 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
         }
     }, [propSelectedStudent]);
 
-    const loadMyStudents = () => {
+    const loadMyStudents = async () => {
         try {
-            const students = browserDatabase.getStudentsByParentId(user.id);
-            setMyStudents(students);
+            console.log('Loading my students for monitoring...');
+            const response = await apiClient.getMyStudents();
+            console.log('My students response for monitoring:', response);
 
-            // If no student is selected and we have students, select the first one
-            if (!selectedStudent && students.length > 0) {
-                setSelectedStudent(students[0]);
+            if (response.success) {
+                setMyStudents(response.students);
+
+                // If no student is selected and we have students, select the first one
+                if (!selectedStudent && response.students.length > 0) {
+                    setSelectedStudent(response.students[0]);
+                }
+            } else {
+                console.error('Failed to load students:', response.message);
+                setError('Failed to load students');
             }
         } catch (error) {
+            console.error('Failed to load students:', error);
             setError('Failed to load students');
         }
     };

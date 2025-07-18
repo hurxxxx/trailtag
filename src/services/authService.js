@@ -1,5 +1,6 @@
 // Browser-compatible imports
 import browserDatabase from './browserDatabase.js';
+import apiClient from './apiClient.js';
 
 // Browser-compatible JWT and bcrypt alternatives
 const JWT_SECRET = 'your-super-secret-jwt-key-change-in-production';
@@ -330,10 +331,13 @@ class AuthService {
     }
 
     // Update user profile
-    async updateProfile(userId, updateData) {
+    async updateProfile(updateData) {
         try {
+            console.log('AuthService updateProfile called with:', updateData);
+
             // 서버 API를 통해 프로필 업데이트
             const response = await apiClient.updateProfile(updateData);
+            console.log('API response:', response);
 
             if (response.success) {
                 return {
@@ -345,7 +349,7 @@ class AuthService {
                 throw new Error(response.message || 'Profile update failed');
             }
         } catch (error) {
-            console.error('Update profile error:', error);
+            console.error('Update profile error in authService:', error);
             return {
                 success: false,
                 message: error.message || 'Profile update failed'

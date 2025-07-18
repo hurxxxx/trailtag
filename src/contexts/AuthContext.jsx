@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import apiClient from '../services/apiClient';
+import authService from '../services/authService';
 
 const AuthContext = createContext();
 
@@ -124,7 +125,9 @@ export const AuthProvider = ({ children }) => {
                 throw new Error('No user logged in');
             }
 
-            const result = await authService.updateProfile(user.id, updateData);
+            console.log('Updating profile with data:', updateData);
+            const result = await authService.updateProfile(updateData);
+            console.log('Profile update result:', result);
 
             if (result.success) {
                 setUser(result.user);
@@ -135,7 +138,8 @@ export const AuthProvider = ({ children }) => {
                 return { success: false, message: result.message };
             }
         } catch (error) {
-            const errorMessage = 'Profile update failed. Please try again.';
+            console.error('Profile update error in AuthContext:', error);
+            const errorMessage = error.message || 'Profile update failed. Please try again.';
             setError(errorMessage);
             return { success: false, message: errorMessage };
         } finally {

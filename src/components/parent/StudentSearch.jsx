@@ -32,6 +32,7 @@ import {
     PersonAdd
 } from '@mui/icons-material';
 import browserDatabase from '../../services/browserDatabase';
+import apiClient from '../../services/apiClient';
 import { useAuth } from '../../contexts/AuthContext';
 
 const StudentSearch = ({ onStudentSelect }) => {
@@ -50,10 +51,17 @@ const StudentSearch = ({ onStudentSelect }) => {
         loadMyStudents();
     }, [user]);
 
-    const loadMyStudents = () => {
+    const loadMyStudents = async () => {
         try {
-            const students = browserDatabase.getStudentsByParentId(user.id);
-            setMyStudents(students);
+            console.log('Loading my students...');
+            const response = await apiClient.getMyStudents();
+            console.log('My students response:', response);
+
+            if (response.success) {
+                setMyStudents(response.students);
+            } else {
+                console.error('Failed to load students:', response.message);
+            }
         } catch (error) {
             console.error('Failed to load students:', error);
         }
@@ -70,23 +78,37 @@ const StudentSearch = ({ onStudentSelect }) => {
         setSearchResults([]);
 
         try {
-            const results = browserDatabase.searchStudentsByNameAndPhone(
-                searchTerm.trim(),
-                phoneSearch.trim()
-            );
+            console.log('Searching for students with:', { name: searchTerm.trim(), phone: phoneSearch.trim() });
 
-            // Filter out students already connected to this parent
-            const myStudentIds = myStudents.map(s => s.id);
-            const filteredResults = results.filter(student =>
-                !myStudentIds.includes(student.id)
-            );
+            // 서버 API를 통해 학생 검색
+            const response = await apiClient.get('/users/students/search', {
+                name: searchTerm.trim() || undefined,
+                phone: phoneSearch.trim() || undefined
+            });
 
-            setSearchResults(filteredResults);
+            console.log('Search response:', response);
 
-            if (filteredResults.length === 0) {
-                setError('No students found matching your search criteria');
+            if (response.success) {
+                // Filter out students already connected to this parent
+                const myStudentIds = myStudents.map(s => s.id);
+                const filteredResults = response.students.filter(student =>
+                    !myStudentIds.includes(student.id)
+                );
+
+                setSearchResults(filteredResults);
+
+                if (filteredResults.length === 0) {
+                    if (response.students.length > 0) {
+                        setError('All matching students are already connected to your account');
+                    } else {
+                        setError('No students found matching your search criteria');
+                    }
+                }
+            } else {
+                setError(response.message || 'Search failed. Please try again.');
             }
         } catch (error) {
+            console.error('Student search error:', error);
             setError('Search failed. Please try again.');
         } finally {
             setLoading(false);
@@ -98,17 +120,15 @@ const StudentSearch = ({ onStudentSelect }) => {
         setShowAddDialog(true);
     };
 
-    const confirmAddStudent = () => {
+    const confirmAddStudent = async () => {
         try {
-            const result = browserDatabase.createParentStudentRelationship(
-                user.id,
-                selectedStudent.id,
-                'parent'
-            );
+            console.log('Adding student:', selectedStudent);
+            const response = await apiClient.addStudent(selectedStudent.id, 'parent');
+            console.log('Add student response:', response);
 
-            if (result.changes > 0) {
+            if (response.success) {
                 // Refresh my students list
-                loadMyStudents();
+                await loadMyStudents();
 
                 // Remove from search results
                 setSearchResults(prev =>
@@ -121,9 +141,10 @@ const StudentSearch = ({ onStudentSelect }) => {
                 // Show success message
                 setError('');
             } else {
-                setError('Student is already connected to your account');
+                setError(response.message || 'Failed to add student. Please try again.');
             }
         } catch (error) {
+            console.error('Add student error:', error);
             setError('Failed to add student. Please try again.');
         }
     };

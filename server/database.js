@@ -140,6 +140,7 @@ class Database {
             }
             console.log('Database schema initialized');
             this.createDefaultAdmin();
+            this.createTestUsers();
         });
     }
 
@@ -187,6 +188,75 @@ class Database {
             } else {
                 console.log('Admin user already exists');
             }
+        });
+    }
+
+    createTestUsers() {
+        const bcrypt = require('bcryptjs');
+        const saltRounds = 10;
+
+        // Test users to create
+        const testUsers = [
+            {
+                username: 'heogunwoo',
+                password: 'student123',
+                full_name: '허건우',
+                email: 'heogunwoo@example.com',
+                phone: '01011111111',
+                address: '서울시 강남구',
+                user_type: 'student'
+            },
+            {
+                username: 'parent1',
+                password: 'parent123',
+                full_name: '김학부모',
+                email: 'parent1@example.com',
+                phone: '01022222222',
+                address: '서울시 서초구',
+                user_type: 'parent'
+            }
+        ];
+
+        testUsers.forEach(userData => {
+            // Check if user already exists
+            this.db.get('SELECT id FROM users WHERE username = ?', [userData.username], (err, row) => {
+                if (err) {
+                    console.error(`Error checking for user ${userData.username}:`, err);
+                    return;
+                }
+
+                if (!row) {
+                    // Create user
+                    bcrypt.hash(userData.password, saltRounds, (err, hash) => {
+                        if (err) {
+                            console.error(`Error hashing password for ${userData.username}:`, err);
+                            return;
+                        }
+
+                        const stmt = this.db.prepare(`
+                            INSERT INTO users (username, password_hash, full_name, email, phone, user_type)
+                            VALUES (?, ?, ?, ?, ?, ?)
+                        `);
+
+                        stmt.run([
+                            userData.username,
+                            hash,
+                            userData.full_name,
+                            userData.email,
+                            userData.phone,
+                            userData.user_type
+                        ], function (err) {
+                            if (err) {
+                                console.error(`Error creating user ${userData.username}:`, err);
+                            } else {
+                                console.log(`Test user created: ${userData.username} (${userData.user_type})`);
+                            }
+                        });
+
+                        stmt.finalize();
+                    });
+                }
+            });
         });
     }
 

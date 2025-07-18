@@ -32,6 +32,7 @@ import { useAuth } from '../contexts/AuthContext';
 import StudentSearch from '../components/parent/StudentSearch';
 import StudentMonitoring from '../components/parent/StudentMonitoring';
 import browserDatabase from '../services/browserDatabase';
+import apiClient from '../services/apiClient';
 
 const ParentDashboard = () => {
     const { user, logout } = useAuth();
@@ -146,10 +147,17 @@ const ParentHome = ({ onStudentSelect }) => {
     const [loading, setLoading] = useState(true);
 
     React.useEffect(() => {
-        const loadStudents = () => {
+        const loadStudents = async () => {
             try {
-                const students = browserDatabase.getStudentsByParentId(user.id);
-                setMyStudents(students);
+                console.log('Loading my students for parent home...');
+                const response = await apiClient.getMyStudents();
+                console.log('My students response for parent home:', response);
+
+                if (response.success) {
+                    setMyStudents(response.students);
+                } else {
+                    console.error('Failed to load students:', response.message);
+                }
             } catch (error) {
                 console.error('Failed to load students:', error);
             } finally {

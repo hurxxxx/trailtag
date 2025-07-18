@@ -151,7 +151,10 @@ const ProfileEditor = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        console.log('Form submitted with data:', formData);
+
         if (!validateForm()) {
+            console.log('Form validation failed');
             return;
         }
 
@@ -160,7 +163,9 @@ const ProfileEditor = () => {
         setSuccess('');
 
         try {
+            console.log('Calling updateProfile with:', formData);
             const result = await updateProfile(formData);
+            console.log('UpdateProfile result:', result);
 
             if (result.success) {
                 setSuccess('프로필이 성공적으로 업데이트되었습니다');
@@ -169,7 +174,8 @@ const ProfileEditor = () => {
                 setError(result.message || '프로필 업데이트에 실패했습니다');
             }
         } catch (error) {
-            setError('프로필 업데이트에 실패했습니다');
+            console.error('Profile update error in component:', error);
+            setError(error.message || '프로필 업데이트에 실패했습니다');
         } finally {
             setLoading(false);
         }

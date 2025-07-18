@@ -173,6 +173,78 @@ router.delete('/remove-student/:studentId', authenticateToken, requireRole('pare
     }
 });
 
+// Create new user (admin only)
+router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
+    try {
+        const { username, password, full_name, email, phone, address, user_type } = req.body;
+
+        // Validate required fields
+        if (!username || !password || !full_name || !email || !phone || !user_type) {
+            return res.status(400).json({
+                success: false,
+                message: 'All fields are required'
+            });
+        }
+
+        // Validate user type
+        const validTypes = ['student', 'parent', 'admin'];
+        if (!validTypes.includes(user_type)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid user type'
+            });
+        }
+
+        // Check if username already exists
+        const existingUsername = await database.get('SELECT id FROM users WHERE username = ?', [username]);
+        if (existingUsername) {
+            return res.status(409).json({
+                success: false,
+                message: 'Username already exists'
+            });
+        }
+
+        // Check if email already exists
+        const existingEmail = await database.get('SELECT id FROM users WHERE email = ?', [email]);
+        if (existingEmail) {
+            return res.status(409).json({
+                success: false,
+                message: 'Email already exists'
+            });
+        }
+
+        // Hash password
+        const bcrypt = require('bcryptjs');
+        const saltRounds = 10;
+        const password_hash = await bcrypt.hash(password, saltRounds);
+
+        // Create user
+        const result = await database.run(`
+            INSERT INTO users (username, password_hash, full_name, email, phone, address, user_type)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `, [username, password_hash, full_name, email, phone, address || '', user_type]);
+
+        // Get created user
+        const newUser = await database.get(`
+            SELECT id, username, full_name, email, phone, address, user_type, created_at, updated_at
+            FROM users WHERE id = ?
+        `, [result.id]);
+
+        res.status(201).json({
+            success: true,
+            message: 'User created successfully',
+            user: newUser
+        });
+
+    } catch (error) {
+        console.error('Create user error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to create user'
+        });
+    }
+});
+
 // Get all users (admin only)
 router.get('/', authenticateToken, requireRole('admin'), async (req, res) => {
     try {
