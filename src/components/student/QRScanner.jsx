@@ -131,30 +131,53 @@ const QRScanner = () => {
 
                     let cameraId = null;
 
-                    // 후면 카메라 찾기 (environment facing)
-                    const backCamera = cameras.find(camera =>
-                        camera.label && (
-                            camera.label.toLowerCase().includes('back') ||
-                            camera.label.toLowerCase().includes('rear') ||
-                            camera.label.toLowerCase().includes('environment')
-                        )
-                    );
+                    // 후면 카메라 찾기 - 더 정확한 감지
+                    let backCamera = null;
+
+                    // 1차: 명확한 후면 카메라 키워드로 찾기
+                    backCamera = cameras.find(camera => {
+                        const label = camera.label ? camera.label.toLowerCase() : '';
+                        return (
+                            label.includes('back') ||
+                            label.includes('rear') ||
+                            label.includes('environment') ||
+                            label.includes('후면')
+                        );
+                    });
+
+                    // 2차: iOS에서 일반적인 패턴으로 찾기
+                    if (!backCamera) {
+                        backCamera = cameras.find(camera => {
+                            const label = camera.label ? camera.label.toLowerCase() : '';
+                            return (
+                                label.includes('camera') &&
+                                !label.includes('front') &&
+                                !label.includes('user') &&
+                                !label.includes('face')
+                            );
+                        });
+                    }
+
+                    // 3차: 카메라가 2개 이상이면 마지막 카메라 (보통 후면)
+                    if (!backCamera && cameras.length > 1) {
+                        backCamera = cameras[cameras.length - 1];
+                    }
+
+                    // 4차: 첫 번째 카메라라도 사용
+                    if (!backCamera && cameras.length > 0) {
+                        backCamera = cameras[0];
+                    }
 
                     if (backCamera) {
                         cameraId = backCamera.id;
-                        console.log('후면 카메라 사용:', backCamera.label);
-                    } else if (cameras.length > 0) {
-                        // 후면 카메라를 찾지 못하면 첫 번째 카메라 사용
-                        cameraId = cameras[0].id;
-                        console.log('기본 카메라 사용:', cameras[0].label);
+                        console.log('선택된 카메라:', backCamera.label || 'Unknown Camera');
                     }
 
                     if (cameraId) {
                         const config = {
                             fps: 10,
                             qrbox: { width: 250, height: 250 },
-                            aspectRatio: 1.0,
-                            facingMode: "environment" // 후면 카메라 우선
+                            aspectRatio: 1.0
                         };
 
                         await html5QrcodeRef.current.start(
@@ -168,12 +191,12 @@ const QRScanner = () => {
                     }
                 } catch (cameraError) {
                     console.error('카메라 초기화 오류:', cameraError);
-                    // 카메라 선택에 실패하면 기본 설정으로 시도
-                    await startWithDefaultCamera();
+                    // 카메라 선택에 실패하면 facingMode로 시도
+                    await startWithEnvironmentCamera();
                 }
             } else {
                 // 데스크톱 환경에서는 기본 설정 사용
-                await startWithDefaultCamera();
+                await startWithEnvironmentCamera();
             }
         } catch (error) {
             console.error('스캐너 초기화 오류:', error);
@@ -182,19 +205,39 @@ const QRScanner = () => {
         }
     };
 
-    const startWithDefaultCamera = async () => {
+    const startWithEnvironmentCamera = async () => {
         const config = {
             fps: 10,
             qrbox: { width: 250, height: 250 },
             aspectRatio: 1.0
         };
 
-        await html5QrcodeRef.current.start(
-            { facingMode: "environment" }, // 후면 카메라 우선
-            config,
-            onScanSuccess,
-            onScanFailure
-        );
+        // 후면 카메라 강제 사용
+        const cameraConfig = {
+            facingMode: { exact: "environment" } // exact를 사용하여 후면 카메라 강제
+        };
+
+        try {
+            await html5QrcodeRef.current.start(
+                cameraConfig,
+                config,
+                onScanSuccess,
+                onScanFailure
+            );
+        } catch (error) {
+            console.log('exact environment 실패, ideal로 재시도:', error);
+            // exact가 실패하면 ideal로 재시도
+            const fallbackConfig = {
+                facingMode: { ideal: "environment" }
+            };
+
+            await html5QrcodeRef.current.start(
+                fallbackConfig,
+                config,
+                onScanSuccess,
+                onScanFailure
+            );
+        }
     };
 
     const stopScanning = () => {
@@ -307,10 +350,26 @@ const QRScanner = () => {
                                 <Typography variant="caption" color="text.secondary">
                                     • 카메라 권한 요청 시 "허용"을 선택해주세요<br />
                                     • 다른 앱에서 카메라 사용 중이면 종료 후 시도하세요<br />
-                                    • QR 코드를 화면 중앙에 맞춰주세요
+                                    • QR 코드를 화면 중앙에 맞춰주세요<br />
+                                    • <strong>모바일에서는 HTTPS 접속이 필요합니다</strong>
                                 </Typography>
                             </CardContent>
                         </Card>
+
+                        {/* HTTPS 접속 안내 (HTTP인 경우만 표시) */}
+                        {window.location.protocol === 'http:' && (
+                            <Card sx={{ mt: 2, bgcolor: 'warning.50', border: '1px solid', borderColor: 'warning.200' }}>
+                                <CardContent sx={{ py: 2 }}>
+                                    <Typography variant="body2" color="warning.main" sx={{ fontWeight: 500, mb: 1 }}>
+                                        ⚠️ HTTPS 접속 필요
+                                    </Typography>
+                                    <Typography variant="caption" color="text.secondary">
+                                        모바일 브라우저에서 카메라를 사용하려면 HTTPS로 접속해야 합니다.<br />
+                                        주소창에서 http:// 를 https:// 로 변경해주세요.
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        )}
                     </Box>
                 )}
 
