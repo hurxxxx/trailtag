@@ -23,7 +23,7 @@ import {
     Refresh,
     Close
 } from '@mui/icons-material';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Html5Qrcode } from 'html5-qrcode';
 import checkInService from '../../services/checkInService';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -34,14 +34,24 @@ const QRScanner = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [showResult, setShowResult] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const scannerRef = useRef(null);
-    const html5QrcodeScannerRef = useRef(null);
+    const html5QrcodeRef = useRef(null);
 
     useEffect(() => {
+        // 모바일 환경 감지
+        const checkMobile = () => {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
+            setIsMobile(isMobileDevice);
+        };
+
+        checkMobile();
+
         return () => {
             // Cleanup scanner on unmount
-            if (html5QrcodeScannerRef.current) {
-                html5QrcodeScannerRef.current.clear().catch(console.error);
+            if (html5QrcodeRef.current) {
+                html5QrcodeRef.current.stop().catch(console.error);
             }
         };
     }, []);
@@ -60,6 +70,11 @@ const QRScanner = () => {
 
     const checkCameraPermission = async () => {
         try {
+            // 브라우저 호환성 체크
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                throw new Error('이 브라우저는 카메라 접근을 지원하지 않습니다. HTTPS 환경에서 접속해주세요.');
+            }
+
             // 카메라 권한 요청
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             // 권한이 있으면 스트림을 즉시 중지
@@ -94,7 +109,7 @@ const QRScanner = () => {
         setScanning(true);
     };
 
-    const initializeScanner = () => {
+    const initializeScanner = async () => {
         try {
             // qr-reader 엘리먼트가 존재하는지 확인
             const qrReaderElement = document.getElementById('qr-reader');
@@ -105,23 +120,61 @@ const QRScanner = () => {
                 return;
             }
 
-            // Initialize scanner with minimal config
-            const config = {
-                fps: 10,
-                qrbox: { width: 250, height: 250 },
-                aspectRatio: 1.0
-            };
+            html5QrcodeRef.current = new Html5Qrcode("qr-reader");
 
-            html5QrcodeScannerRef.current = new Html5QrcodeScanner(
-                "qr-reader",
-                config,
-                false
-            );
+            // 모바일 환경에서는 후면 카메라 우선 사용
+            if (isMobile) {
+                try {
+                    // 사용 가능한 카메라 목록 가져오기
+                    const cameras = await Html5Qrcode.getCameras();
+                    console.log('사용 가능한 카메라:', cameras);
 
-            html5QrcodeScannerRef.current.render(
-                onScanSuccess,
-                onScanFailure
-            );
+                    let cameraId = null;
+
+                    // 후면 카메라 찾기 (environment facing)
+                    const backCamera = cameras.find(camera =>
+                        camera.label && (
+                            camera.label.toLowerCase().includes('back') ||
+                            camera.label.toLowerCase().includes('rear') ||
+                            camera.label.toLowerCase().includes('environment')
+                        )
+                    );
+
+                    if (backCamera) {
+                        cameraId = backCamera.id;
+                        console.log('후면 카메라 사용:', backCamera.label);
+                    } else if (cameras.length > 0) {
+                        // 후면 카메라를 찾지 못하면 첫 번째 카메라 사용
+                        cameraId = cameras[0].id;
+                        console.log('기본 카메라 사용:', cameras[0].label);
+                    }
+
+                    if (cameraId) {
+                        const config = {
+                            fps: 10,
+                            qrbox: { width: 250, height: 250 },
+                            aspectRatio: 1.0,
+                            facingMode: "environment" // 후면 카메라 우선
+                        };
+
+                        await html5QrcodeRef.current.start(
+                            cameraId,
+                            config,
+                            onScanSuccess,
+                            onScanFailure
+                        );
+                    } else {
+                        throw new Error('사용 가능한 카메라가 없습니다');
+                    }
+                } catch (cameraError) {
+                    console.error('카메라 초기화 오류:', cameraError);
+                    // 카메라 선택에 실패하면 기본 설정으로 시도
+                    await startWithDefaultCamera();
+                }
+            } else {
+                // 데스크톱 환경에서는 기본 설정 사용
+                await startWithDefaultCamera();
+            }
         } catch (error) {
             console.error('스캐너 초기화 오류:', error);
             setError('QR 스캐너를 시작할 수 없습니다: ' + error.message);
@@ -129,12 +182,27 @@ const QRScanner = () => {
         }
     };
 
+    const startWithDefaultCamera = async () => {
+        const config = {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+            aspectRatio: 1.0
+        };
+
+        await html5QrcodeRef.current.start(
+            { facingMode: "environment" }, // 후면 카메라 우선
+            config,
+            onScanSuccess,
+            onScanFailure
+        );
+    };
+
     const stopScanning = () => {
-        if (html5QrcodeScannerRef.current) {
-            html5QrcodeScannerRef.current.clear().then(() => {
+        if (html5QrcodeRef.current) {
+            html5QrcodeRef.current.stop().then(() => {
                 setScanning(false);
             }).catch(err => {
-                console.error("Failed to clear scanner", err);
+                console.error("Failed to stop scanner", err);
                 setScanning(false);
             });
         } else {
@@ -142,13 +210,13 @@ const QRScanner = () => {
         }
     };
 
-    const onScanSuccess = async (decodedText, decodedResult) => {
+    const onScanSuccess = async (decodedText) => {
         setLoading(true);
 
         try {
             // Stop scanning immediately
-            if (html5QrcodeScannerRef.current) {
-                await html5QrcodeScannerRef.current.clear();
+            if (html5QrcodeRef.current) {
+                await html5QrcodeRef.current.stop();
             }
             setScanning(false);
 
