@@ -445,6 +445,130 @@ router.post('/admin/create-admin', authenticateToken, requireRole('admin'), asyn
     }
 });
 
+// Admin: Create new student user
+router.post('/admin/create-student', authenticateToken, requireRole('admin'), async (req, res) => {
+    try {
+        const { username, password, full_name, email, phone } = req.body;
+
+        if (!username || !password || !full_name || !email) {
+            return res.status(400).json({
+                success: false,
+                message: 'Username, password, full name, and email are required'
+            });
+        }
+
+        // Check if username already exists
+        const existingUser = await database.get('SELECT id FROM users WHERE username = ?', [username]);
+        if (existingUser) {
+            return res.status(409).json({
+                success: false,
+                message: 'Username already exists'
+            });
+        }
+
+        // Check if email already exists
+        const existingEmail = await database.get('SELECT id FROM users WHERE email = ?', [email]);
+        if (existingEmail) {
+            return res.status(409).json({
+                success: false,
+                message: 'Email already exists'
+            });
+        }
+
+        // Hash password
+        const saltRounds = 10;
+        const passwordHash = await bcrypt.hash(password, saltRounds);
+
+        // Create student user
+        const result = await database.run(`
+            INSERT INTO users (username, password_hash, full_name, email, phone, user_type)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `, [username, passwordHash, full_name, email, phone || '', 'student']);
+
+        res.status(201).json({
+            success: true,
+            message: 'Student user created successfully',
+            user: {
+                id: result.id,
+                username,
+                full_name,
+                email,
+                phone: phone || '',
+                user_type: 'student'
+            }
+        });
+
+    } catch (error) {
+        console.error('Create student error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to create student user'
+        });
+    }
+});
+
+// Admin: Create new parent user
+router.post('/admin/create-parent', authenticateToken, requireRole('admin'), async (req, res) => {
+    try {
+        const { username, password, full_name, email, phone } = req.body;
+
+        if (!username || !password || !full_name || !email) {
+            return res.status(400).json({
+                success: false,
+                message: 'Username, password, full name, and email are required'
+            });
+        }
+
+        // Check if username already exists
+        const existingUser = await database.get('SELECT id FROM users WHERE username = ?', [username]);
+        if (existingUser) {
+            return res.status(409).json({
+                success: false,
+                message: 'Username already exists'
+            });
+        }
+
+        // Check if email already exists
+        const existingEmail = await database.get('SELECT id FROM users WHERE email = ?', [email]);
+        if (existingEmail) {
+            return res.status(409).json({
+                success: false,
+                message: 'Email already exists'
+            });
+        }
+
+        // Hash password
+        const saltRounds = 10;
+        const passwordHash = await bcrypt.hash(password, saltRounds);
+
+        // Create parent user
+        const result = await database.run(`
+            INSERT INTO users (username, password_hash, full_name, email, phone, user_type)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `, [username, passwordHash, full_name, email, phone || '', 'parent']);
+
+        res.status(201).json({
+            success: true,
+            message: 'Parent user created successfully',
+            user: {
+                id: result.id,
+                username,
+                full_name,
+                email,
+                phone: phone || '',
+                user_type: 'parent'
+            }
+        });
+
+    } catch (error) {
+        console.error('Create parent error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to create parent user'
+        });
+    }
+});
+
 // Admin: Reset user password
 router.post('/admin/reset-password', authenticateToken, requireRole('admin'), async (req, res) => {
     try {

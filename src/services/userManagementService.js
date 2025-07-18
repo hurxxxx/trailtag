@@ -49,6 +49,52 @@ class UserManagementService {
         }
     }
 
+    // Create new student user
+    async createStudentUser(userData) {
+        try {
+            const response = await apiClient.createStudentUser(userData);
+
+            if (response.success) {
+                return {
+                    success: true,
+                    message: response.message,
+                    user: response.user
+                };
+            } else {
+                throw new Error(response.message || 'Failed to create student user');
+            }
+        } catch (error) {
+            console.error('Create student user error:', error);
+            return {
+                success: false,
+                message: error.message || 'Failed to create student user'
+            };
+        }
+    }
+
+    // Create new parent user
+    async createParentUser(userData) {
+        try {
+            const response = await apiClient.createParentUser(userData);
+
+            if (response.success) {
+                return {
+                    success: true,
+                    message: response.message,
+                    user: response.user
+                };
+            } else {
+                throw new Error(response.message || 'Failed to create parent user');
+            }
+        } catch (error) {
+            console.error('Create parent user error:', error);
+            return {
+                success: false,
+                message: error.message || 'Failed to create parent user'
+            };
+        }
+    }
+
     // Reset user password
     async resetUserPassword(userId, newPassword) {
         try {

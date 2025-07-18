@@ -314,6 +314,14 @@ class ApiClient {
         return this.post('/auth/admin/create-admin', userData);
     }
 
+    async createStudentUser(userData) {
+        return this.post('/auth/admin/create-student', userData);
+    }
+
+    async createParentUser(userData) {
+        return this.post('/auth/admin/create-parent', userData);
+    }
+
     async resetUserPassword(userId, newPassword) {
         return this.post('/auth/admin/reset-password', { userId, newPassword });
     }

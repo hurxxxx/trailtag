@@ -36,11 +36,14 @@ import {
     VpnKey,
     History,
     PersonAdd,
-    Delete
+    Delete,
+    School,
+    FamilyRestroom
 } from '@mui/icons-material';
 
 import userManagementService from '../../services/userManagementService';
 import CreateAdminDialog from './CreateAdminDialog';
+import CreateUserDialog from './CreateUserDialog';
 import ResetPasswordDialog from './ResetPasswordDialog';
 import StudentCheckInHistoryDialog from './StudentCheckInHistoryDialog';
 import DeleteUserDialog from './DeleteUserDialog';
@@ -61,6 +64,7 @@ const UserManagement = () => {
 
     // Dialog states
     const [createAdminOpen, setCreateAdminOpen] = useState(false);
+    const [createUserOpen, setCreateUserOpen] = useState(false);
     const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
     const [checkInHistoryOpen, setCheckInHistoryOpen] = useState(false);
     const [deleteUserOpen, setDeleteUserOpen] = useState(false);
@@ -127,6 +131,10 @@ const UserManagement = () => {
         setCreateAdminOpen(true);
     };
 
+    const handleCreateUser = () => {
+        setCreateUserOpen(true);
+    };
+
     const handleResetPassword = (user) => {
         setSelectedUser(user);
         setResetPasswordOpen(true);
@@ -149,6 +157,13 @@ const UserManagement = () => {
         setTimeout(() => setSuccess(''), 3000);
     };
 
+    const handleCreateUserSuccess = (message) => {
+        setCreateUserOpen(false);
+        setSuccess(message);
+        loadUsers();
+        setTimeout(() => setSuccess(''), 3000);
+    };
+
     const handleResetPasswordSuccess = () => {
         setResetPasswordOpen(false);
         setSelectedUser(null);
@@ -166,6 +181,7 @@ const UserManagement = () => {
 
     const handleCloseDialogs = () => {
         setCreateAdminOpen(false);
+        setCreateUserOpen(false);
         setResetPasswordOpen(false);
         setCheckInHistoryOpen(false);
         setDeleteUserOpen(false);
@@ -197,7 +213,7 @@ const UserManagement = () => {
                     <Typography variant="h5" sx={{ fontWeight: 600 }}>
                         사용자 관리
                     </Typography>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                         <Button
                             variant="contained"
                             startIcon={<PersonAdd />}
@@ -205,6 +221,15 @@ const UserManagement = () => {
                             sx={{ textTransform: 'none' }}
                         >
                             관리자 생성
+                        </Button>
+                        <Button
+                            variant="contained"
+                            startIcon={<School />}
+                            onClick={handleCreateUser}
+                            sx={{ textTransform: 'none' }}
+                            color="success"
+                        >
+                            학생/부모 생성
                         </Button>
                         <Button
                             variant="outlined"
@@ -358,6 +383,12 @@ const UserManagement = () => {
                 open={createAdminOpen}
                 onClose={handleCloseDialogs}
                 onSuccess={handleCreateAdminSuccess}
+            />
+
+            <CreateUserDialog
+                open={createUserOpen}
+                onClose={handleCloseDialogs}
+                onSuccess={handleCreateUserSuccess}
             />
 
             <ResetPasswordDialog
