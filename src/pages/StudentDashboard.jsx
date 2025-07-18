@@ -335,11 +335,14 @@ const StudentHome = () => {
     );
 };
 
-const StudentProfile = () => (
-    <Paper elevation={2} sx={{ p: 4 }}>
-        <Typography variant="h5" gutterBottom>Profile</Typography>
-        <Typography>Student profile management will be implemented here.</Typography>
-    </Paper>
-);
+const StudentProfile = () => {
+    const ProfileEditor = React.lazy(() => import('../components/common/ProfileEditor'));
+
+    return (
+        <React.Suspense fallback={<CircularProgress />}>
+            <ProfileEditor />
+        </React.Suspense>
+    );
+};
 
 export default StudentDashboard;

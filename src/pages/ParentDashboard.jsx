@@ -296,11 +296,14 @@ const ParentHome = ({ onStudentSelect }) => {
     );
 };
 
-const ParentProfile = () => (
-    <Paper elevation={2} sx={{ p: 4 }}>
-        <Typography variant="h5" gutterBottom>프로필</Typography>
-        <Typography>학부모 프로필 관리 기능이 여기에 구현될 예정입니다.</Typography>
-    </Paper>
-);
+const ParentProfile = () => {
+    const ProfileEditor = React.lazy(() => import('../components/common/ProfileEditor'));
+
+    return (
+        <React.Suspense fallback={<CircularProgress />}>
+            <ProfileEditor />
+        </React.Suspense>
+    );
+};
 
 export default ParentDashboard;

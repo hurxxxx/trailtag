@@ -332,54 +332,23 @@ class AuthService {
     // Update user profile
     async updateProfile(userId, updateData) {
         try {
-            const allowedFields = ['full_name', 'email', 'phone'];
-            const updates = {};
+            // 서버 API를 통해 프로필 업데이트
+            const response = await apiClient.updateProfile(updateData);
 
-            for (const field of allowedFields) {
-                if (updateData[field] !== undefined) {
-                    updates[field] = updateData[field];
-                }
+            if (response.success) {
+                return {
+                    success: true,
+                    message: response.message || 'Profile updated successfully',
+                    user: response.user
+                };
+            } else {
+                throw new Error(response.message || 'Profile update failed');
             }
-
-            if (Object.keys(updates).length === 0) {
-                throw new Error('No valid fields to update');
-            }
-
-            // Check if email is being updated and if it already exists
-            if (updates.email) {
-                const existingUser = browserDatabase.getUserByEmail(updates.email);
-                if (existingUser && existingUser.id !== userId) {
-                    throw new Error('Email already exists');
-                }
-            }
-
-            // Update user in browser storage
-            const users = JSON.parse(localStorage.getItem('trailtag_users') || '[]');
-            const userIndex = users.findIndex(u => u.id === userId);
-            if (userIndex === -1) {
-                throw new Error('User not found');
-            }
-
-            // Apply updates
-            Object.keys(updates).forEach(field => {
-                users[userIndex][field] = updates[field];
-            });
-            users[userIndex].updated_at = new Date().toISOString();
-            localStorage.setItem('trailtag_users', JSON.stringify(users));
-
-            // Get updated user
-            const updatedUser = browserDatabase.getUserById(userId);
-            delete updatedUser.password_hash;
-
-            return {
-                success: true,
-                message: 'Profile updated successfully',
-                user: updatedUser
-            };
         } catch (error) {
+            console.error('Update profile error:', error);
             return {
                 success: false,
-                message: error.message
+                message: error.message || 'Profile update failed'
             };
         }
     }

@@ -24,7 +24,8 @@ import {
     Tooltip,
     Card,
     CardContent,
-    Grid
+    Grid,
+    CircularProgress
 } from '@mui/material';
 import {
     Menu as MenuIcon,
@@ -325,11 +326,14 @@ const UserManagement = () => (
     </Paper>
 );
 
-const AdminProfile = () => (
-    <Paper elevation={2} sx={{ p: 4 }}>
-        <Typography variant="h5" gutterBottom>프로필</Typography>
-        <Typography>관리자 프로필 관리 기능이 여기에 구현될 예정입니다.</Typography>
-    </Paper>
-);
+const AdminProfile = () => {
+    const ProfileEditor = React.lazy(() => import('../components/common/ProfileEditor'));
+
+    return (
+        <React.Suspense fallback={<CircularProgress />}>
+            <ProfileEditor />
+        </React.Suspense>
+    );
+};
 
 export default AdminDashboard;
