@@ -49,13 +49,13 @@ const CheckInHistory = () => {
             setError('');
 
             // Load check-in history
-            const historyResult = await checkInService.getStudentCheckInHistory(user.id);
+            const historyResult = await checkInService.getStudentCheckInHistory();
             if (historyResult.success) {
                 setCheckIns(historyResult.checkIns);
             }
 
             // Load today's check-ins
-            const todayResult = await checkInService.getTodayCheckIns(user.id);
+            const todayResult = await checkInService.getTodayCheckIns();
             if (todayResult.success) {
                 setTodayCheckIns(todayResult.checkIns);
             }
@@ -205,7 +205,7 @@ const CheckInHistory = () => {
                                         <Typography variant="subtitle1" gutterBottom>
                                             {program.program_name}
                                         </Typography>
-                                        <Chip 
+                                        <Chip
                                             label={`${program.visit_count} visits`}
                                             color="primary"
                                             size="small"
@@ -220,19 +220,19 @@ const CheckInHistory = () => {
 
             {/* Tabs for Today vs All History */}
             <Paper elevation={2} sx={{ mb: 3 }}>
-                <Tabs 
-                    value={tabValue} 
+                <Tabs
+                    value={tabValue}
                     onChange={handleTabChange}
                     sx={{ borderBottom: 1, borderColor: 'divider' }}
                 >
-                    <Tab 
-                        icon={<Today />} 
-                        label="Today" 
+                    <Tab
+                        icon={<Today />}
+                        label="Today"
                         iconPosition="start"
                     />
-                    <Tab 
-                        icon={<History />} 
-                        label="All History" 
+                    <Tab
+                        icon={<History />}
+                        label="All History"
                         iconPosition="start"
                     />
                 </Tabs>
@@ -243,7 +243,7 @@ const CheckInHistory = () => {
                             <Typography variant="h6" gutterBottom>
                                 Today's Check-ins ({todayCheckIns.length})
                             </Typography>
-                            
+
                             {todayCheckIns.length === 0 ? (
                                 <Box textAlign="center" py={4}>
                                     <Typography variant="body1" color="text.secondary">
@@ -271,9 +271,9 @@ const CheckInHistory = () => {
                                                         </Box>
                                                     }
                                                 />
-                                                <Chip 
-                                                    label="Today" 
-                                                    color="primary" 
+                                                <Chip
+                                                    label="Today"
+                                                    color="primary"
                                                     size="small"
                                                 />
                                             </ListItem>
@@ -290,7 +290,7 @@ const CheckInHistory = () => {
                             <Typography variant="h6" gutterBottom>
                                 All Check-ins ({checkIns.length})
                             </Typography>
-                            
+
                             {checkIns.length === 0 ? (
                                 <Box textAlign="center" py={4}>
                                     <Typography variant="body1" color="text.secondary">
@@ -336,8 +336,8 @@ const CheckInHistory = () => {
 
             {/* Refresh Button */}
             <Box textAlign="center">
-                <Button 
-                    variant="outlined" 
+                <Button
+                    variant="outlined"
                     onClick={loadData}
                     disabled={loading}
                 >

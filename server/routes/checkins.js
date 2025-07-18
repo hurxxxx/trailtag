@@ -96,7 +96,7 @@ router.post('/', authenticateToken, async (req, res) => {
         const result = await database.run(`
             INSERT INTO check_ins (student_id, program_id, qr_code_id, location)
             VALUES (?, ?, ?, ?)
-        `, [studentId, qrCode.program_id, qrCode.id, qrCode.location_name]);
+        `, [studentId, qrCode.program_id, qrCode.id, 'default']);
 
         res.status(201).json({
             success: true,
@@ -105,7 +105,7 @@ router.post('/', authenticateToken, async (req, res) => {
                 id: result.id,
                 program_name: qrCode.program_name,
                 program_description: qrCode.program_description,
-                location: qrCode.location_name,
+                location: 'default',
                 check_in_time: new Date().toISOString()
             }
         });
@@ -126,8 +126,7 @@ router.get('/history', authenticateToken, async (req, res) => {
         const limit = parseInt(req.query.limit) || 50;
 
         const checkIns = await database.all(`
-            SELECT ci.*, lp.name as program_name, lp.description as program_description,
-                   qr.location_name as qr_location
+            SELECT ci.*, lp.name as program_name, lp.description as program_description
             FROM check_ins ci
             JOIN learning_programs lp ON ci.program_id = lp.id
             JOIN qr_codes qr ON ci.qr_code_id = qr.id
@@ -171,8 +170,7 @@ router.get('/student/:studentId/history', authenticateToken, requireRole('parent
         }
 
         const checkIns = await database.all(`
-            SELECT ci.*, lp.name as program_name, lp.description as program_description,
-                   qr.location_name as qr_location
+            SELECT ci.*, lp.name as program_name, lp.description as program_description
             FROM check_ins ci
             JOIN learning_programs lp ON ci.program_id = lp.id
             JOIN qr_codes qr ON ci.qr_code_id = qr.id
@@ -202,8 +200,7 @@ router.get('/today', authenticateToken, async (req, res) => {
         const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 
         const checkIns = await database.all(`
-            SELECT ci.*, lp.name as program_name, lp.description as program_description,
-                   qr.location_name as qr_location
+            SELECT ci.*, lp.name as program_name, lp.description as program_description
             FROM check_ins ci
             JOIN learning_programs lp ON ci.program_id = lp.id
             JOIN qr_codes qr ON ci.qr_code_id = qr.id
@@ -246,8 +243,7 @@ router.get('/student/:studentId/today', authenticateToken, requireRole('parent')
         }
 
         const checkIns = await database.all(`
-            SELECT ci.*, lp.name as program_name, lp.description as program_description,
-                   qr.location_name as qr_location
+            SELECT ci.*, lp.name as program_name, lp.description as program_description
             FROM check_ins ci
             JOIN learning_programs lp ON ci.program_id = lp.id
             JOIN qr_codes qr ON ci.qr_code_id = qr.id

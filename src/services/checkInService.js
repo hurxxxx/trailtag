@@ -43,12 +43,12 @@ class CheckInService {
     }
 
     // Get student's check-in history
-    async getStudentCheckInHistory(studentId, limit = 50) {
+    async getStudentCheckInHistory(studentId, limit = 50, isParentRequest = false) {
         try {
-            console.log('Getting check-in history for student:', studentId);
+            console.log('Getting check-in history for student:', studentId, 'isParentRequest:', isParentRequest);
 
-            // 학생 ID가 제공된 경우 (학부모가 특정 학생 조회)
-            if (studentId) {
+            // 부모가 특정 학생을 조회하는 경우
+            if (studentId && isParentRequest) {
                 const response = await apiClient.getStudentCheckInHistory(studentId, limit);
                 console.log('Student check-in history response:', response);
 
@@ -61,7 +61,7 @@ class CheckInService {
                     throw new Error(response.message || 'Failed to fetch student check-in history');
                 }
             } else {
-                // 학생 ID가 없는 경우 (현재 사용자의 기록 조회)
+                // 학생이 자신의 기록을 조회하는 경우
                 const response = await apiClient.getCheckInHistory(limit);
 
                 if (response.success) {
@@ -143,12 +143,12 @@ class CheckInService {
     }
 
     // Get today's check-ins for a student
-    async getTodayCheckIns(studentId) {
+    async getTodayCheckIns(studentId, isParentRequest = false) {
         try {
-            console.log('Getting today check-ins for student:', studentId);
+            console.log('Getting today check-ins for student:', studentId, 'isParentRequest:', isParentRequest);
 
-            // 학생 ID가 제공된 경우 (학부모가 특정 학생 조회)
-            if (studentId) {
+            // 부모가 특정 학생을 조회하는 경우
+            if (studentId && isParentRequest) {
                 const response = await apiClient.getStudentTodayCheckIns(studentId);
                 console.log('Student today check-ins response:', response);
 
@@ -161,7 +161,7 @@ class CheckInService {
                     throw new Error(response.message || 'Failed to fetch student today\'s check-ins');
                 }
             } else {
-                // 학생 ID가 없는 경우 (현재 사용자의 기록 조회)
+                // 학생이 자신의 기록을 조회하는 경우
                 const response = await apiClient.getTodayCheckIns();
 
                 if (response.success) {

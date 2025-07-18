@@ -97,13 +97,13 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
             setError('');
 
             // Load check-in history
-            const historyResult = await checkInService.getStudentCheckInHistory(selectedStudent.id);
+            const historyResult = await checkInService.getStudentCheckInHistory(selectedStudent.id, 50, true);
             if (historyResult.success) {
                 setCheckIns(historyResult.checkIns);
             }
 
             // Load today's check-ins
-            const todayResult = await checkInService.getTodayCheckIns(selectedStudent.id);
+            const todayResult = await checkInService.getTodayCheckIns(selectedStudent.id, true);
             if (todayResult.success) {
                 setTodayCheckIns(todayResult.checkIns);
             }

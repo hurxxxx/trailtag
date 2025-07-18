@@ -198,7 +198,7 @@ const StudentHome = () => {
         const loadHomeData = async () => {
             try {
                 // Load today's check-ins
-                const todayResult = await checkInService.getTodayCheckIns(user.id);
+                const todayResult = await checkInService.getTodayCheckIns();
                 if (todayResult.success) {
                     setTodayCheckIns(todayResult.checkIns);
                 }
