@@ -51,7 +51,16 @@ const QRScanner = () => {
         return () => {
             // Cleanup scanner on unmount
             if (html5QrcodeRef.current) {
-                html5QrcodeRef.current.stop().catch(console.error);
+                try {
+                    // 스캐너가 실행 중인지 확인 후 정리
+                    if (html5QrcodeRef.current.getState() === 2) { // SCANNING state
+                        html5QrcodeRef.current.stop().catch(err => {
+                            console.log('Scanner stop error (cleanup):', err);
+                        });
+                    }
+                } catch (error) {
+                    console.log('Scanner cleanup error:', error);
+                }
             }
         };
     }, []);
@@ -242,12 +251,22 @@ const QRScanner = () => {
 
     const stopScanning = () => {
         if (html5QrcodeRef.current) {
-            html5QrcodeRef.current.stop().then(() => {
+            try {
+                // 스캐너가 실행 중인지 확인
+                if (html5QrcodeRef.current.getState() === 2) { // SCANNING state
+                    html5QrcodeRef.current.stop().then(() => {
+                        setScanning(false);
+                    }).catch(err => {
+                        console.log("Scanner stop error:", err);
+                        setScanning(false);
+                    });
+                } else {
+                    setScanning(false);
+                }
+            } catch (error) {
+                console.log("Scanner state check error:", error);
                 setScanning(false);
-            }).catch(err => {
-                console.error("Failed to stop scanner", err);
-                setScanning(false);
-            });
+            }
         } else {
             setScanning(false);
         }
@@ -259,7 +278,13 @@ const QRScanner = () => {
         try {
             // Stop scanning immediately
             if (html5QrcodeRef.current) {
-                await html5QrcodeRef.current.stop();
+                try {
+                    if (html5QrcodeRef.current.getState() === 2) { // SCANNING state
+                        await html5QrcodeRef.current.stop();
+                    }
+                } catch (stopError) {
+                    console.log('Scanner stop error in onScanSuccess:', stopError);
+                }
             }
             setScanning(false);
 

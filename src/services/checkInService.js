@@ -45,16 +45,22 @@ class CheckInService {
     // Get student's check-in history
     async getStudentCheckInHistory(studentId, limit = 50) {
         try {
-            const checkIns = browserDatabase.getStudentCheckIns(studentId, limit);
+            // 서버 API를 통해 체크인 기록 조회
+            const response = await apiClient.getCheckInHistory(limit);
 
-            return {
-                success: true,
-                checkIns: checkIns
-            };
+            if (response.success) {
+                return {
+                    success: true,
+                    checkIns: response.checkIns
+                };
+            } else {
+                throw new Error(response.message || 'Failed to fetch check-in history');
+            }
         } catch (error) {
+            console.error('Get check-in history error:', error);
             return {
                 success: false,
-                message: 'Failed to fetch check-in history',
+                message: error.message || 'Failed to fetch check-in history',
                 checkIns: []
             };
         }
@@ -122,40 +128,22 @@ class CheckInService {
     // Get today's check-ins for a student
     async getTodayCheckIns(studentId) {
         try {
-            const checkIns = JSON.parse(localStorage.getItem('trailtag_check_ins') || '[]');
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            // 서버 API를 통해 오늘의 체크인 기록 조회
+            const response = await apiClient.getTodayCheckIns();
 
-            const todayCheckIns = checkIns.filter(ci => {
-                const checkInDate = new Date(ci.check_in_time);
-                checkInDate.setHours(0, 0, 0, 0);
-                return ci.student_id === studentId && checkInDate.getTime() === today.getTime();
-            });
-
-            // Get program details for each check-in
-            const programs = browserDatabase.getAllLearningPrograms();
-            const qrCodes = JSON.parse(localStorage.getItem('trailtag_qr_codes') || '[]');
-
-            const enrichedCheckIns = todayCheckIns.map(ci => {
-                const program = programs.find(p => p.id === ci.program_id);
-                const qrCode = qrCodes.find(qr => qr.id === ci.qr_code_id);
-
+            if (response.success) {
                 return {
-                    ...ci,
-                    program_name: program ? program.name : 'Unknown Program',
-                    program_description: program ? program.description : '',
-                    qr_location: qrCode ? qrCode.location_name : 'Unknown Location'
+                    success: true,
+                    checkIns: response.checkIns
                 };
-            }).sort((a, b) => new Date(b.check_in_time) - new Date(a.check_in_time));
-
-            return {
-                success: true,
-                checkIns: enrichedCheckIns
-            };
+            } else {
+                throw new Error(response.message || 'Failed to fetch today\'s check-ins');
+            }
         } catch (error) {
+            console.error('Get today check-ins error:', error);
             return {
                 success: false,
-                message: 'Failed to fetch today\'s check-ins',
+                message: error.message || 'Failed to fetch today\'s check-ins',
                 checkIns: []
             };
         }
