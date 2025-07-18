@@ -1,5 +1,5 @@
 import browserDatabase from './browserDatabase.js';
-import qrCodeService from './qrCodeService.js';
+import apiClient from './apiClient.js';
 
 class CheckInService {
     // Process student check-in via QR code
@@ -9,58 +9,23 @@ class CheckInService {
                 throw new Error('QR code data and student ID are required');
             }
 
-            // Validate QR code
-            const qrValidation = qrCodeService.validateQRCode(qrCodeData);
-            if (!qrValidation.valid) {
-                throw new Error(qrValidation.message);
+            // API를 통해 체크인 처리 (서버에서 QR 코드 검증 및 체크인 처리)
+            const response = await apiClient.checkIn(qrCodeData);
+
+            if (response.success) {
+                return {
+                    success: true,
+                    message: response.message || 'Check-in successful!',
+                    checkIn: response.checkIn
+                };
+            } else {
+                throw new Error(response.message || 'Check-in failed');
             }
-
-            const qrCode = qrValidation.qrCode;
-
-            // Check if student exists
-            const student = browserDatabase.getUserById(studentId);
-            if (!student || student.user_type !== 'student') {
-                throw new Error('Invalid student');
-            }
-
-            // Check for duplicate check-in (within last 5 minutes)
-            const recentCheckIns = this.getRecentCheckIns(studentId, qrCode.program_id, 5);
-            if (recentCheckIns.length > 0) {
-                throw new Error('You have already checked in recently for this program');
-            }
-
-            // Create check-in record
-            const checkInData = {
-                student_id: studentId,
-                program_id: qrCode.program_id,
-                qr_code_id: qrCode.id,
-                location: qrCode.location_name
-            };
-
-            const result = browserDatabase.createCheckIn(checkInData);
-            
-            if (result.changes === 0) {
-                throw new Error('Failed to record check-in');
-            }
-
-            // Get program details for response
-            const program = browserDatabase.getLearningProgramById(qrCode.program_id);
-
-            return {
-                success: true,
-                message: 'Check-in successful!',
-                checkIn: {
-                    id: result.lastInsertRowid,
-                    program_name: program.name,
-                    program_description: program.description,
-                    location: qrCode.location_name,
-                    check_in_time: new Date().toISOString()
-                }
-            };
         } catch (error) {
+            console.error('Check-in error:', error);
             return {
                 success: false,
-                message: error.message
+                message: error.message || 'Check-in processing failed'
             };
         }
     }
@@ -69,8 +34,8 @@ class CheckInService {
     getRecentCheckIns(studentId, programId, minutesBack = 5) {
         const checkIns = JSON.parse(localStorage.getItem('trailtag_check_ins') || '[]');
         const cutoffTime = new Date(Date.now() - (minutesBack * 60 * 1000));
-        
-        return checkIns.filter(ci => 
+
+        return checkIns.filter(ci =>
             ci.student_id === studentId &&
             ci.program_id === programId &&
             new Date(ci.check_in_time) > cutoffTime
@@ -81,7 +46,7 @@ class CheckInService {
     async getStudentCheckInHistory(studentId, limit = 50) {
         try {
             const checkIns = browserDatabase.getStudentCheckIns(studentId, limit);
-            
+
             return {
                 success: true,
                 checkIns: checkIns
@@ -100,15 +65,15 @@ class CheckInService {
         try {
             const checkIns = JSON.parse(localStorage.getItem('trailtag_check_ins') || '[]');
             const studentCheckIns = checkIns.filter(ci => ci.student_id === studentId);
-            
+
             // Calculate statistics
             const totalCheckIns = studentCheckIns.length;
             const uniquePrograms = [...new Set(studentCheckIns.map(ci => ci.program_id))];
             const uniqueLocations = [...new Set(studentCheckIns.map(ci => ci.location))];
-            
+
             // Get recent activity (last 7 days)
             const sevenDaysAgo = new Date(Date.now() - (7 * 24 * 60 * 60 * 1000));
-            const recentCheckIns = studentCheckIns.filter(ci => 
+            const recentCheckIns = studentCheckIns.filter(ci =>
                 new Date(ci.check_in_time) > sevenDaysAgo
             );
 
@@ -120,7 +85,7 @@ class CheckInService {
 
             const programs = browserDatabase.getAllLearningPrograms();
             const mostVisitedPrograms = Object.entries(programCounts)
-                .sort(([,a], [,b]) => b - a)
+                .sort(([, a], [, b]) => b - a)
                 .slice(0, 5)
                 .map(([programId, count]) => {
                     const program = programs.find(p => p.id === parseInt(programId));
@@ -136,7 +101,7 @@ class CheckInService {
                 uniqueLocations: uniqueLocations.length,
                 recentCheckIns: recentCheckIns.length,
                 mostVisitedPrograms,
-                lastCheckIn: studentCheckIns.length > 0 
+                lastCheckIn: studentCheckIns.length > 0
                     ? Math.max(...studentCheckIns.map(ci => new Date(ci.check_in_time).getTime()))
                     : null
             };
@@ -160,7 +125,7 @@ class CheckInService {
             const checkIns = JSON.parse(localStorage.getItem('trailtag_check_ins') || '[]');
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
+
             const todayCheckIns = checkIns.filter(ci => {
                 const checkInDate = new Date(ci.check_in_time);
                 checkInDate.setHours(0, 0, 0, 0);
@@ -170,11 +135,11 @@ class CheckInService {
             // Get program details for each check-in
             const programs = browserDatabase.getAllLearningPrograms();
             const qrCodes = JSON.parse(localStorage.getItem('trailtag_qr_codes') || '[]');
-            
+
             const enrichedCheckIns = todayCheckIns.map(ci => {
                 const program = programs.find(p => p.id === ci.program_id);
                 const qrCode = qrCodes.find(qr => qr.id === ci.qr_code_id);
-                
+
                 return {
                     ...ci,
                     program_name: program ? program.name : 'Unknown Program',
@@ -201,7 +166,7 @@ class CheckInService {
         try {
             // Expected format: trailtag://checkin?program=123&location=Main%20Entrance&t=1234567890
             const url = new URL(qrCodeData);
-            
+
             if (url.protocol !== 'trailtag:' || url.pathname !== '//checkin') {
                 throw new Error('Invalid QR code format');
             }
@@ -276,8 +241,8 @@ class CheckInService {
         try {
             const checkIns = JSON.parse(localStorage.getItem('trailtag_check_ins') || '[]');
             const cutoffDate = new Date(Date.now() - (dateRange * 24 * 60 * 60 * 1000));
-            
-            const recentCheckIns = checkIns.filter(ci => 
+
+            const recentCheckIns = checkIns.filter(ci =>
                 new Date(ci.check_in_time) > cutoffDate
             );
 
