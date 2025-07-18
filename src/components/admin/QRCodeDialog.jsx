@@ -37,11 +37,18 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
     // QR 코드 이미지 생성
     const generateQRCodeImage = async (qrCodeData) => {
         try {
-            // QR 코드 데이터 URL 생성 (체크인 URL)
-            const checkInUrl = `${window.location.origin}/checkin/${qrCodeData.id}`;
+            // 서버에서 생성한 실제 QR 코드 데이터 사용
+            // 형식: trailtag://checkin?program=123&location=Main&t=1234567890
+            const qrData = qrCodeData.qr_code_data;
+
+            if (!qrData) {
+                throw new Error('QR 코드 데이터가 없습니다');
+            }
+
+            console.log('QR 코드 데이터:', qrData);
 
             // QR 코드 이미지를 Data URL로 생성
-            const dataURL = await QRCodeLib.toDataURL(checkInUrl, {
+            const dataURL = await QRCodeLib.toDataURL(qrData, {
                 width: 300,
                 margin: 2,
                 color: {
