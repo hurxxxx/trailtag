@@ -186,18 +186,22 @@ const commonStyles = {
   },
 };
 
-// 2025년 모던 테마 생성
-const theme = createTheme({
-  palette: {
-    mode: 'light',
+// 다크모드 지원을 위한 테마 생성 함수
+// 성능 최적화: 테마 생성 비용을 줄이기 위해 메모이제이션 고려
+const createAppTheme = (mode = 'light') => {
+  const isDark = mode === 'dark';
+  
+  return createTheme({
+    palette: {
+      mode,
     primary: {
-      main: colors.primary[500], // 코랄 핑크
+      main: colors.primary[500], // 소프트 블루
       light: colors.primary[300],
       dark: colors.primary[700],
       contrastText: '#ffffff',
     },
     secondary: {
-      main: colors.secondary[500], // 민트 그린
+      main: colors.secondary[500], // 소프트 라벤더
       light: colors.secondary[300],
       dark: colors.secondary[700],
       contrastText: '#ffffff',
@@ -226,12 +230,22 @@ const theme = createTheme({
     },
     grey: colors.grey,
     background: {
-      default: '#f8fafc',
-      paper: 'rgba(255, 255, 255, 0.8)',
+      default: isDark ? colors.grey[900] : '#f8fafc',
+      paper: isDark ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)',
     },
     text: {
-      primary: colors.grey[900],
-      secondary: colors.grey[600],
+      primary: isDark ? colors.grey[100] : colors.grey[900],
+      secondary: isDark ? colors.grey[400] : colors.grey[600],
+    },
+  },
+  // 반응형 브레이크포인트 설정
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
     },
   },
   typography: {
@@ -670,10 +684,16 @@ const theme = createTheme({
     },
   },
 
-  // 공통 스타일을 테마에 추가
-  mixins: {
-    ...commonStyles,
-  },
-});
+    // 공통 스타일을 테마에 추가
+    mixins: {
+      ...commonStyles,
+    },
+  });
+};
 
+// 기본 라이트 테마 생성
+const theme = createAppTheme('light');
+
+// 다크모드 테마 생성 함수도 export
+export { createAppTheme };
 export default theme;
