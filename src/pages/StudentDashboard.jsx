@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import {
     Box,
     Container,
@@ -20,7 +20,9 @@ import {
     ListItem,
     ListItemIcon,
     ListItemText,
-    CircularProgress
+    CircularProgress,
+    Tabs,
+    Tab
 } from '@mui/material';
 import {
     QrCodeScanner,
@@ -38,9 +40,24 @@ import checkInService from '../services/checkInService';
 const StudentDashboard = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [bottomNavValue, setBottomNavValue] = useState(0);
+
+    // Set tab value based on current route
+    useEffect(() => {
+        const path = location.pathname;
+        if (path === '/student' || path === '/student/') {
+            setBottomNavValue(0);
+        } else if (path === '/student/scanner') {
+            setBottomNavValue(1);
+        } else if (path === '/student/history') {
+            setBottomNavValue(2);
+        } else if (path === '/student/profile') {
+            setBottomNavValue(3);
+        }
+    }, [location.pathname]);
 
     const handleLogout = async () => {
         await logout();
@@ -83,6 +100,42 @@ const StudentDashboard = () => {
                     </Button>
                 </Toolbar>
             </AppBar>
+
+            {/* Desktop Navigation Tabs */}
+            {!isMobile && (
+                <Paper elevation={1}>
+                    <Container maxWidth="lg">
+                        <Tabs
+                            value={bottomNavValue}
+                            onChange={handleBottomNavChange}
+                            variant="fullWidth"
+                            indicatorColor="primary"
+                            textColor="primary"
+                        >
+                            <Tab
+                                icon={<Home />}
+                                label="홈"
+                                iconPosition="start"
+                            />
+                            <Tab
+                                icon={<QrCodeScanner />}
+                                label="QR 스캔"
+                                iconPosition="start"
+                            />
+                            <Tab
+                                icon={<History />}
+                                label="기록"
+                                iconPosition="start"
+                            />
+                            <Tab
+                                icon={<Person />}
+                                label="프로필"
+                                iconPosition="start"
+                            />
+                        </Tabs>
+                    </Container>
+                </Paper>
+            )}
 
             <Container maxWidth="lg" sx={{ py: 3 }}>
                 <Routes>
