@@ -264,6 +264,10 @@ class ApiClient {
         return this.get(`/checkins/student/${studentId}/history`, { limit });
     }
 
+    async getStudentTodayCheckIns(studentId) {
+        return this.get(`/checkins/student/${studentId}/today`);
+    }
+
     // User methods
     async searchStudents(name, phone) {
         return this.get('/users/students/search', { name, phone });

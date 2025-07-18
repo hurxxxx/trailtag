@@ -45,16 +45,33 @@ class CheckInService {
     // Get student's check-in history
     async getStudentCheckInHistory(studentId, limit = 50) {
         try {
-            // 서버 API를 통해 체크인 기록 조회
-            const response = await apiClient.getCheckInHistory(limit);
+            console.log('Getting check-in history for student:', studentId);
 
-            if (response.success) {
-                return {
-                    success: true,
-                    checkIns: response.checkIns
-                };
+            // 학생 ID가 제공된 경우 (학부모가 특정 학생 조회)
+            if (studentId) {
+                const response = await apiClient.getStudentCheckInHistory(studentId, limit);
+                console.log('Student check-in history response:', response);
+
+                if (response.success) {
+                    return {
+                        success: true,
+                        checkIns: response.checkIns
+                    };
+                } else {
+                    throw new Error(response.message || 'Failed to fetch student check-in history');
+                }
             } else {
-                throw new Error(response.message || 'Failed to fetch check-in history');
+                // 학생 ID가 없는 경우 (현재 사용자의 기록 조회)
+                const response = await apiClient.getCheckInHistory(limit);
+
+                if (response.success) {
+                    return {
+                        success: true,
+                        checkIns: response.checkIns
+                    };
+                } else {
+                    throw new Error(response.message || 'Failed to fetch check-in history');
+                }
             }
         } catch (error) {
             console.error('Get check-in history error:', error);
@@ -128,16 +145,33 @@ class CheckInService {
     // Get today's check-ins for a student
     async getTodayCheckIns(studentId) {
         try {
-            // 서버 API를 통해 오늘의 체크인 기록 조회
-            const response = await apiClient.getTodayCheckIns();
+            console.log('Getting today check-ins for student:', studentId);
 
-            if (response.success) {
-                return {
-                    success: true,
-                    checkIns: response.checkIns
-                };
+            // 학생 ID가 제공된 경우 (학부모가 특정 학생 조회)
+            if (studentId) {
+                const response = await apiClient.getStudentTodayCheckIns(studentId);
+                console.log('Student today check-ins response:', response);
+
+                if (response.success) {
+                    return {
+                        success: true,
+                        checkIns: response.checkIns
+                    };
+                } else {
+                    throw new Error(response.message || 'Failed to fetch student today\'s check-ins');
+                }
             } else {
-                throw new Error(response.message || 'Failed to fetch today\'s check-ins');
+                // 학생 ID가 없는 경우 (현재 사용자의 기록 조회)
+                const response = await apiClient.getTodayCheckIns();
+
+                if (response.success) {
+                    return {
+                        success: true,
+                        checkIns: response.checkIns
+                    };
+                } else {
+                    throw new Error(response.message || 'Failed to fetch today\'s check-ins');
+                }
             }
         } catch (error) {
             console.error('Get today check-ins error:', error);

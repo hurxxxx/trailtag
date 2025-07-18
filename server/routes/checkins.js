@@ -188,6 +188,50 @@ router.get('/today', authenticateToken, async (req, res) => {
     }
 });
 
+// Get today's check-ins for a student by parent
+router.get('/student/:studentId/today', authenticateToken, requireRole('parent'), async (req, res) => {
+    try {
+        const { studentId } = req.params;
+        const parentId = req.user.userId;
+        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
+        // Verify parent-student relationship
+        const relationship = await database.get(`
+            SELECT id FROM parent_student_relationships
+            WHERE parent_id = ? AND student_id = ?
+        `, [parentId, studentId]);
+
+        if (!relationship) {
+            return res.status(403).json({
+                success: false,
+                message: 'You do not have permission to view this student\'s check-ins'
+            });
+        }
+
+        const checkIns = await database.all(`
+            SELECT ci.*, lp.name as program_name, lp.description as program_description,
+                   qr.location_name as qr_location
+            FROM check_ins ci
+            JOIN learning_programs lp ON ci.program_id = lp.id
+            JOIN qr_codes qr ON ci.qr_code_id = qr.id
+            WHERE ci.student_id = ? AND date(ci.check_in_time) = ?
+            ORDER BY ci.check_in_time DESC
+        `, [studentId, today]);
+
+        res.json({
+            success: true,
+            checkIns
+        });
+
+    } catch (error) {
+        console.error('Get student today check-ins error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch today\'s check-ins'
+        });
+    }
+});
+
 // Get student statistics
 router.get('/stats', authenticateToken, async (req, res) => {
     try {
