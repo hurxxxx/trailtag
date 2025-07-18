@@ -208,14 +208,6 @@ const AdminDashboard = () => {
                     </Box>
 
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Tooltip title="알림">
-                            <IconButton color="inherit" size="small">
-                                <Badge badgeContent={3} color="error">
-                                    <Notifications />
-                                </Badge>
-                            </IconButton>
-                        </Tooltip>
-
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 1 }}>
                             <Avatar
                                 sx={{

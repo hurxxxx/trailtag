@@ -176,7 +176,7 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
             maxWidth="sm"
             fullWidth
             PaperProps={{
-                sx: { borderRadius: 3 }
+                sx: { borderRadius: 2 }
             }}
         >
             <DialogTitle sx={{ pb: 1 }}>
@@ -218,7 +218,7 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
                                 p: 3,
                                 border: '2px solid',
                                 borderColor: 'primary.main',
-                                borderRadius: 3,
+                                borderRadius: 2,
                                 textAlign: 'center',
                                 mb: 3,
                                 bgcolor: 'background.paper'

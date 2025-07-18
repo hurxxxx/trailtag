@@ -254,7 +254,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                         startIcon={<Add />}
                         onClick={onCreateProgram}
                         sx={{
-                            borderRadius: 2,
+                            borderRadius: 1,
                             px: 3,
                             py: 1,
                             textTransform: 'none',
@@ -294,7 +294,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                     sx={{
                         border: '2px dashed',
                         borderColor: 'grey.300',
-                        borderRadius: 3,
+                        borderRadius: 1,
                         py: 8,
                         textAlign: 'center',
                         bgcolor: 'grey.50'
@@ -332,7 +332,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                                 startIcon={<Add />}
                                 onClick={onCreateProgram}
                                 sx={{
-                                    borderRadius: 2,
+                                    borderRadius: 1,
                                     px: 4,
                                     py: 1.5,
                                     textTransform: 'none',
@@ -361,7 +361,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                                         flexDirection: 'column',
                                         border: '1px solid',
                                         borderColor: 'grey.200',
-                                        borderRadius: 3,
+                                        borderRadius: 1,
                                         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                                         '&:hover': {
                                             transform: 'translateY(-4px)',
@@ -472,7 +472,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                                             startIcon={<QrCode />}
                                             onClick={() => handleManageQRCodes(program)}
                                             sx={{
-                                                borderRadius: 2,
+                                                borderRadius: 1,
                                                 textTransform: 'none',
                                                 fontWeight: 500,
                                                 flex: 1
@@ -486,7 +486,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                                             startIcon={<Edit />}
                                             onClick={() => onEditProgram && onEditProgram(program)}
                                             sx={{
-                                                borderRadius: 2,
+                                                borderRadius: 1,
                                                 textTransform: 'none',
                                                 fontWeight: 500,
                                                 flex: 1
