@@ -39,6 +39,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import ProgramManagement from '../components/admin/ProgramManagement';
 import UserManagement from '../components/admin/UserManagement';
+import AdminDashboardContent from '../components/admin/AdminDashboardContent';
 
 const AdminDashboard = () => {
     const { user, logout } = useAuth();
@@ -299,7 +300,7 @@ const AdminDashboard = () => {
                 }}
             >
                 <Routes>
-                    <Route path="/" element={<AdminHome />} />
+                    <Route path="/" element={<AdminDashboardContent />} />
                     <Route path="/programs" element={<ProgramManagement />} />
                     <Route path="/users" element={<UserManagement />} />
                     <Route path="/profile" element={<AdminProfile />} />
@@ -308,14 +309,6 @@ const AdminDashboard = () => {
         </Box>
     );
 };
-
-// 플레이스홀더 컴포넌트들 - 추후 구현 예정
-const AdminHome = () => (
-    <Paper elevation={2} sx={{ p: 4 }}>
-        <Typography variant="h5" gutterBottom>관리자 홈</Typography>
-        <Typography>통계와 함께 관리자 대시보드 개요가 여기에 표시됩니다.</Typography>
-    </Paper>
-);
 
 // ProgramManagement는 이제 컴포넌트에서 가져옴
 

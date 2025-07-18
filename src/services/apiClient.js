@@ -325,6 +325,15 @@ class ApiClient {
     async deleteUser(userId) {
         return this.delete(`/auth/admin/delete-user/${userId}`);
     }
+
+    // Admin dashboard methods
+    async getDashboardStats() {
+        return this.get('/auth/admin/dashboard/stats');
+    }
+
+    async getRecentActivity() {
+        return this.get('/auth/admin/dashboard/activity');
+    }
 }
 
 // Create singleton instance

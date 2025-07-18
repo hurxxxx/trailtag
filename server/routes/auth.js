@@ -571,4 +571,159 @@ router.delete('/admin/delete-user/:userId', authenticateToken, requireRole('admi
     }
 });
 
+// Admin: Get dashboard statistics
+router.get('/admin/dashboard/stats', authenticateToken, requireRole('admin'), async (req, res) => {
+    try {
+        // Get user counts
+        const userStats = await database.all(`
+            SELECT user_type, COUNT(*) as count
+            FROM users
+            GROUP BY user_type
+        `);
+
+        // Get total users
+        const totalUsersResult = await database.get('SELECT COUNT(*) as count FROM users');
+        const totalUsers = totalUsersResult.count;
+
+        // Parse user counts
+        let adminCount = 0, studentCount = 0, parentCount = 0;
+        userStats.forEach(stat => {
+            switch (stat.user_type) {
+                case 'admin': adminCount = stat.count; break;
+                case 'student': studentCount = stat.count; break;
+                case 'parent': parentCount = stat.count; break;
+            }
+        });
+
+        // Get active programs count
+        const activeProgramsResult = await database.get('SELECT COUNT(*) as count FROM learning_programs');
+        const activePrograms = activeProgramsResult.count;
+
+        // Get today's check-ins
+        const today = new Date().toISOString().split('T')[0];
+        const todayCheckInsResult = await database.get(`
+            SELECT COUNT(*) as count
+            FROM check_ins
+            WHERE date(check_in_time) = ?
+        `, [today]);
+        const todayCheckIns = todayCheckInsResult.count;
+
+        // Get this week's check-ins
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        const weekCheckInsResult = await database.get(`
+            SELECT COUNT(*) as count
+            FROM check_ins
+            WHERE check_in_time >= ?
+        `, [weekAgo.toISOString()]);
+        const weekCheckIns = weekCheckInsResult.count;
+
+        res.json({
+            success: true,
+            stats: {
+                totalUsers,
+                adminCount,
+                studentCount,
+                parentCount,
+                activePrograms,
+                todayCheckIns,
+                weekCheckIns
+            }
+        });
+
+    } catch (error) {
+        console.error('Get dashboard stats error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to get dashboard statistics'
+        });
+    }
+});
+
+// Admin: Get recent activity
+router.get('/admin/dashboard/activity', authenticateToken, requireRole('admin'), async (req, res) => {
+    try {
+        // Get recent check-ins
+        const recentCheckIns = await database.all(`
+            SELECT ci.check_in_time, u.full_name as student_name, lp.name as program_name
+            FROM check_ins ci
+            JOIN users u ON ci.student_id = u.id
+            JOIN learning_programs lp ON ci.program_id = lp.id
+            ORDER BY ci.check_in_time DESC
+            LIMIT 10
+        `);
+
+        // Get recently created users
+        const recentUsers = await database.all(`
+            SELECT created_at, full_name, user_type
+            FROM users
+            ORDER BY created_at DESC
+            LIMIT 5
+        `);
+
+        // Format activities
+        const activities = [];
+
+        // Add check-in activities
+        recentCheckIns.forEach(checkIn => {
+            activities.push({
+                title: `${checkIn.student_name}님이 체크인했습니다`,
+                description: `프로그램: ${checkIn.program_name}`,
+                time: formatTimeAgo(checkIn.check_in_time),
+                type: 'checkin'
+            });
+        });
+
+        // Add user creation activities
+        recentUsers.forEach(user => {
+            const userTypeKorean = {
+                'admin': '관리자',
+                'student': '학생',
+                'parent': '부모'
+            }[user.user_type] || user.user_type;
+
+            activities.push({
+                title: `새 ${userTypeKorean} 계정이 생성되었습니다`,
+                description: `${user.full_name}님이 가입했습니다`,
+                time: formatTimeAgo(user.created_at),
+                type: 'user'
+            });
+        });
+
+        // Sort by time and limit
+        activities.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+        res.json({
+            success: true,
+            activities: activities.slice(0, 10)
+        });
+
+    } catch (error) {
+        console.error('Get recent activity error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to get recent activity'
+        });
+    }
+});
+
+// Helper function to format time ago
+function formatTimeAgo(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+
+    if (diffInMinutes < 1) {
+        return '방금 전';
+    } else if (diffInMinutes < 60) {
+        return `${diffInMinutes}분 전`;
+    } else if (diffInMinutes < 1440) {
+        const hours = Math.floor(diffInMinutes / 60);
+        return `${hours}시간 전`;
+    } else {
+        const days = Math.floor(diffInMinutes / 1440);
+        return `${days}일 전`;
+    }
+}
+
 module.exports = router;
