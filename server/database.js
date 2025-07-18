@@ -161,7 +161,7 @@ class Database {
             if (!row) {
                 // Create default admin user
                 const saltRounds = 10;
-                bcrypt.hash('admin1234!', saltRounds, (err, hash) => {
+                bcrypt.hash('admin123', saltRounds, (err, hash) => {
                     if (err) {
                         console.error('Error hashing admin password:', err);
                         return;
