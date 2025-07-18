@@ -117,10 +117,10 @@ const CheckInHistory = () => {
         <Box>
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    Check-in History
+                    체크인 기록
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                    View your participation history and statistics.
+                    참여 기록과 통계를 확인하세요.
                 </Typography>
             </Paper>
 
@@ -141,7 +141,7 @@ const CheckInHistory = () => {
                                     {stats.totalCheckIns}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    Total Check-ins
+                                    총 체크인
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -155,7 +155,7 @@ const CheckInHistory = () => {
                                     {stats.uniquePrograms}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    Programs Visited
+                                    방문한 프로그램
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -169,7 +169,7 @@ const CheckInHistory = () => {
                                     {stats.uniqueLocations}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    Unique Locations
+                                    고유 장소
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -183,7 +183,7 @@ const CheckInHistory = () => {
                                     {stats.recentCheckIns}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    This Week
+                                    이번 주
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -195,7 +195,7 @@ const CheckInHistory = () => {
             {stats?.mostVisitedPrograms && stats.mostVisitedPrograms.length > 0 && (
                 <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                     <Typography variant="h6" gutterBottom>
-                        Most Visited Programs
+                        가장 많이 방문한 프로그램
                     </Typography>
                     <Grid container spacing={2}>
                         {stats.mostVisitedPrograms.map((program, index) => (
@@ -206,7 +206,7 @@ const CheckInHistory = () => {
                                             {program.program_name}
                                         </Typography>
                                         <Chip
-                                            label={`${program.visit_count} visits`}
+                                            label={`${program.visit_count}번 방문`}
                                             color="primary"
                                             size="small"
                                         />
@@ -227,12 +227,12 @@ const CheckInHistory = () => {
                 >
                     <Tab
                         icon={<Today />}
-                        label="Today"
+                        label="오늘"
                         iconPosition="start"
                     />
                     <Tab
                         icon={<History />}
-                        label="All History"
+                        label="전체 기록"
                         iconPosition="start"
                     />
                 </Tabs>
@@ -241,16 +241,16 @@ const CheckInHistory = () => {
                     {tabValue === 0 && (
                         <Box>
                             <Typography variant="h6" gutterBottom>
-                                Today's Check-ins ({todayCheckIns.length})
+                                오늘의 체크인 ({todayCheckIns.length})
                             </Typography>
 
                             {todayCheckIns.length === 0 ? (
                                 <Box textAlign="center" py={4}>
                                     <Typography variant="body1" color="text.secondary">
-                                        No check-ins today yet.
+                                        아직 오늘 체크인이 없습니다.
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        Scan a QR code to check into a program!
+                                        QR 코드를 스캔하여 프로그램에 체크인하세요!
                                     </Typography>
                                 </Box>
                             ) : (
@@ -272,7 +272,7 @@ const CheckInHistory = () => {
                                                     }
                                                 />
                                                 <Chip
-                                                    label="Today"
+                                                    label="오늘"
                                                     color="primary"
                                                     size="small"
                                                 />
@@ -288,16 +288,16 @@ const CheckInHistory = () => {
                     {tabValue === 1 && (
                         <Box>
                             <Typography variant="h6" gutterBottom>
-                                All Check-ins ({checkIns.length})
+                                전체 체크인 ({checkIns.length})
                             </Typography>
 
                             {checkIns.length === 0 ? (
                                 <Box textAlign="center" py={4}>
                                     <Typography variant="body1" color="text.secondary">
-                                        No check-ins recorded yet.
+                                        아직 기록된 체크인이 없습니다.
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        Start participating in programs to build your history!
+                                        프로그램에 참여하여 기록을 만들어보세요!
                                     </Typography>
                                 </Box>
                             ) : (
@@ -341,7 +341,7 @@ const CheckInHistory = () => {
                     onClick={loadData}
                     disabled={loading}
                 >
-                    Refresh Data
+                    데이터 새로고침
                 </Button>
             </Box>
         </Box>
