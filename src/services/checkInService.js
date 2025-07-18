@@ -1,4 +1,3 @@
-import browserDatabase from './browserDatabase.js';
 import apiClient from './apiClient.js';
 
 class CheckInService {
@@ -31,15 +30,14 @@ class CheckInService {
     }
 
     // Get recent check-ins for duplicate detection
-    getRecentCheckIns(studentId, programId, minutesBack = 5) {
-        const checkIns = JSON.parse(localStorage.getItem('trailtag_check_ins') || '[]');
-        const cutoffTime = new Date(Date.now() - (minutesBack * 60 * 1000));
-
-        return checkIns.filter(ci =>
-            ci.student_id === studentId &&
-            ci.program_id === programId &&
-            new Date(ci.check_in_time) > cutoffTime
-        );
+    async getRecentCheckIns(studentId, programId, minutesBack = 5) {
+        try {
+            const response = await apiClient.getRecentCheckIns(studentId, programId, minutesBack);
+            return response.success ? response.checkIns : [];
+        } catch (error) {
+            console.error('Failed to get recent check-ins:', error);
+            return [];
+        }
     }
 
     // Get student's check-in history
@@ -86,57 +84,22 @@ class CheckInService {
     // Get check-in statistics for a student
     async getStudentStats(studentId) {
         try {
-            const checkIns = JSON.parse(localStorage.getItem('trailtag_check_ins') || '[]');
-            const studentCheckIns = checkIns.filter(ci => ci.student_id === studentId);
+            // API를 통해 학생 통계 가져오기
+            const response = await apiClient.getStudentStats(studentId);
 
-            // Calculate statistics
-            const totalCheckIns = studentCheckIns.length;
-            const uniquePrograms = [...new Set(studentCheckIns.map(ci => ci.program_id))];
-            const uniqueLocations = [...new Set(studentCheckIns.map(ci => ci.location))];
-
-            // Get recent activity (last 7 days)
-            const sevenDaysAgo = new Date(Date.now() - (7 * 24 * 60 * 60 * 1000));
-            const recentCheckIns = studentCheckIns.filter(ci =>
-                new Date(ci.check_in_time) > sevenDaysAgo
-            );
-
-            // Get most visited programs
-            const programCounts = {};
-            studentCheckIns.forEach(ci => {
-                programCounts[ci.program_id] = (programCounts[ci.program_id] || 0) + 1;
-            });
-
-            const programs = browserDatabase.getAllLearningPrograms();
-            const mostVisitedPrograms = Object.entries(programCounts)
-                .sort(([, a], [, b]) => b - a)
-                .slice(0, 5)
-                .map(([programId, count]) => {
-                    const program = programs.find(p => p.id === parseInt(programId));
-                    return {
-                        program_name: program ? program.name : 'Unknown',
-                        visit_count: count
-                    };
-                });
-
-            const stats = {
-                totalCheckIns,
-                uniquePrograms: uniquePrograms.length,
-                uniqueLocations: uniqueLocations.length,
-                recentCheckIns: recentCheckIns.length,
-                mostVisitedPrograms,
-                lastCheckIn: studentCheckIns.length > 0
-                    ? Math.max(...studentCheckIns.map(ci => new Date(ci.check_in_time).getTime()))
-                    : null
-            };
-
-            return {
-                success: true,
-                stats
-            };
+            if (response.success) {
+                return {
+                    success: true,
+                    stats: response.stats
+                };
+            } else {
+                throw new Error(response.message || 'Failed to get student statistics');
+            }
         } catch (error) {
+            console.error('Error getting student stats:', error);
             return {
                 success: false,
-                message: 'Failed to calculate statistics',
+                message: error.message || 'Failed to get student statistics',
                 stats: null
             };
         }
@@ -219,37 +182,20 @@ class CheckInService {
     // Validate check-in eligibility
     async validateCheckInEligibility(studentId, programId) {
         try {
-            // Check if student exists
-            const student = browserDatabase.getUserById(studentId);
-            if (!student || student.user_type !== 'student') {
+            // API를 통해 체크인 자격 검증
+            const response = await apiClient.validateCheckInEligibility(studentId, programId);
+
+            if (response.success) {
+                return {
+                    eligible: response.eligible,
+                    message: response.message
+                };
+            } else {
                 return {
                     eligible: false,
-                    message: 'Invalid student'
+                    message: response.message || 'Validation failed'
                 };
             }
-
-            // Check if program exists and is active
-            const program = browserDatabase.getLearningProgramById(programId);
-            if (!program || !program.is_active) {
-                return {
-                    eligible: false,
-                    message: 'Program not found or inactive'
-                };
-            }
-
-            // Check for recent duplicate check-ins
-            const recentCheckIns = this.getRecentCheckIns(studentId, programId, 5);
-            if (recentCheckIns.length > 0) {
-                return {
-                    eligible: false,
-                    message: 'Already checked in recently'
-                };
-            }
-
-            return {
-                eligible: true,
-                program: program
-            };
         } catch (error) {
             return {
                 eligible: false,
@@ -261,38 +207,22 @@ class CheckInService {
     // Get check-in summary for admin dashboard
     async getCheckInSummary(dateRange = 7) {
         try {
-            const checkIns = JSON.parse(localStorage.getItem('trailtag_check_ins') || '[]');
-            const cutoffDate = new Date(Date.now() - (dateRange * 24 * 60 * 60 * 1000));
+            // API를 통해 체크인 요약 정보 가져오기
+            const response = await apiClient.getCheckInSummary(dateRange);
 
-            const recentCheckIns = checkIns.filter(ci =>
-                new Date(ci.check_in_time) > cutoffDate
-            );
-
-            const totalCheckIns = recentCheckIns.length;
-            const uniqueStudents = [...new Set(recentCheckIns.map(ci => ci.student_id))];
-            const uniquePrograms = [...new Set(recentCheckIns.map(ci => ci.program_id))];
-
-            // Daily breakdown
-            const dailyBreakdown = {};
-            recentCheckIns.forEach(ci => {
-                const date = new Date(ci.check_in_time).toDateString();
-                dailyBreakdown[date] = (dailyBreakdown[date] || 0) + 1;
-            });
-
-            return {
-                success: true,
-                summary: {
-                    totalCheckIns,
-                    uniqueStudents: uniqueStudents.length,
-                    uniquePrograms: uniquePrograms.length,
-                    dailyBreakdown,
-                    dateRange
-                }
-            };
+            if (response.success) {
+                return {
+                    success: true,
+                    summary: response.summary
+                };
+            } else {
+                throw new Error(response.message || 'Failed to get check-in summary');
+            }
         } catch (error) {
+            console.error('Error getting check-in summary:', error);
             return {
                 success: false,
-                message: 'Failed to generate summary',
+                message: error.message || 'Failed to generate summary',
                 summary: null
             };
         }

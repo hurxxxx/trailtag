@@ -31,7 +31,6 @@ import {
     Visibility,
     PersonAdd
 } from '@mui/icons-material';
-import browserDatabase from '../../services/browserDatabase';
 import apiClient from '../../services/apiClient';
 import { useAuth } from '../../contexts/AuthContext';
 

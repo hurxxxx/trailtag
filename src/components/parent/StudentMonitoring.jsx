@@ -35,7 +35,6 @@ import {
     Refresh
 } from '@mui/icons-material';
 import checkInService from '../../services/checkInService';
-import browserDatabase from '../../services/browserDatabase';
 import apiClient from '../../services/apiClient';
 import { useAuth } from '../../contexts/AuthContext';
 

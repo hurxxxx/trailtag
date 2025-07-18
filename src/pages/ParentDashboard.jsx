@@ -33,7 +33,6 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import StudentSearch from '../components/parent/StudentSearch';
 import StudentMonitoring from '../components/parent/StudentMonitoring';
-import browserDatabase from '../services/browserDatabase';
 import apiClient from '../services/apiClient';
 
 const ParentDashboard = () => {
