@@ -210,7 +210,9 @@ const ProfileEditor = () => {
                 setError(response.message || '비밀번호 변경에 실패했습니다');
             }
         } catch (error) {
-            setError('비밀번호 변경에 실패했습니다');
+            console.error('Password change error:', error);
+            // 서버에서 반환된 에러 메시지를 사용하거나 기본 메시지 표시
+            setError(error.message || '비밀번호 변경에 실패했습니다');
         } finally {
             setLoading(false);
         }

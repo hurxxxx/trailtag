@@ -165,7 +165,8 @@ export const AuthProvider = ({ children }) => {
                 return { success: false, message: result.message };
             }
         } catch (error) {
-            const errorMessage = 'Password change failed. Please try again.';
+            console.error('Password change error:', error);
+            const errorMessage = error.message || 'Password change failed. Please try again.';
             setError(errorMessage);
             return { success: false, message: errorMessage };
         } finally {

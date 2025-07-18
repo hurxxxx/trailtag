@@ -240,9 +240,9 @@ router.post('/change-password', authenticateToken, async (req, res) => {
         // Verify current password
         const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password_hash);
         if (!isCurrentPasswordValid) {
-            return res.status(401).json({
+            return res.status(400).json({
                 success: false,
-                message: 'Current password is incorrect'
+                message: '현재 비밀번호가 올바르지 않습니다'
             });
         }
 
