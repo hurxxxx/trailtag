@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS users (
     phone VARCHAR(20) NOT NULL,
     address TEXT NOT NULL,
     user_type ENUM('student', 'parent', 'admin') NOT NULL,
+    timezone VARCHAR(50) DEFAULT 'Asia/Seoul',
+    language VARCHAR(10) DEFAULT 'ko',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );

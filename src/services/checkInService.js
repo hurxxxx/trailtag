@@ -14,17 +14,17 @@ class CheckInService {
             if (response.success) {
                 return {
                     success: true,
-                    message: response.message || 'Check-in successful!',
+                    message: response.message || '체크인 성공!',
                     checkIn: response.checkIn
                 };
             } else {
-                throw new Error(response.message || 'Check-in failed');
+                throw new Error(response.message || '체크인 실패');
             }
         } catch (error) {
             console.error('Check-in error:', error);
             return {
                 success: false,
-                message: error.message || 'Check-in processing failed'
+                message: error.message || '체크인 처리 실패'
             };
         }
     }

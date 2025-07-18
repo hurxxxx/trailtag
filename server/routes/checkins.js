@@ -13,7 +13,7 @@ router.post('/', authenticateToken, async (req, res) => {
         if (!qr_code_data) {
             return res.status(400).json({
                 success: false,
-                message: 'QR code data is required'
+                message: 'QR 코드 데이터가 필요합니다'
             });
         }
 
@@ -27,7 +27,7 @@ router.post('/', authenticateToken, async (req, res) => {
         } catch (error) {
             return res.status(400).json({
                 success: false,
-                message: 'Invalid QR code format'
+                message: '잘못된 QR 코드 형식입니다'
             });
         }
 
@@ -74,7 +74,7 @@ router.post('/', authenticateToken, async (req, res) => {
         if (!student) {
             return res.status(403).json({
                 success: false,
-                message: 'Only students can check in'
+                message: '학생만 체크인할 수 있습니다'
             });
         }
 
@@ -88,7 +88,7 @@ router.post('/', authenticateToken, async (req, res) => {
         if (recentCheckIn) {
             return res.status(409).json({
                 success: false,
-                message: 'You have already checked in recently for this program'
+                message: '이 프로그램에 최근에 이미 체크인하셨습니다'
             });
         }
 
@@ -100,7 +100,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
         res.status(201).json({
             success: true,
-            message: 'Check-in successful!',
+            message: '체크인 성공!',
             checkIn: {
                 id: result.id,
                 program_name: qrCode.program_name,
@@ -114,7 +114,7 @@ router.post('/', authenticateToken, async (req, res) => {
         console.error('Check-in error:', error);
         res.status(500).json({
             success: false,
-            message: 'Check-in failed'
+            message: '체크인 실패'
         });
     }
 });

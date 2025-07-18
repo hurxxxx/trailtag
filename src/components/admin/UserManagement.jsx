@@ -38,7 +38,10 @@ import {
     PersonAdd,
     Delete,
     School,
-    FamilyRestroom
+    FamilyRestroom,
+    AdminPanelSettings,
+    Person,
+    Group
 } from '@mui/icons-material';
 
 import userManagementService from '../../services/userManagementService';
@@ -206,6 +209,19 @@ const UserManagement = () => {
         return types[userType] || userType;
     };
 
+    const getUserTypeIcon = (userType) => {
+        switch (userType) {
+            case 'admin':
+                return <AdminPanelSettings fontSize="small" />;
+            case 'student':
+                return <School fontSize="small" />;
+            case 'parent':
+                return <FamilyRestroom fontSize="small" />;
+            default:
+                return <Person fontSize="small" />;
+        }
+    };
+
     return (
         <Box sx={{ p: 3 }}>
             <Paper sx={{ p: 3 }}>
@@ -317,9 +333,17 @@ const UserManagement = () => {
                                         <TableCell>{user.phone || '-'}</TableCell>
                                         <TableCell>
                                             <Chip
+                                                icon={getUserTypeIcon(user.user_type)}
                                                 label={formatUserType(user.user_type)}
                                                 color={getUserTypeColor(user.user_type)}
                                                 size="small"
+                                                variant="filled"
+                                                sx={{
+                                                    fontWeight: 'medium',
+                                                    '& .MuiChip-icon': {
+                                                        color: 'inherit'
+                                                    }
+                                                }}
                                             />
                                         </TableCell>
                                         <TableCell>

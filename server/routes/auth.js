@@ -78,7 +78,7 @@ router.post('/register', async (req, res) => {
 
         // Get the created user (without password)
         const newUser = await database.get(`
-            SELECT id, username, full_name, email, phone, user_type, created_at
+            SELECT id, username, full_name, email, phone, user_type, timezone, language, created_at
             FROM users WHERE id = ?
         `, [result.id]);
 
@@ -168,7 +168,7 @@ router.post('/login', async (req, res) => {
 router.get('/me', authenticateToken, async (req, res) => {
     try {
         const user = await database.get(`
-            SELECT id, username, full_name, email, phone, user_type, created_at, updated_at
+            SELECT id, username, full_name, email, phone, user_type, timezone, language, created_at, updated_at
             FROM users WHERE id = ?
         `, [req.user.userId]);
 
@@ -273,8 +273,8 @@ router.post('/change-password', authenticateToken, async (req, res) => {
 // Update profile
 router.put('/profile', authenticateToken, async (req, res) => {
     try {
-        const { full_name, email, phone } = req.body;
-        const allowedFields = { full_name, email, phone };
+        const { full_name, email, phone, timezone, language } = req.body;
+        const allowedFields = { full_name, email, phone, timezone, language };
 
         // Filter out undefined fields
         const updates = {};
@@ -311,7 +311,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
 
         // Get updated user
         const updatedUser = await database.get(`
-            SELECT id, username, full_name, email, phone, user_type, created_at, updated_at
+            SELECT id, username, full_name, email, phone, user_type, timezone, language, created_at, updated_at
             FROM users WHERE id = ?
         `, [req.user.userId]);
 

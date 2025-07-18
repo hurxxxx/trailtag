@@ -117,10 +117,10 @@ const CheckInHistory = () => {
         <Box>
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    체크인 기록
+                    체크인 이력
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                    참여 기록과 통계를 확인하세요.
+                    참여 이력과 통계를 확인하세요.
                 </Typography>
             </Paper>
 
@@ -141,7 +141,7 @@ const CheckInHistory = () => {
                                     {stats.totalCheckIns}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    총 체크인
+                                    총 체크인 수
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -169,7 +169,7 @@ const CheckInHistory = () => {
                                     {stats.uniqueLocations}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    고유 장소
+                                    고유 위치
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -206,7 +206,7 @@ const CheckInHistory = () => {
                                             {program.program_name}
                                         </Typography>
                                         <Chip
-                                            label={`${program.visit_count}번 방문`}
+                                            label={`${program.visit_count} visits`}
                                             color="primary"
                                             size="small"
                                         />
@@ -232,7 +232,7 @@ const CheckInHistory = () => {
                     />
                     <Tab
                         icon={<History />}
-                        label="전체 기록"
+                        label="전체 이력"
                         iconPosition="start"
                     />
                 </Tabs>
@@ -297,7 +297,7 @@ const CheckInHistory = () => {
                                         아직 기록된 체크인이 없습니다.
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        프로그램에 참여하여 기록을 만들어보세요!
+                                        프로그램에 참여하여 이력을 쌓아보세요!
                                     </Typography>
                                 </Box>
                             ) : (
@@ -341,7 +341,7 @@ const CheckInHistory = () => {
                     onClick={loadData}
                     disabled={loading}
                 >
-                    데이터 새로고침
+                    Refresh Data
                 </Button>
             </Box>
         </Box>

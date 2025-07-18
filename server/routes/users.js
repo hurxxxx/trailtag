@@ -226,7 +226,7 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
 
         // Get created user
         const newUser = await database.get(`
-            SELECT id, username, full_name, email, phone, address, user_type, created_at, updated_at
+            SELECT id, username, full_name, email, phone, address, user_type, timezone, language, created_at, updated_at
             FROM users WHERE id = ?
         `, [result.id]);
 
@@ -252,7 +252,7 @@ router.get('/', authenticateToken, requireRole('admin'), async (req, res) => {
         const offset = (page - 1) * limit;
 
         let query = `
-            SELECT id, username, full_name, email, phone, address, user_type, created_at, updated_at
+            SELECT id, username, full_name, email, phone, address, user_type, timezone, language, created_at, updated_at
             FROM users
         `;
         const params = [];
@@ -333,7 +333,7 @@ router.get('/:id', authenticateToken, requireRole('admin'), async (req, res) => 
 router.put('/:id', authenticateToken, requireRole('admin'), async (req, res) => {
     try {
         const { id } = req.params;
-        const { full_name, email, phone, address, user_type } = req.body;
+        const { full_name, email, phone, address, user_type, timezone, language } = req.body;
 
         // Check if user exists
         const user = await database.get('SELECT id FROM users WHERE id = ?', [id]);
@@ -360,6 +360,8 @@ router.put('/:id', authenticateToken, requireRole('admin'), async (req, res) => 
             }
             updates.user_type = user_type;
         }
+        if (timezone !== undefined) updates.timezone = timezone;
+        if (language !== undefined) updates.language = language;
 
         if (Object.keys(updates).length === 0) {
             return res.status(400).json({
@@ -387,7 +389,7 @@ router.put('/:id', authenticateToken, requireRole('admin'), async (req, res) => 
 
         // Get updated user
         const updatedUser = await database.get(`
-            SELECT id, username, full_name, email, phone, address, user_type, created_at, updated_at
+            SELECT id, username, full_name, email, phone, address, user_type, timezone, language, created_at, updated_at
             FROM users WHERE id = ?
         `, [id]);
 
