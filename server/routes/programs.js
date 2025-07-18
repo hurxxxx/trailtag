@@ -64,10 +64,16 @@ router.get('/:id', authenticateToken, async (req, res) => {
     }
 });
 
+// Generate QR code data string
+const generateQRData = (programId, timestamp = null) => {
+    const ts = timestamp || Date.now();
+    return `trailtag://checkin?program=${programId}&t=${ts}`;
+};
+
 // Create new learning program (admin only)
 router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
     try {
-        const { name, description, location } = req.body;
+        const { name, description, location, start_datetime, end_datetime } = req.body;
 
         if (!name || !name.trim()) {
             return res.status(400).json({
@@ -76,13 +82,41 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
             });
         }
 
+        // Validate datetime fields if provided
+        if (start_datetime && end_datetime) {
+            const startDate = new Date(start_datetime);
+            const endDate = new Date(end_datetime);
+
+            if (startDate >= endDate) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Start datetime must be before end datetime'
+                });
+            }
+        }
+
         const result = await database.run(`
-            INSERT INTO learning_programs (name, description, location, created_by)
+            INSERT INTO learning_programs (name, description, location, start_datetime, end_datetime, created_by)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `, [
+            name.trim(),
+            description || '',
+            location || '',
+            start_datetime || null,
+            end_datetime || null,
+            req.user.userId
+        ]);
+
+        // Automatically create QR code for the new program
+        const timestamp = Date.now();
+        const qrCodeData = generateQRData(result.id, timestamp);
+        await database.run(`
+            INSERT INTO qr_codes (program_id, qr_code_data, qr_image_version, current_timestamp)
             VALUES (?, ?, ?, ?)
-        `, [name.trim(), description || '', location || '', req.user.userId]);
+        `, [result.id, qrCodeData, 1, timestamp]);
 
         const newProgram = await database.get(`
-            SELECT lp.*, u.full_name as creator_name 
+            SELECT lp.*, u.full_name as creator_name
             FROM learning_programs lp
             JOIN users u ON lp.created_by = u.id
             WHERE lp.id = ?
@@ -90,7 +124,7 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
 
         res.status(201).json({
             success: true,
-            message: 'Program created successfully',
+            message: 'Program created successfully with QR code',
             program: newProgram
         });
 
@@ -107,7 +141,7 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
 router.put('/:id', authenticateToken, requireRole('admin'), async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, location } = req.body;
+        const { name, description, location, start_datetime, end_datetime } = req.body;
 
         // Check if program exists
         const program = await database.get('SELECT * FROM learning_programs WHERE id = ?', [id]);
@@ -118,11 +152,26 @@ router.put('/:id', authenticateToken, requireRole('admin'), async (req, res) => 
             });
         }
 
+        // Validate datetime fields if provided
+        if (start_datetime && end_datetime) {
+            const startDate = new Date(start_datetime);
+            const endDate = new Date(end_datetime);
+
+            if (startDate >= endDate) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Start datetime must be before end datetime'
+                });
+            }
+        }
+
         // Build update query
         const updates = {};
         if (name !== undefined) updates.name = name;
         if (description !== undefined) updates.description = description;
         if (location !== undefined) updates.location = location;
+        if (start_datetime !== undefined) updates.start_datetime = start_datetime;
+        if (end_datetime !== undefined) updates.end_datetime = end_datetime;
 
         if (Object.keys(updates).length === 0) {
             return res.status(400).json({

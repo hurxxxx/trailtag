@@ -5,9 +5,9 @@ const { authenticateToken, requireRole } = require('../middleware/auth');
 const router = express.Router();
 
 // Generate QR code data string
-const generateQRData = (programId, locationName) => {
-    const timestamp = Date.now();
-    return `trailtag://checkin?program=${programId}&location=${encodeURIComponent(locationName)}&t=${timestamp}`;
+const generateQRData = (programId, timestamp = null) => {
+    const ts = timestamp || Date.now();
+    return `trailtag://checkin?program=${programId}&t=${ts}`;
 };
 
 // Get all QR codes
@@ -63,12 +63,12 @@ router.get('/program/:programId', authenticateToken, async (req, res) => {
 // Create new QR code (admin only)
 router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
     try {
-        const { program_id, location_name } = req.body;
+        const { program_id } = req.body;
 
-        if (!program_id || !location_name?.trim()) {
+        if (!program_id) {
             return res.status(400).json({
                 success: false,
-                message: 'Program ID and location name are required'
+                message: 'Program ID is required'
             });
         }
 
@@ -82,22 +82,23 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
         }
 
         // Generate unique QR code data
-        const qrCodeData = generateQRData(program_id, location_name.trim());
+        const timestamp = Date.now();
+        const qrCodeData = generateQRData(program_id, timestamp);
 
-        // Check if QR code with same data already exists
-        const existingQR = await database.get('SELECT id FROM qr_codes WHERE qr_code_data = ?', [qrCodeData]);
+        // Check if QR code already exists for this program
+        const existingQR = await database.get('SELECT id FROM qr_codes WHERE program_id = ?', [program_id]);
         if (existingQR) {
             return res.status(409).json({
                 success: false,
-                message: 'QR code for this location already exists'
+                message: 'QR code for this program already exists'
             });
         }
 
         // Create QR code record
         const result = await database.run(`
-            INSERT INTO qr_codes (program_id, qr_code_data, location_name)
-            VALUES (?, ?, ?)
-        `, [program_id, qrCodeData, location_name.trim()]);
+            INSERT INTO qr_codes (program_id, qr_code_data, qr_image_version, current_timestamp)
+            VALUES (?, ?, ?, ?)
+        `, [program_id, qrCodeData, 1, timestamp]);
 
         const newQRCode = await database.get(`
             SELECT qr.*, lp.name as program_name, lp.description as program_description
@@ -156,7 +157,7 @@ router.put('/:id', authenticateToken, requireRole('admin'), async (req, res) => 
         const values = Object.values(updates);
         values.push(id);
 
-        await database.run(`UPDATE qr_codes SET ${setClause} WHERE id = ?`, values);
+        await database.run(`UPDATE qr_codes SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, values);
 
         const updatedQRCode = await database.get(`
             SELECT qr.*, lp.name as program_name, lp.description as program_description
@@ -176,6 +177,53 @@ router.put('/:id', authenticateToken, requireRole('admin'), async (req, res) => 
         res.status(500).json({
             success: false,
             message: 'Failed to update QR code'
+        });
+    }
+});
+
+// Regenerate QR image (admin only) - generates new QR with new timestamp
+router.put('/:id/regenerate-image', authenticateToken, requireRole('admin'), async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Check if QR code exists
+        const qrCode = await database.get('SELECT * FROM qr_codes WHERE id = ?', [id]);
+        if (!qrCode) {
+            return res.status(404).json({
+                success: false,
+                message: 'QR code not found'
+            });
+        }
+
+        // Generate new QR code data with new timestamp (invalidates old QR codes)
+        const newTimestamp = Date.now();
+        const newQRCodeData = generateQRData(qrCode.program_id, newTimestamp);
+        const newVersion = (qrCode.qr_image_version || 1) + 1;
+
+        await database.run(`
+            UPDATE qr_codes
+            SET qr_code_data = ?, qr_image_version = ?, current_timestamp = ?, updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+        `, [newQRCodeData, newVersion, newTimestamp, id]);
+
+        const updatedQRCode = await database.get(`
+            SELECT qr.*, lp.name as program_name, lp.description as program_description
+            FROM qr_codes qr
+            JOIN learning_programs lp ON qr.program_id = lp.id
+            WHERE qr.id = ?
+        `, [id]);
+
+        res.json({
+            success: true,
+            message: 'QR image regenerated successfully (old QR codes are now invalid)',
+            qrCode: updatedQRCode
+        });
+
+    } catch (error) {
+        console.error('Regenerate QR image error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to regenerate QR image'
         });
     }
 });

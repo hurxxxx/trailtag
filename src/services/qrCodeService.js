@@ -3,18 +3,17 @@ import apiClient from './apiClient.js';
 
 class QRCodeService {
     // Create a new QR code for a program
-    async createQRCode(programId, locationName, userId) {
+    async createQRCode(programId) {
         try {
-            if (!programId || !locationName?.trim()) {
-                throw new Error('프로그램 ID와 위치명이 필요합니다');
+            if (!programId) {
+                throw new Error('프로그램 ID가 필요합니다');
             }
 
-            console.log('QR 코드 생성 시도:', { programId, locationName });
+            console.log('QR 코드 생성 시도:', { programId });
 
             // API를 통해 QR 코드 생성
             const response = await apiClient.createQRCode({
-                program_id: programId,
-                location_name: locationName.trim()
+                program_id: programId
             });
 
             console.log('QR 코드 생성 응답:', response);
@@ -167,6 +166,35 @@ class QRCodeService {
             return {
                 success: false,
                 message: error.message || 'QR 코드 삭제에 실패했습니다'
+            };
+        }
+    }
+
+    // Regenerate QR image (without changing content)
+    async regenerateQRImage(qrCodeId) {
+        try {
+            const response = await apiClient.regenerateQRImage(qrCodeId);
+
+            if (response.success) {
+                // Generate new QR code image
+                const qrCodeImage = await this.generateQRCodeImage(response.qrCode.qr_code_data);
+
+                return {
+                    success: true,
+                    message: 'QR 이미지가 성공적으로 재생성되었습니다',
+                    qrCode: {
+                        ...response.qrCode,
+                        qr_code_image: qrCodeImage
+                    }
+                };
+            } else {
+                throw new Error(response.message || 'QR 이미지 재생성에 실패했습니다');
+            }
+        } catch (error) {
+            console.error('QR 이미지 재생성 오류:', error);
+            return {
+                success: false,
+                message: error.message || 'QR 이미지 재생성에 실패했습니다'
             };
         }
     }

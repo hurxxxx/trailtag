@@ -145,8 +145,32 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
         handleMenuClose();
     };
 
-    const handleManageQRCodes = (program) => {
+    const handleManageQRCodes = async (program) => {
         setSelectedProgramForQR(program);
+
+        // QR 코드가 아직 로드되지 않았다면 로드
+        if (programQRCodes[program.id] === undefined) {
+            try {
+                const result = await qrCodeService.getQRCodesByProgram(program.id);
+                if (result.success && result.qrCodes.length > 0) {
+                    setProgramQRCodes(prev => ({
+                        ...prev,
+                        [program.id]: result.qrCodes[0]
+                    }));
+                } else {
+                    setProgramQRCodes(prev => ({
+                        ...prev,
+                        [program.id]: null
+                    }));
+                }
+            } catch (error) {
+                setProgramQRCodes(prev => ({
+                    ...prev,
+                    [program.id]: null
+                }));
+            }
+        }
+
         setShowQRDialog(true);
     };
 
@@ -443,7 +467,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
 
                                     <CardActions sx={{ p: 2, pt: 0, gap: 1 }}>
                                         <Button
-                                            variant={programQRCodes[program.id] ? "outlined" : "contained"}
+                                            variant="outlined"
                                             size="small"
                                             startIcon={<QrCode />}
                                             onClick={() => handleManageQRCodes(program)}
@@ -451,16 +475,10 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                                                 borderRadius: 2,
                                                 textTransform: 'none',
                                                 fontWeight: 500,
-                                                flex: 1,
-                                                ...(!programQRCodes[program.id] && {
-                                                    boxShadow: 'none',
-                                                    '&:hover': {
-                                                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-                                                    }
-                                                })
+                                                flex: 1
                                             }}
                                         >
-                                            {programQRCodes[program.id] ? 'QR 보기' : 'QR 생성'}
+                                            QR 보기
                                         </Button>
                                         <Button
                                             variant="outlined"

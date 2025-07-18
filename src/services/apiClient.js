@@ -239,6 +239,10 @@ class ApiClient {
         return this.delete(`/qrcodes/${id}`);
     }
 
+    async regenerateQRImage(id) {
+        return this.put(`/qrcodes/${id}/regenerate-image`);
+    }
+
     async validateQRCode(qrCodeData) {
         return this.post('/qrcodes/validate', { qr_code_data: qrCodeData });
     }

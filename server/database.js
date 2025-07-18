@@ -53,6 +53,8 @@ class Database {
                 name VARCHAR(100) NOT NULL,
                 description TEXT,
                 location VARCHAR(200),
+                start_datetime DATETIME,
+                end_datetime DATETIME,
                 created_by INTEGER NOT NULL,
                 is_active BOOLEAN DEFAULT 1,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -60,14 +62,16 @@ class Database {
                 FOREIGN KEY (created_by) REFERENCES users(id)
             );
 
-            -- QR codes table for each program location
+            -- QR codes table for each program
             CREATE TABLE IF NOT EXISTS qr_codes (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                program_id INTEGER NOT NULL,
+                program_id INTEGER NOT NULL UNIQUE,
                 qr_code_data VARCHAR(255) UNIQUE NOT NULL,
-                location_name VARCHAR(100),
+                qr_image_version INTEGER DEFAULT 1,
+                current_timestamp BIGINT NOT NULL,
                 is_active BOOLEAN DEFAULT 1,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (program_id) REFERENCES learning_programs(id) ON DELETE CASCADE
             );
 
@@ -157,7 +161,7 @@ class Database {
             if (!row) {
                 // Create default admin user
                 const saltRounds = 10;
-                bcrypt.hash('admin123', saltRounds, (err, hash) => {
+                bcrypt.hash('admin1234!', saltRounds, (err, hash) => {
                     if (err) {
                         console.error('Error hashing admin password:', err);
                         return;
@@ -198,20 +202,20 @@ class Database {
         // Test users to create
         const testUsers = [
             {
-                username: 'heogunwoo',
-                password: 'student123',
+                username: 'user1',
+                password: 'test1234!',
                 full_name: '허건우',
-                email: 'heogunwoo@example.com',
-                phone: '01011111111',
+                email: 'user1@example.com',
+                phone: '01012341234',
                 address: '서울시 강남구',
                 user_type: 'student'
             },
             {
                 username: 'parent1',
-                password: 'parent123',
+                password: 'test1234!',
                 full_name: '김학부모',
                 email: 'parent1@example.com',
-                phone: '01022222222',
+                phone: '01012345678',
                 address: '서울시 서초구',
                 user_type: 'parent'
             }

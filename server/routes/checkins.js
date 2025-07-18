@@ -17,19 +17,56 @@ router.post('/', authenticateToken, async (req, res) => {
             });
         }
 
-        // Validate QR code
+        // Extract timestamp and program ID from QR code data for validation
+        let qrTimestamp = null;
+        let programId = null;
+        try {
+            const url = new URL(qr_code_data);
+            qrTimestamp = parseInt(url.searchParams.get('t'));
+            programId = parseInt(url.searchParams.get('program'));
+        } catch (error) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid QR code format'
+            });
+        }
+
+        // Validate QR code and timestamp
         const qrCode = await database.get(`
             SELECT qr.*, lp.name as program_name, lp.description as program_description
             FROM qr_codes qr
             JOIN learning_programs lp ON qr.program_id = lp.id
-            WHERE qr.qr_code_data = ? AND qr.is_active = 1 AND lp.is_active = 1
-        `, [qr_code_data]);
+            WHERE qr.program_id = ? AND qr.current_timestamp = ? AND qr.is_active = 1 AND lp.is_active = 1
+        `, [programId, qrTimestamp]);
 
         if (!qrCode) {
             return res.status(404).json({
                 success: false,
-                message: 'Invalid or inactive QR code'
+                message: 'Invalid or expired QR code. Please request a new QR code.'
             });
+        }
+
+        // Extract and validate timestamp from QR code data
+        try {
+            const url = new URL(qr_code_data);
+            const timestamp = url.searchParams.get('t');
+
+            if (timestamp) {
+                const qrTimestamp = parseInt(timestamp);
+                const currentTime = Date.now();
+                const maxAge = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+                // Check if QR code is too old (older than 24 hours)
+                if (currentTime - qrTimestamp > maxAge) {
+                    return res.status(410).json({
+                        success: false,
+                        message: 'QR code has expired. Please request a new QR code.'
+                    });
+                }
+            }
+        } catch (error) {
+            // If timestamp parsing fails, continue with normal validation
+            console.log('QR timestamp validation failed:', error.message);
         }
 
         // Check if student exists and is a student

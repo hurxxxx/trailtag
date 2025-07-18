@@ -24,7 +24,9 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
     const [formData, setFormData] = useState({
         name: '',
         description: '',
-        location: ''
+        location: '',
+        start_datetime: '',
+        end_datetime: ''
     });
 
     // Initialize form data when program prop changes
@@ -34,7 +36,9 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
             const newFormData = {
                 name: program.name || '',
                 description: program.description || '',
-                location: program.location || ''
+                location: program.location || '',
+                start_datetime: program.start_datetime || '',
+                end_datetime: program.end_datetime || ''
             };
             console.log('Setting form data for edit:', newFormData);
             setFormData(newFormData);
@@ -43,7 +47,9 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
             setFormData({
                 name: '',
                 description: '',
-                location: ''
+                location: '',
+                start_datetime: '',
+                end_datetime: ''
             });
         }
         setError('');
@@ -177,6 +183,34 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
                         disabled={loading}
                         placeholder="프로그램 위치를 입력하세요"
 
+                    />
+
+                    <TextField
+                        fullWidth
+                        name="start_datetime"
+                        label="시작 일시"
+                        type="datetime-local"
+                        value={formData.start_datetime}
+                        onChange={handleChange}
+                        margin="normal"
+                        disabled={loading}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+
+                    <TextField
+                        fullWidth
+                        name="end_datetime"
+                        label="종료 일시"
+                        type="datetime-local"
+                        value={formData.end_datetime}
+                        onChange={handleChange}
+                        margin="normal"
+                        disabled={loading}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
                     />
 
                     <Box sx={{ mt: 2, mb: 2 }}>

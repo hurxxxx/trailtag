@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -7,7 +7,6 @@ import {
     Button,
     Box,
     Typography,
-    TextField,
     Alert,
     CircularProgress,
     Avatar,
@@ -19,7 +18,6 @@ import {
     Close,
     QrCode,
     Download,
-    LocationOn,
     Print
 } from '@mui/icons-material';
 import QRCodeLib from 'qrcode';
@@ -28,11 +26,7 @@ import qrCodeService from '../../services/qrCodeService';
 const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [locationName, setLocationName] = useState('');
     const [qrCodeDataURL, setQrCodeDataURL] = useState('');
-    const canvasRef = useRef(null);
-
-    const isCreating = !qrCode; // QR 코드가 없으면 생성 모드
 
     // QR 코드 이미지 생성
     const generateQRCodeImage = async (qrCodeData) => {
@@ -46,6 +40,7 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
             }
 
             console.log('QR 코드 데이터:', qrData);
+            console.log('QR 이미지 버전:', qrCodeData.qr_image_version);
 
             // QR 코드 이미지를 Data URL로 생성
             const dataURL = await QRCodeLib.toDataURL(qrData, {
@@ -73,49 +68,38 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
         }
     }, [qrCode, open]);
 
-    const handleSubmit = async () => {
-        if (isCreating) {
-            // QR 코드 생성
-            if (!locationName.trim()) {
-                setError('위치명을 입력해주세요');
-                return;
-            }
-
-            try {
-                setLoading(true);
-                setError('');
-
-                const result = await qrCodeService.createQRCode(
-                    program.id,
-                    locationName.trim(),
-                    1 // userId - 실제 앱에서는 auth context에서 가져와야 함
-                );
-
-                if (result.success) {
-                    onSuccess && onSuccess(result.qrCode);
-                    onClose();
-                } else {
-                    setError(result.message || 'QR 코드 생성에 실패했습니다');
-                }
-            } catch (error) {
-                setError('QR 코드 생성 중 오류가 발생했습니다');
-            } finally {
-                setLoading(false);
-            }
-        } else {
-            // QR 코드 다운로드
-            handleDownload();
-        }
-    };
-
     const handleDownload = () => {
         if (qrCodeDataURL) {
             const link = document.createElement('a');
-            link.download = `QR_${program?.name}_${qrCode?.location_name}.png`;
+            link.download = `QR_${program?.name}.png`;
             link.href = qrCodeDataURL;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+    };
+
+    const handleRegenerateImage = async () => {
+        if (!qrCode?.id) return;
+
+        try {
+            setLoading(true);
+            setError('');
+
+            const result = await qrCodeService.regenerateQRImage(qrCode.id);
+
+            if (result.success) {
+                // QR 코드 데이터가 업데이트되었으므로 이미지 재생성
+                await generateQRCodeImage(result.qrCode);
+                onSuccess && onSuccess(result.qrCode);
+            } else {
+                setError(result.message || 'QR 이미지 재생성에 실패했습니다');
+            }
+        } catch (error) {
+            console.error('QR 이미지 재생성 오류:', error);
+            setError('QR 이미지 재생성 중 오류가 발생했습니다');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -180,7 +164,6 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
     };
 
     const handleClose = () => {
-        setLocationName('');
         setError('');
         setQrCodeDataURL('');
         onClose();
@@ -204,7 +187,7 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
                         </Avatar>
                         <Box>
                             <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                                {isCreating ? 'QR 코드 생성' : 'QR 코드 정보'}
+                                QR 코드 정보
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                                 {program?.name}
@@ -226,25 +209,7 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
                     </Alert>
                 )}
 
-                {isCreating ? (
-                    // QR 코드 생성 폼
-                    <Box>
-                        <Typography variant="body1" sx={{ mb: 2 }}>
-                            이 프로그램을 위한 QR 코드를 생성합니다. 학생들이 이 QR 코드를 스캔하여 프로그램에 체크인할 수 있습니다.
-                        </Typography>
-
-                        <TextField
-                            fullWidth
-                            label="QR 코드 위치명"
-                            value={locationName}
-                            onChange={(e) => setLocationName(e.target.value)}
-                            placeholder="예: 메인 강의실, 실습실 A 등"
-                            disabled={loading}
-                            helperText="QR 코드가 설치될 위치를 입력해주세요"
-                            sx={{ mt: 2 }}
-                        />
-                    </Box>
-                ) : (
+                {qrCode ? (
                     // QR 코드 정보 표시
                     <Box>
                         <Paper
@@ -287,19 +252,36 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
                             )}
                         </Paper>
 
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                            <LocationOn color="primary" fontSize="small" />
-                            <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                                위치: {qrCode?.location_name}
-                            </Typography>
-                        </Box>
-
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                             생성일: {qrCode?.created_at && new Date(qrCode.created_at).toLocaleDateString('ko-KR')}
                         </Typography>
 
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                            체크인 URL: {`${window.location.origin}/checkin/${qrCode?.id}`}
+                        <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                                QR 코드 재발급
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                새로운 QR 코드를 생성합니다. 기존 QR 코드는 무효화되어 보안이 강화됩니다.
+                            </Typography>
+                            <Button
+                                variant="outlined"
+                                size="small"
+                                onClick={handleRegenerateImage}
+                                disabled={loading}
+                                sx={{ textTransform: 'none' }}
+                            >
+                                새 QR 코드 발급
+                            </Button>
+                        </Box>
+                    </Box>
+                ) : (
+                    // QR 코드가 없는 경우
+                    <Box sx={{ textAlign: 'center', py: 4 }}>
+                        <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+                            QR 코드를 찾을 수 없습니다
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            프로그램 생성 시 자동으로 QR 코드가 생성됩니다.
                         </Typography>
                     </Box>
                 )}
@@ -307,27 +289,28 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
 
             <DialogActions sx={{ p: 3, pt: 0, gap: 1 }}>
                 <Button onClick={handleClose} variant="outlined">
-                    {isCreating ? '취소' : '닫기'}
+                    닫기
                 </Button>
 
-                {!isCreating && qrCodeDataURL && (
-                    <Button
-                        onClick={handlePrint}
-                        variant="outlined"
-                        startIcon={<Print />}
-                    >
-                        인쇄
-                    </Button>
+                {qrCode && qrCodeDataURL && (
+                    <>
+                        <Button
+                            onClick={handlePrint}
+                            variant="outlined"
+                            startIcon={<Print />}
+                        >
+                            인쇄
+                        </Button>
+                        <Button
+                            onClick={handleDownload}
+                            variant="contained"
+                            disabled={loading}
+                            startIcon={loading ? <CircularProgress size={16} /> : <Download />}
+                        >
+                            {loading ? '처리 중...' : '다운로드'}
+                        </Button>
+                    </>
                 )}
-
-                <Button
-                    onClick={handleSubmit}
-                    variant="contained"
-                    disabled={loading || (isCreating && !locationName.trim()) || (!isCreating && !qrCodeDataURL)}
-                    startIcon={loading ? <CircularProgress size={16} /> : (isCreating ? <QrCode /> : <Download />)}
-                >
-                    {loading ? '처리 중...' : (isCreating ? 'QR 코드 생성' : '다운로드')}
-                </Button>
             </DialogActions>
         </Dialog>
     );
