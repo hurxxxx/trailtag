@@ -46,7 +46,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
         const errors = {};
 
         if (!formData.username.trim()) {
-            errors.username = '사용자명을 입력해주세요';
+            errors.username = '로그인ID 를 입력해주세요';
         }
 
         if (!formData.password) {
@@ -103,7 +103,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
                 <TextField
                     fullWidth
                     name="username"
-                    label="사용자명"
+                    label="로그인ID "
                     value={formData.username}
                     onChange={handleChange}
                     error={!!formErrors.username}

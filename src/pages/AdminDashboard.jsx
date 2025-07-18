@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import {
     Box,
     Container,
@@ -38,10 +38,12 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import ProgramManagement from '../components/admin/ProgramManagement';
+import UserManagement from '../components/admin/UserManagement';
 
 const AdminDashboard = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -318,13 +320,6 @@ const AdminHome = () => (
 // ProgramManagement는 이제 컴포넌트에서 가져옴
 
 // QRCodeManagement는 이제 컴포넌트에서 가져옴
-
-const UserManagement = () => (
-    <Paper elevation={2} sx={{ p: 4 }}>
-        <Typography variant="h5" gutterBottom>사용자 관리</Typography>
-        <Typography>사용자와 역할 관리 기능이 여기에 구현될 예정입니다.</Typography>
-    </Paper>
-);
 
 const AdminProfile = () => {
     const ProfileEditor = React.lazy(() => import('../components/common/ProfileEditor'));

@@ -304,6 +304,27 @@ class ApiClient {
     async deleteUser(id) {
         return this.delete(`/users/${id}`);
     }
+
+    // Admin user management methods
+    async getAllUsers(params = {}) {
+        return this.get('/auth/admin/users', params);
+    }
+
+    async createAdminUser(userData) {
+        return this.post('/auth/admin/create-admin', userData);
+    }
+
+    async resetUserPassword(userId, newPassword) {
+        return this.post('/auth/admin/reset-password', { userId, newPassword });
+    }
+
+    async getAdminStudentCheckInHistory(studentId, params = {}) {
+        return this.get(`/checkins/admin/student/${studentId}/history`, params);
+    }
+
+    async deleteUser(userId) {
+        return this.delete(`/auth/admin/delete-user/${userId}`);
+    }
 }
 
 // Create singleton instance

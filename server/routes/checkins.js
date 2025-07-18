@@ -373,4 +373,61 @@ router.get('/summary', authenticateToken, requireRole('admin'), async (req, res)
     }
 });
 
+// Admin: Get check-in history for any student
+router.get('/admin/student/:studentId/history', authenticateToken, requireRole('admin'), async (req, res) => {
+    try {
+        const { studentId } = req.params;
+        const limit = parseInt(req.query.limit) || 50;
+        const page = parseInt(req.query.page) || 1;
+        const offset = (page - 1) * limit;
+
+        // Check if student exists
+        const student = await database.get('SELECT * FROM users WHERE id = ? AND user_type = ?', [studentId, 'student']);
+        if (!student) {
+            return res.status(404).json({
+                success: false,
+                message: 'Student not found'
+            });
+        }
+
+        const checkIns = await database.all(`
+            SELECT ci.*, lp.name as program_name, lp.description as program_description
+            FROM check_ins ci
+            JOIN learning_programs lp ON ci.program_id = lp.id
+            JOIN qr_codes qr ON ci.qr_code_id = qr.id
+            WHERE ci.student_id = ?
+            ORDER BY ci.check_in_time DESC
+            LIMIT ? OFFSET ?
+        `, [studentId, limit, offset]);
+
+        const totalCount = await database.get(`
+            SELECT COUNT(*) as count FROM check_ins WHERE student_id = ?
+        `, [studentId]);
+
+        res.json({
+            success: true,
+            student: {
+                id: student.id,
+                username: student.username,
+                full_name: student.full_name,
+                email: student.email
+            },
+            checkIns,
+            pagination: {
+                page,
+                limit,
+                total: totalCount.count,
+                totalPages: Math.ceil(totalCount.count / limit)
+            }
+        });
+
+    } catch (error) {
+        console.error('Admin get student check-ins error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch student check-ins'
+        });
+    }
+});
+
 module.exports = router;

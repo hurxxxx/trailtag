@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const database = require('../database');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken, requireRole } = require('../middleware/auth');
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
@@ -326,6 +326,247 @@ router.put('/profile', authenticateToken, async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Failed to update profile'
+        });
+    }
+});
+
+// Admin: Get all users
+router.get('/admin/users', authenticateToken, requireRole('admin'), async (req, res) => {
+    try {
+        const { page = 1, limit = 50, userType, search } = req.query;
+        const offset = (page - 1) * limit;
+
+        let whereClause = '';
+        let params = [];
+
+        if (userType) {
+            whereClause += ' WHERE user_type = ?';
+            params.push(userType);
+        }
+
+        if (search) {
+            whereClause += userType ? ' AND' : ' WHERE';
+            whereClause += ' (username LIKE ? OR full_name LIKE ? OR email LIKE ?)';
+            const searchTerm = `%${search}%`;
+            params.push(searchTerm, searchTerm, searchTerm);
+        }
+
+        const users = await database.all(`
+            SELECT id, username, full_name, email, phone, user_type, created_at, updated_at
+            FROM users
+            ${whereClause}
+            ORDER BY created_at DESC
+            LIMIT ? OFFSET ?
+        `, [...params, limit, offset]);
+
+        const totalCount = await database.get(`
+            SELECT COUNT(*) as count FROM users ${whereClause}
+        `, params);
+
+        res.json({
+            success: true,
+            users,
+            pagination: {
+                page: parseInt(page),
+                limit: parseInt(limit),
+                total: totalCount.count,
+                totalPages: Math.ceil(totalCount.count / limit)
+            }
+        });
+
+    } catch (error) {
+        console.error('Get users error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to get users'
+        });
+    }
+});
+
+// Admin: Create new admin user
+router.post('/admin/create-admin', authenticateToken, requireRole('admin'), async (req, res) => {
+    try {
+        const { username, password, full_name, email, phone } = req.body;
+
+        if (!username || !password || !full_name || !email) {
+            return res.status(400).json({
+                success: false,
+                message: 'Username, password, full name, and email are required'
+            });
+        }
+
+        // Check if username already exists
+        const existingUser = await database.get('SELECT id FROM users WHERE username = ?', [username]);
+        if (existingUser) {
+            return res.status(409).json({
+                success: false,
+                message: 'Username already exists'
+            });
+        }
+
+        // Check if email already exists
+        const existingEmail = await database.get('SELECT id FROM users WHERE email = ?', [email]);
+        if (existingEmail) {
+            return res.status(409).json({
+                success: false,
+                message: 'Email already exists'
+            });
+        }
+
+        // Hash password
+        const saltRounds = 10;
+        const passwordHash = await bcrypt.hash(password, saltRounds);
+
+        // Create admin user
+        const result = await database.run(`
+            INSERT INTO users (username, password_hash, full_name, email, phone, user_type)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `, [username, passwordHash, full_name, email, phone || '', 'admin']);
+
+        res.status(201).json({
+            success: true,
+            message: 'Admin user created successfully',
+            user: {
+                id: result.id,
+                username,
+                full_name,
+                email,
+                phone: phone || '',
+                user_type: 'admin'
+            }
+        });
+
+    } catch (error) {
+        console.error('Create admin error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to create admin user'
+        });
+    }
+});
+
+// Admin: Reset user password
+router.post('/admin/reset-password', authenticateToken, requireRole('admin'), async (req, res) => {
+    try {
+        const { userId, newPassword } = req.body;
+
+        if (!userId || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'User ID and new password are required'
+            });
+        }
+
+        // Check if user exists
+        const user = await database.get('SELECT * FROM users WHERE id = ?', [userId]);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Hash new password
+        const saltRounds = 10;
+        const passwordHash = await bcrypt.hash(newPassword, saltRounds);
+
+        // Update password
+        await database.run('UPDATE users SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [passwordHash, userId]);
+
+        res.json({
+            success: true,
+            message: `Password reset successfully for ${user.username}`
+        });
+
+    } catch (error) {
+        console.error('Reset password error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to reset password'
+        });
+    }
+});
+
+// Admin: Delete user
+router.delete('/admin/delete-user/:userId', authenticateToken, requireRole('admin'), async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const currentUserId = req.user.userId;
+
+        // Prevent admin from deleting themselves
+        if (parseInt(userId) === currentUserId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Cannot delete your own account'
+            });
+        }
+
+        // Check if user exists
+        const user = await database.get('SELECT * FROM users WHERE id = ?', [userId]);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Start transaction for safe deletion
+        await database.run('BEGIN TRANSACTION');
+
+        try {
+            // Delete related data first (foreign key constraints)
+
+            // Delete user sessions
+            await database.run('DELETE FROM user_sessions WHERE user_id = ?', [userId]);
+
+            // Delete check-ins if user is a student
+            if (user.user_type === 'student') {
+                await database.run('DELETE FROM check_ins WHERE student_id = ?', [userId]);
+            }
+
+            // Delete parent-student relationships
+            if (user.user_type === 'parent') {
+                await database.run('DELETE FROM parent_student_relationships WHERE parent_id = ?', [userId]);
+            } else if (user.user_type === 'student') {
+                await database.run('DELETE FROM parent_student_relationships WHERE student_id = ?', [userId]);
+            }
+
+            // Delete learning programs created by this user (if admin)
+            if (user.user_type === 'admin') {
+                // First delete QR codes for programs created by this admin
+                await database.run(`
+                    DELETE FROM qr_codes
+                    WHERE program_id IN (
+                        SELECT id FROM learning_programs WHERE created_by = ?
+                    )
+                `, [userId]);
+
+                // Then delete the programs
+                await database.run('DELETE FROM learning_programs WHERE created_by = ?', [userId]);
+            }
+
+            // Finally delete the user
+            await database.run('DELETE FROM users WHERE id = ?', [userId]);
+
+            // Commit transaction
+            await database.run('COMMIT');
+
+            res.json({
+                success: true,
+                message: `User ${user.username} has been successfully deleted`
+            });
+
+        } catch (error) {
+            // Rollback transaction on error
+            await database.run('ROLLBACK');
+            throw error;
+        }
+
+    } catch (error) {
+        console.error('Delete user error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to delete user'
         });
     }
 });

@@ -63,9 +63,9 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
 
         // Username validation
         if (!formData.username.trim()) {
-            errors.username = '사용자명을 입력해주세요';
+            errors.username = '로그인ID 를 입력해주세요';
         } else if (formData.username.length < 3) {
-            errors.username = '사용자명은 최소 3자 이상이어야 합니다';
+            errors.username = '로그인ID 는 최소 3자 이상이어야 합니다';
         }
 
         // Password validation
@@ -161,7 +161,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
                 <TextField
                     fullWidth
                     name="username"
-                    label="사용자명"
+                    label="로그인ID "
                     value={formData.username}
                     onChange={handleChange}
                     error={!!formErrors.username}
