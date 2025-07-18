@@ -13,7 +13,11 @@ import {
     Avatar,
     Divider,
     InputAdornment,
-    IconButton
+    IconButton,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem
 } from '@mui/material';
 import {
     Person,
@@ -23,7 +27,9 @@ import {
     Save,
     Cancel,
     Visibility,
-    VisibilityOff
+    VisibilityOff,
+    Language,
+    AccessTime
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
 import apiClient from '../../services/apiClient';
@@ -38,10 +44,22 @@ const ProfileEditor = () => {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
 
+    // 타임존 옵션
+    const timezones = [
+        { value: 'Asia/Seoul', label: '서울 (UTC+9)' }
+    ];
+
+    // 언어 옵션
+    const languages = [
+        { value: 'ko', label: '한국어' }
+    ];
+
     const [formData, setFormData] = useState({
         full_name: '',
         email: '',
-        phone: ''
+        phone: '',
+        timezone: '',
+        language: ''
     });
 
     const [passwordData, setPasswordData] = useState({
@@ -57,7 +75,9 @@ const ProfileEditor = () => {
             setFormData({
                 full_name: user.full_name || '',
                 email: user.email || '',
-                phone: user.phone || ''
+                phone: user.phone || '',
+                timezone: user.timezone || 'Asia/Seoul',
+                language: user.language || 'ko'
             });
         }
     }, [user]);
@@ -323,7 +343,7 @@ const ProfileEditor = () => {
                                     </Box>
                                 </Box>
                                 <Divider sx={{ my: 2 }} />
-                                <Box display="flex" alignItems="center">
+                                <Box display="flex" alignItems="center" mb={2}>
                                     <Phone color="action" sx={{ mr: 2 }} />
                                     <Box>
                                         <Typography variant="body2" color="text.secondary">
@@ -331,6 +351,30 @@ const ProfileEditor = () => {
                                         </Typography>
                                         <Typography variant="body1">
                                             {user.phone}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                <Divider sx={{ my: 2 }} />
+                                <Box display="flex" alignItems="center" mb={2}>
+                                    <AccessTime color="action" sx={{ mr: 2 }} />
+                                    <Box>
+                                        <Typography variant="body2" color="text.secondary">
+                                            타임존
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            {timezones.find(tz => tz.value === user.timezone)?.label || user.timezone || '서울 (UTC+9)'}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                <Divider sx={{ my: 2 }} />
+                                <Box display="flex" alignItems="center">
+                                    <Language color="action" sx={{ mr: 2 }} />
+                                    <Box>
+                                        <Typography variant="body2" color="text.secondary">
+                                            언어
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            {languages.find(lang => lang.value === user.language)?.label || user.language || '한국어'}
                                         </Typography>
                                     </Box>
                                 </Box>
@@ -397,6 +441,52 @@ const ProfileEditor = () => {
                                         ),
                                     }}
                                 />
+                            </Grid>
+
+                            <Grid item xs={12} md={6}>
+                                <FormControl fullWidth>
+                                    <InputLabel>타임존</InputLabel>
+                                    <Select
+                                        name="timezone"
+                                        value={formData.timezone}
+                                        onChange={handleChange}
+                                        label="타임존"
+                                        startAdornment={
+                                            <InputAdornment position="start">
+                                                <AccessTime />
+                                            </InputAdornment>
+                                        }
+                                    >
+                                        {timezones.map((tz) => (
+                                            <MenuItem key={tz.value} value={tz.value}>
+                                                {tz.label}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+
+                            <Grid item xs={12} md={6}>
+                                <FormControl fullWidth>
+                                    <InputLabel>언어</InputLabel>
+                                    <Select
+                                        name="language"
+                                        value={formData.language}
+                                        onChange={handleChange}
+                                        label="언어"
+                                        startAdornment={
+                                            <InputAdornment position="start">
+                                                <Language />
+                                            </InputAdornment>
+                                        }
+                                    >
+                                        {languages.map((lang) => (
+                                            <MenuItem key={lang.value} value={lang.value}>
+                                                {lang.label}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                             </Grid>
                         </Grid>
 

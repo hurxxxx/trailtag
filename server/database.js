@@ -43,6 +43,8 @@ class Database {
                 email VARCHAR(100) UNIQUE NOT NULL,
                 phone VARCHAR(20) NOT NULL,
                 user_type TEXT CHECK(user_type IN ('student', 'parent', 'admin')) NOT NULL,
+                timezone VARCHAR(50) DEFAULT 'Asia/Seoul',
+                language VARCHAR(10) DEFAULT 'ko',
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             );
@@ -143,8 +145,42 @@ class Database {
                 throw err;
             }
             console.log('Database schema initialized');
+            this.runMigrations();
             this.createDefaultAdmin();
             this.createTestUsers();
+        });
+    }
+
+    runMigrations() {
+        // Add timezone and language columns if they don't exist
+        this.db.all("PRAGMA table_info(users)", (err, columns) => {
+            if (err) {
+                console.error('Error checking table info:', err);
+                return;
+            }
+
+            const hasTimezone = columns.some(col => col.name === 'timezone');
+            const hasLanguage = columns.some(col => col.name === 'language');
+
+            if (!hasTimezone) {
+                this.db.run("ALTER TABLE users ADD COLUMN timezone VARCHAR(50) DEFAULT 'Asia/Seoul'", (err) => {
+                    if (err) {
+                        console.error('Error adding timezone column:', err);
+                    } else {
+                        console.log('Added timezone column to users table');
+                    }
+                });
+            }
+
+            if (!hasLanguage) {
+                this.db.run("ALTER TABLE users ADD COLUMN language VARCHAR(10) DEFAULT 'ko'", (err) => {
+                    if (err) {
+                        console.error('Error adding language column:', err);
+                    } else {
+                        console.log('Added language column to users table');
+                    }
+                });
+            }
         });
     }
 
