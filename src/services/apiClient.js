@@ -1,10 +1,21 @@
 // API Client for TrailTag Backend
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || (
+    import.meta.env.MODE === 'production' ? '/api' : 'http://localhost:3001/api'
+);
 
 class ApiClient {
     constructor() {
         this.baseURL = API_BASE_URL;
         this.token = localStorage.getItem('trailtag_token');
+
+        // 디버깅용 로그
+        console.log('API Client initialized:', {
+            baseURL: this.baseURL,
+            mode: import.meta.env.MODE,
+            viteApiUrl: import.meta.env.VITE_API_URL,
+            currentURL: window.location.href,
+            allEnvVars: import.meta.env
+        });
     }
 
     // Set authentication token

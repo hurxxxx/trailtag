@@ -10,7 +10,7 @@ const path = require('path');
 const fs = require('fs');
 
 // Load production environment variables
-require('dotenv').config({ path: '.env.server.production' });
+require('dotenv').config({ path: '.env.production' });
 
 console.log('🚀 Starting TrailTag in Production Mode...');
 console.log(`📡 Server will run on port: ${process.env.PORT || 9883}`);

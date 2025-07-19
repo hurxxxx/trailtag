@@ -12,7 +12,6 @@ import {
     ListItemText,
     ListItemAvatar,
     Avatar,
-    Chip,
     Divider,
     CircularProgress,
     Alert
@@ -24,8 +23,7 @@ import {
     TrendingUp,
     PersonAdd,
     Add,
-    Settings,
-    Timeline
+    Settings
 } from '@mui/icons-material';
 
 import { useAuth } from '../../contexts/AuthContext';
@@ -136,7 +134,7 @@ const AdminDashboardContent = () => {
 
             {/* Statistics Cards */}
             <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <StatCard
                         title="전체 사용자"
                         value={stats?.totalUsers || 0}
@@ -145,7 +143,7 @@ const AdminDashboardContent = () => {
                         subtitle={`관리자 ${stats?.adminCount || 0} | 학생 ${stats?.studentCount || 0} | 부모 ${stats?.parentCount || 0}`}
                     />
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <StatCard
                         title="활성 프로그램"
                         value={stats?.activePrograms || 0}
@@ -154,7 +152,7 @@ const AdminDashboardContent = () => {
                         subtitle="현재 운영 중인 프로그램"
                     />
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <StatCard
                         title="오늘 체크인"
                         value={stats?.todayCheckIns || 0}
@@ -163,7 +161,7 @@ const AdminDashboardContent = () => {
                         subtitle="오늘 발생한 체크인"
                     />
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <StatCard
                         title="이번 주 체크인"
                         value={stats?.weekCheckIns || 0}
@@ -176,13 +174,13 @@ const AdminDashboardContent = () => {
 
             <Grid container spacing={3}>
                 {/* Quick Actions */}
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                     <Paper sx={{ p: 3, height: '100%' }}>
                         <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
                             빠른 작업
                         </Typography>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                            <Grid size={6}>
                                 <QuickActionCard
                                     title="프로그램 생성"
                                     description="새로운 학습 프로그램을 만들어보세요"
@@ -191,7 +189,7 @@ const AdminDashboardContent = () => {
                                     color="primary"
                                 />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid size={6}>
                                 <QuickActionCard
                                     title="관리자 추가"
                                     description="새로운 관리자 계정을 생성하세요"
@@ -200,7 +198,7 @@ const AdminDashboardContent = () => {
                                     color="success"
                                 />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid size={6}>
                                 <QuickActionCard
                                     title="사용자 관리"
                                     description="사용자 계정을 관리하세요"
@@ -209,7 +207,7 @@ const AdminDashboardContent = () => {
                                     color="info"
                                 />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid size={6}>
                                 <QuickActionCard
                                     title="시스템 설정"
                                     description="시스템 설정을 변경하세요"
@@ -223,7 +221,7 @@ const AdminDashboardContent = () => {
                 </Grid>
 
                 {/* Recent Activity */}
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                     <Paper sx={{ p: 3, height: '100%' }}>
                         <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
                             최근 활동
@@ -254,6 +252,7 @@ const AdminDashboardContent = () => {
                                                         </Typography>
                                                     </Box>
                                                 }
+                                                slotProps={{ secondary: { component: 'div' } }}
                                             />
                                         </ListItem>
                                         {index < recentActivity.length - 1 && <Divider />}

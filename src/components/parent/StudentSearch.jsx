@@ -239,7 +239,7 @@ const StudentSearch = ({ onStudentSelect }) => {
                     </Typography>
                     <Grid container spacing={2}>
                         {myStudents.map((student) => (
-                            <Grid item xs={12} sm={6} md={4} key={student.id}>
+                            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={student.id}>
                                 <Card elevation={1}>
                                     <CardContent>
                                         <Typography variant="h6" gutterBottom>
@@ -287,7 +287,7 @@ const StudentSearch = ({ onStudentSelect }) => {
                     </Typography>
                     <Grid container spacing={2}>
                         {searchResults.map((student) => (
-                            <Grid item xs={12} sm={6} md={4} key={student.id}>
+                            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={student.id}>
                                 <Card elevation={1}>
                                     <CardContent>
                                         <Typography variant="h6" gutterBottom>

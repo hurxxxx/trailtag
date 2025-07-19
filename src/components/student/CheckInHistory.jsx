@@ -133,7 +133,7 @@ const CheckInHistory = () => {
             {/* Statistics Cards */}
             {stats && (
                 <Grid container spacing={3} sx={{ mb: 3 }}>
-                    <Grid item xs={12} sm={6} md={3}>
+                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                         <Card elevation={2}>
                             <CardContent sx={{ textAlign: 'center' }}>
                                 <CheckCircle sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
@@ -147,7 +147,7 @@ const CheckInHistory = () => {
                         </Card>
                     </Grid>
 
-                    <Grid item xs={12} sm={6} md={3}>
+                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                         <Card elevation={2}>
                             <CardContent sx={{ textAlign: 'center' }}>
                                 <School sx={{ fontSize: 40, color: 'secondary.main', mb: 1 }} />
@@ -161,7 +161,7 @@ const CheckInHistory = () => {
                         </Card>
                     </Grid>
 
-                    <Grid item xs={12} sm={6} md={3}>
+                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                         <Card elevation={2}>
                             <CardContent sx={{ textAlign: 'center' }}>
                                 <LocationOn sx={{ fontSize: 40, color: 'success.main', mb: 1 }} />
@@ -175,7 +175,7 @@ const CheckInHistory = () => {
                         </Card>
                     </Grid>
 
-                    <Grid item xs={12} sm={6} md={3}>
+                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                         <Card elevation={2}>
                             <CardContent sx={{ textAlign: 'center' }}>
                                 <TrendingUp sx={{ fontSize: 40, color: 'warning.main', mb: 1 }} />
@@ -199,7 +199,7 @@ const CheckInHistory = () => {
                     </Typography>
                     <Grid container spacing={2}>
                         {stats.mostVisitedPrograms.map((program, index) => (
-                            <Grid item xs={12} sm={6} md={4} key={index}>
+                            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
                                 <Card variant="outlined">
                                     <CardContent>
                                         <Typography variant="subtitle1" gutterBottom>

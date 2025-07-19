@@ -45,12 +45,16 @@ npm install
 
 ### 개발 환경 실행
 ```bash
-# 개발 서버 시작 (HTTP)
+# 개발 서버 시작 (HTTP - 기본)
 npm run start
 
-# 개발 서버 시작 (HTTPS - 모바일 QR 스캔용)
+# 개발 서버 시작 (HTTPS - 모바일 QR 스캔 테스트용)
 npm run start:https
 ```
+
+**참고**:
+- 일반 개발은 `npm run start` (HTTP) 사용
+- 모바일에서 QR 스캔 테스트가 필요한 경우만 `npm run start:https` 사용
 
 ### 프로덕션 빌드 및 배포
 ```bash
@@ -67,8 +71,9 @@ npm run deploy
 ## 접속 정보
 
 ### 개발 환경
-- Frontend: http://localhost:5173 (또는 https://localhost:5173)
+- Frontend: http://localhost:5173
 - Backend API: http://localhost:3001
+- HTTPS 모드: https://localhost:5173 (QR 스캔 테스트용)
 
 ### 프로덕션 환경
 - 통합 서버: http://localhost:9883
@@ -80,12 +85,12 @@ npm run deploy
 
 ## 환경 설정
 
-### 개발 환경
-- `.env` - 개발 환경 변수
+- `.env` - 개발 환경 설정
+- `.env.production` - 프로덕션 환경 설정
 
-### 프로덕션 환경
-- `.env.production` - 프론트엔드 프로덕션 설정
-- `.env.server.production` - 서버 프로덕션 설정
+### API URL 설정
+- **개발 환경**: `VITE_API_URL=http://localhost:3001/api`
+- **프로덕션 환경**: `VITE_API_URL=/api` (상대 경로)
 
 ## 사용법
 

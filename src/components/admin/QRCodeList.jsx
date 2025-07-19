@@ -48,13 +48,13 @@ const QRCodeList = ({ onCreateQRCode, refreshTrigger, selectedProgram = null }) 
         try {
             setLoading(true);
             let result;
-            
+
             if (selectedProgram) {
                 result = await qrCodeService.getQRCodesByProgram(selectedProgram.id);
             } else {
                 result = await qrCodeService.getAllQRCodes();
             }
-            
+
             if (result.success) {
                 setQRCodes(result.qrCodes);
                 setError('');
@@ -197,10 +197,10 @@ const QRCodeList = ({ onCreateQRCode, refreshTrigger, selectedProgram = null }) 
             ) : (
                 <Grid container spacing={3}>
                     {filteredQRCodes.map((qrCode) => (
-                        <Grid item xs={12} sm={6} md={4} key={qrCode.id}>
-                            <Card 
+                        <Grid size={{ xs: 12, sm: 6, md: 4 }} key={qrCode.id}>
+                            <Card
                                 elevation={2}
-                                sx={{ 
+                                sx={{
                                     height: '100%',
                                     display: 'flex',
                                     flexDirection: 'column',
@@ -225,21 +225,21 @@ const QRCodeList = ({ onCreateQRCode, refreshTrigger, selectedProgram = null }) 
                                     </Box>
 
                                     {/* QR Code Image */}
-                                    <Box 
-                                        sx={{ 
-                                            display: 'flex', 
-                                            justifyContent: 'center', 
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
                                             mb: 2,
                                             p: 1,
                                             bgcolor: 'grey.50',
                                             borderRadius: 1
                                         }}
                                     >
-                                        <img 
-                                            src={qrCode.qr_code_image} 
+                                        <img
+                                            src={qrCode.qr_code_image}
                                             alt={`QR Code for ${qrCode.location_name}`}
-                                            style={{ 
-                                                width: '120px', 
+                                            style={{
+                                                width: '120px',
                                                 height: '120px',
                                                 objectFit: 'contain'
                                             }}
@@ -270,7 +270,7 @@ const QRCodeList = ({ onCreateQRCode, refreshTrigger, selectedProgram = null }) 
                                     </Box>
 
                                     <Box mt={1}>
-                                        <Chip 
+                                        <Chip
                                             label={qrCode.is_active ? 'Active' : 'Inactive'}
                                             color={qrCode.is_active ? 'success' : 'default'}
                                             size="small"
@@ -339,11 +339,11 @@ const QRCodeList = ({ onCreateQRCode, refreshTrigger, selectedProgram = null }) 
                 <DialogContent sx={{ textAlign: 'center', py: 3 }}>
                     {selectedQRCode && (
                         <Box>
-                            <img 
-                                src={selectedQRCode.qr_code_image} 
+                            <img
+                                src={selectedQRCode.qr_code_image}
                                 alt={`QR Code for ${selectedQRCode.location_name}`}
-                                style={{ 
-                                    width: '300px', 
+                                style={{
+                                    width: '300px',
                                     height: '300px',
                                     objectFit: 'contain'
                                 }}
@@ -363,7 +363,7 @@ const QRCodeList = ({ onCreateQRCode, refreshTrigger, selectedProgram = null }) 
                     <Button onClick={() => setPreviewDialog(false)}>
                         Close
                     </Button>
-                    <Button 
+                    <Button
                         variant="contained"
                         startIcon={<Download />}
                         onClick={() => {

@@ -231,7 +231,7 @@ const StudentHome = () => {
 
             {/* Quick Actions */}
             <Grid container spacing={3} sx={{ mb: 3 }}>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <Card
                         elevation={2}
                         sx={{
@@ -253,7 +253,7 @@ const StudentHome = () => {
                     </Card>
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <Card
                         elevation={2}
                         sx={{
@@ -334,7 +334,7 @@ const StudentHome = () => {
             {/* Quick Stats */}
             {stats && (
                 <Grid container spacing={2}>
-                    <Grid item xs={6} sm={3}>
+                    <Grid size={{ xs: 6, sm: 3 }}>
                         <Card elevation={1}>
                             <CardContent sx={{ textAlign: 'center', py: 2 }}>
                                 <Typography variant="h5" color="primary">
@@ -346,7 +346,7 @@ const StudentHome = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                    <Grid item xs={6} sm={3}>
+                    <Grid size={{ xs: 6, sm: 3 }}>
                         <Card elevation={1}>
                             <CardContent sx={{ textAlign: 'center', py: 2 }}>
                                 <Typography variant="h5" color="secondary">
@@ -358,7 +358,7 @@ const StudentHome = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                    <Grid item xs={6} sm={3}>
+                    <Grid size={{ xs: 6, sm: 3 }}>
                         <Card elevation={1}>
                             <CardContent sx={{ textAlign: 'center', py: 2 }}>
                                 <Typography variant="h5" color="success.main">
@@ -370,7 +370,7 @@ const StudentHome = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                    <Grid item xs={6} sm={3}>
+                    <Grid size={{ xs: 6, sm: 3 }}>
                         <Card elevation={1}>
                             <CardContent sx={{ textAlign: 'center', py: 2 }}>
                                 <Typography variant="h5" color="warning.main">

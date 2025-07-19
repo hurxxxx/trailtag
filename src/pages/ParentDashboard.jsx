@@ -233,7 +233,7 @@ const ParentHome = ({ onStudentSelect }) => {
 
             {/* Quick Actions */}
             <Grid container spacing={3} sx={{ mb: 3 }}>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <Card
                         elevation={2}
                         sx={{
@@ -255,7 +255,7 @@ const ParentHome = ({ onStudentSelect }) => {
                     </Card>
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                     <Card
                         elevation={2}
                         sx={{
@@ -308,7 +308,7 @@ const ParentHome = ({ onStudentSelect }) => {
                 ) : (
                     <Grid container spacing={2}>
                         {myStudents.map((student) => (
-                            <Grid item xs={12} sm={6} md={4} key={student.id}>
+                            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={student.id}>
                                 <Card
                                     elevation={1}
                                     sx={{

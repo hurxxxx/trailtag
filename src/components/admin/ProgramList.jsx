@@ -351,7 +351,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
             ) : (
                 <Grid container spacing={3}>
                     {filteredPrograms.map((program) => (
-                        <Grid item xs={12} sm={6} md={4} key={program.id}>
+                        <Grid size={{ xs: 12, sm: 6, md: 4 }} key={program.id}>
                             <Fade in timeout={300 + program.id * 100}>
                                 <Card
                                     elevation={0}
