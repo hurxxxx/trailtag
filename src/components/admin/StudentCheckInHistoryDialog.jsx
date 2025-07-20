@@ -139,7 +139,7 @@ const StudentCheckInHistoryDialog = ({ open, student, onClose }) => {
                         </Typography>
                     </Box>
                     <Chip
-                        label="학생"
+                        label={t('Student')}
                         color="primary"
                         size="small"
                     />
@@ -207,7 +207,7 @@ const StudentCheckInHistoryDialog = ({ open, student, onClose }) => {
                                                     <TableCell align="center">
                                                         <Chip
                                                             icon={<CheckCircle />}
-                                                            label="완료"
+                                                            label={t('Completed')}
                                                             color="success"
                                                             size="small"
                                                         />

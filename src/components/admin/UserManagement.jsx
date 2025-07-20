@@ -157,7 +157,7 @@ const UserManagement = () => {
 
     const handleCreateAdminSuccess = () => {
         setCreateAdminOpen(false);
-        setSuccess('관리자 계정이 성공적으로 생성되었습니다');
+        setSuccess(t('Admin account created successfully'));
         loadUsers();
         setTimeout(() => setSuccess(''), 3000);
     };
@@ -172,7 +172,7 @@ const UserManagement = () => {
     const handleResetPasswordSuccess = () => {
         setResetPasswordOpen(false);
         setSelectedUser(null);
-        setSuccess('비밀번호가 성공적으로 변경되었습니다');
+        setSuccess(t('Password changed successfully'));
         setTimeout(() => setSuccess(''), 3000);
     };
 
@@ -204,9 +204,9 @@ const UserManagement = () => {
 
     const formatUserType = (userType) => {
         const types = {
-            'admin': '관리자',
-            'student': '학생',
-            'parent': '부모'
+            'admin': t('Admin'),
+            'student': t('Student'),
+            'parent': t('Parent')
         };
         return types[userType] || userType;
     };
@@ -356,7 +356,7 @@ const UserManagement = () => {
                                         <TableCell align="center">
                                             <Box sx={{ display: 'flex', gap: 0.5 }}>
                                                 {(user.user_type === 'student' || user.user_type === 'parent') && (
-                                                    <Tooltip title="비밀번호 변경">
+                                                    <Tooltip title={t('Change Password')}>
                                                         <IconButton
                                                             size="small"
                                                             onClick={() => handleResetPassword(user)}
@@ -366,7 +366,7 @@ const UserManagement = () => {
                                                     </Tooltip>
                                                 )}
                                                 {user.user_type === 'student' && (
-                                                    <Tooltip title="체크인 이력">
+                                                    <Tooltip title={t('Check-in History')}>
                                                         <IconButton
                                                             size="small"
                                                             onClick={() => handleViewCheckInHistory(user)}
@@ -375,7 +375,7 @@ const UserManagement = () => {
                                                         </IconButton>
                                                     </Tooltip>
                                                 )}
-                                                <Tooltip title="사용자 삭제">
+                                                <Tooltip title={t('Delete User')}>
                                                     <IconButton
                                                         size="small"
                                                         onClick={() => handleDeleteUser(user)}
@@ -401,7 +401,7 @@ const UserManagement = () => {
                     rowsPerPage={rowsPerPage}
                     onRowsPerPageChange={handleRowsPerPageChange}
                     rowsPerPageOptions={[10, 25, 50, 100]}
-                    labelRowsPerPage="페이지당 행 수:"
+                    labelRowsPerPage={t('Rows per page:')}
                     labelDisplayedRows={({ from, to, count }) => `${from}-${to} / ${count}`}
                 />
             </Paper>

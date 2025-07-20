@@ -76,7 +76,7 @@ const CreateAdminDialog = ({ open, onClose, onSuccess }) => {
                 setError(result.message);
             }
         } catch (error) {
-            setError('관리자 계정 생성 중 오류가 발생했습니다');
+            setError(t('An error occurred while creating admin account'));
         } finally {
             setLoading(false);
         }

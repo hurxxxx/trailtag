@@ -77,36 +77,36 @@ const DeleteUserDialog = ({ open, user, onClose, onSuccess }) => {
 
     const formatUserType = (userType) => {
         const types = {
-            'admin': '관리자',
-            'student': '학생',
-            'parent': '부모'
+            'admin': t('Admin'),
+            'student': t('Student'),
+            'parent': t('Parent')
         };
         return types[userType] || userType;
     };
 
     const getDeletedData = (userType) => {
         const baseData = [
-            '사용자 계정 정보',
-            '로그인 세션'
+            t('User account information'),
+            t('Login sessions')
         ];
 
         switch (userType) {
             case 'student':
                 return [
                     ...baseData,
-                    '모든 체크인 기록',
-                    '부모-학생 연결 관계'
+                    t('All check-in records'),
+                    t('Parent-student relationships')
                 ];
             case 'parent':
                 return [
                     ...baseData,
-                    '부모-학생 연결 관계'
+                    t('Parent-student relationships')
                 ];
             case 'admin':
                 return [
                     ...baseData,
-                    '생성한 모든 프로그램',
-                    '생성한 프로그램의 QR 코드'
+                    t('All created programs'),
+                    t('QR codes of created programs')
                 ];
             default:
                 return baseData;
@@ -205,7 +205,7 @@ const DeleteUserDialog = ({ open, user, onClose, onSuccess }) => {
                     placeholder="DELETE"
                     disabled={loading}
                     error={confirmText !== '' && confirmText !== 'DELETE'}
-                    helperText={confirmText !== '' && confirmText !== 'DELETE' ? '"DELETE"를 정확히 입력해주세요' : ''}
+                    helperText={confirmText !== '' && confirmText !== 'DELETE' ? t('Please enter "DELETE" exactly') : ''}
                 />
             </DialogContent>
 

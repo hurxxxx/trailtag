@@ -139,7 +139,7 @@ const AdminDashboard = () => {
                 </List>
             </Box>
 
-            {/* 하단 사용자 정보 */}
+            {/* Bottom user information */}
             <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider' }}>
                 <Card sx={{ bgcolor: 'grey.50', border: 'none' }}>
                     <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>

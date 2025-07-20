@@ -41,7 +41,7 @@ const QRScanner = () => {
     const html5QrcodeRef = useRef(null);
 
     useEffect(() => {
-        // 모바일 환경 감지
+        // Detect mobile environment
         const checkMobile = () => {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
@@ -54,7 +54,7 @@ const QRScanner = () => {
             // Cleanup scanner on unmount
             if (html5QrcodeRef.current) {
                 try {
-                    // 스캐너가 실행 중인지 확인 후 정리
+                    // Check if scanner is running before cleanup
                     if (html5QrcodeRef.current.getState() === 2) { // SCANNING state
                         html5QrcodeRef.current.stop().catch(err => {
                             console.log('Scanner stop error (cleanup):', err);
@@ -67,10 +67,10 @@ const QRScanner = () => {
         };
     }, []);
 
-    // scanning 상태가 true로 변경되면 스캐너 초기화
+    // Initialize scanner when scanning state changes to true
     useEffect(() => {
         if (scanning) {
-            // DOM 업데이트 후 스캐너 초기화
+            // Initialize scanner after DOM update
             const timer = setTimeout(() => {
                 initializeScanner();
             }, 100);
@@ -81,26 +81,26 @@ const QRScanner = () => {
 
     const checkCameraPermission = async () => {
         try {
-            // 브라우저 호환성 체크
+            // Check browser compatibility
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                throw new Error('이 브라우저는 카메라 접근을 지원하지 않습니다. HTTPS 환경에서 접속해주세요.');
+                throw new Error(t('This browser does not support camera access. Please access via HTTPS environment.'));
             }
 
-            // 카메라 권한 요청
+            // Request camera permission
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            // 권한이 있으면 스트림을 즉시 중지
+            // Stop stream immediately if permission is granted
             stream.getTracks().forEach(track => track.stop());
             return true;
         } catch (error) {
-            console.error('카메라 권한 오류:', error);
+            console.error('Camera permission error:', error);
             if (error.name === 'NotAllowedError') {
-                setError('카메라 권한이 필요합니다. 설정에서 카메라 권한을 허용해주세요.');
+                setError(t('Camera permission is required. Please allow camera access in settings.'));
             } else if (error.name === 'NotFoundError') {
-                setError('카메라를 찾을 수 없습니다. 다른 앱에서 카메라를 사용 중인지 확인해주세요.');
+                setError(t('Camera not found. Please check if another app is using the camera.'));
             } else if (error.name === 'NotSupportedError') {
-                setError('카메라 기능을 지원하지 않는 환경입니다.');
+                setError(t('Camera functionality is not supported in this environment.'));
             } else {
-                setError('카메라에 접근할 수 없습니다: ' + error.message);
+                setError(t('Cannot access camera: {{message}}', { message: error.message }));
             }
             return false;
         }
@@ -110,13 +110,13 @@ const QRScanner = () => {
         setError('');
         setScanResult(null);
 
-        // 카메라 권한 확인
+        // Check camera permission
         const hasPermission = await checkCameraPermission();
         if (!hasPermission) {
             return;
         }
 
-        // scanning을 true로 설정하면 useEffect에서 스캐너 초기화
+        // Setting scanning to true will initialize scanner in useEffect
         setScanning(true);
     };
 
@@ -133,30 +133,30 @@ const QRScanner = () => {
 
             html5QrcodeRef.current = new Html5Qrcode("qr-reader");
 
-            // 모바일 환경에서는 후면 카메라 우선 사용
+            // Use rear camera preferentially in mobile environment
             if (isMobile) {
                 try {
-                    // 사용 가능한 카메라 목록 가져오기
+                    // Get list of available cameras
                     const cameras = await Html5Qrcode.getCameras();
-                    console.log('사용 가능한 카메라:', cameras);
+                    console.log('Available cameras:', cameras);
 
                     let cameraId = null;
 
-                    // 후면 카메라 찾기 - 더 정확한 감지
+                    // Find rear camera - more accurate detection
                     let backCamera = null;
 
-                    // 1차: 명확한 후면 카메라 키워드로 찾기
+                    // 1st: Find with clear rear camera keywords
                     backCamera = cameras.find(camera => {
                         const label = camera.label ? camera.label.toLowerCase() : '';
                         return (
                             label.includes('back') ||
                             label.includes('rear') ||
                             label.includes('environment') ||
-                            label.includes('후면')
+                            label.includes('후면') // Korean device label for 'rear'
                         );
                     });
 
-                    // 2차: iOS에서 일반적인 패턴으로 찾기
+                    // 2nd: Find with common patterns on iOS
                     if (!backCamera) {
                         backCamera = cameras.find(camera => {
                             const label = camera.label ? camera.label.toLowerCase() : '';
@@ -169,19 +169,19 @@ const QRScanner = () => {
                         });
                     }
 
-                    // 3차: 카메라가 2개 이상이면 마지막 카메라 (보통 후면)
+                    // 3rd: If there are 2+ cameras, use the last one (usually rear)
                     if (!backCamera && cameras.length > 1) {
                         backCamera = cameras[cameras.length - 1];
                     }
 
-                    // 4차: 첫 번째 카메라라도 사용
+                    // 4th: Use first camera if available
                     if (!backCamera && cameras.length > 0) {
                         backCamera = cameras[0];
                     }
 
                     if (backCamera) {
                         cameraId = backCamera.id;
-                        console.log('선택된 카메라:', backCamera.label || 'Unknown Camera');
+                        console.log('Selected camera:', backCamera.label || 'Unknown Camera');
                     }
 
                     if (cameraId) {
@@ -198,20 +198,20 @@ const QRScanner = () => {
                             onScanFailure
                         );
                     } else {
-                        throw new Error('사용 가능한 카메라가 없습니다');
+                        throw new Error(t('No available cameras found'));
                     }
                 } catch (cameraError) {
-                    console.error('카메라 초기화 오류:', cameraError);
-                    // 카메라 선택에 실패하면 facingMode로 시도
+                    console.error('Camera initialization error:', cameraError);
+                    // Try with facingMode if camera selection fails
                     await startWithEnvironmentCamera();
                 }
             } else {
-                // 데스크톱 환경에서는 기본 설정 사용
+                // Use default settings for desktop environment
                 await startWithEnvironmentCamera();
             }
         } catch (error) {
-            console.error('스캐너 초기화 오류:', error);
-            setError('QR 스캐너를 시작할 수 없습니다: ' + error.message);
+            console.error('Scanner initialization error:', error);
+            setError(t('Cannot start QR scanner: {{message}}', { message: error.message }));
             setScanning(false);
         }
     };
@@ -223,9 +223,9 @@ const QRScanner = () => {
             aspectRatio: 1.0
         };
 
-        // 후면 카메라 강제 사용
+        // Force use of rear camera
         const cameraConfig = {
-            facingMode: { exact: "environment" } // exact를 사용하여 후면 카메라 강제
+            facingMode: { exact: "environment" } // Use exact to force rear camera
         };
 
         try {
@@ -236,8 +236,8 @@ const QRScanner = () => {
                 onScanFailure
             );
         } catch (error) {
-            console.log('exact environment 실패, ideal로 재시도:', error);
-            // exact가 실패하면 ideal로 재시도
+            console.log('exact environment failed, retrying with ideal:', error);
+            // Retry with ideal if exact fails
             const fallbackConfig = {
                 facingMode: { ideal: "environment" }
             };
@@ -254,7 +254,7 @@ const QRScanner = () => {
     const stopScanning = () => {
         if (html5QrcodeRef.current) {
             try {
-                // 스캐너가 실행 중인지 확인
+                // Check if scanner is running
                 if (html5QrcodeRef.current.getState() === 2) { // SCANNING state
                     html5QrcodeRef.current.stop().then(() => {
                         setScanning(false);
@@ -310,7 +310,7 @@ const QRScanner = () => {
         } catch (error) {
             setScanResult({
                 success: false,
-                message: '체크인 처리에 실패했습니다. 다시 시도해주세요.'
+                message: t('Check-in processing failed. Please try again.')
             });
             setShowResult(true);
         } finally {
@@ -341,10 +341,10 @@ const QRScanner = () => {
         <Box>
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    QR 코드 스캐너
+                    {t('QR Code Scanner')}
                 </Typography>
                 <Typography variant="body1" color="text.secondary" mb={2}>
-                    프로그램 위치의 QR 코드를 스캔하여 자동으로 체크인하세요.
+                    {t('Scan the QR code at the program location to automatically check in.')}
                 </Typography>
 
                 {error && (
@@ -452,7 +452,7 @@ const QRScanner = () => {
                 <DialogTitle sx={{ textAlign: 'center', pb: 1 }}>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                         <Typography variant="h5">
-                            {scanResult?.success ? '체크인 성공!' : '체크인 실패'}
+                            {scanResult?.success ? t('Check-in Successful!') : t('Check-in Failed')}
                         </Typography>
                         <IconButton onClick={handleCloseResult}>
                             <Close />

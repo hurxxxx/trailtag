@@ -121,22 +121,22 @@ const ParentDashboard = () => {
                         >
                             <Tab
                                 icon={<Home />}
-                                label="홈"
+                                label={t('Home')}
                                 iconPosition="start"
                             />
                             <Tab
                                 icon={<Search />}
-                                label="학생 검색"
+                                label={t('Student Search')}
                                 iconPosition="start"
                             />
                             <Tab
                                 icon={<Visibility />}
-                                label="활동 내역"
+                                label={t('Activity History')}
                                 iconPosition="start"
                             />
                             <Tab
                                 icon={<Person />}
-                                label="프로필"
+                                label={t('Profile')}
                                 iconPosition="start"
                             />
                         </Tabs>
@@ -171,19 +171,19 @@ const ParentDashboard = () => {
                         showLabels
                     >
                         <BottomNavigationAction
-                            label="홈"
+                            label={t('Home')}
                             icon={<Home />}
                         />
                         <BottomNavigationAction
-                            label="검색"
+                            label={t('Search')}
                             icon={<Search />}
                         />
                         <BottomNavigationAction
-                            label="모니터링"
+                            label={t('Monitoring')}
                             icon={<Visibility />}
                         />
                         <BottomNavigationAction
-                            label="프로필"
+                            label={t('Profile')}
                             icon={<Person />}
                         />
                     </BottomNavigation>
@@ -248,10 +248,10 @@ const ParentHome = ({ onStudentSelect }) => {
                         <CardContent sx={{ textAlign: 'center', py: 4 }}>
                             <Search sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
                             <Typography variant="h6" gutterBottom>
-                                학생 찾기
+                                {t('Find Students')}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                모니터링할 학생을 검색하고 추가하세요
+                                {t('Search and add students to monitor')}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -270,10 +270,10 @@ const ParentHome = ({ onStudentSelect }) => {
                         <CardContent sx={{ textAlign: 'center', py: 4 }}>
                             <TrendingUp sx={{ fontSize: 60, color: 'secondary.main', mb: 2 }} />
                             <Typography variant="h6" gutterBottom>
-                                활동 모니터링
+                                {t('Activity Monitoring')}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                학생의 참여 기록을 확인하세요
+                                {t('Check student participation records')}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -283,7 +283,7 @@ const ParentHome = ({ onStudentSelect }) => {
             {/* My Students */}
             <Paper elevation={2} sx={{ p: 3 }}>
                 <Typography variant="h6" gutterBottom>
-                    내 학생들 ({myStudents.length})
+                    {t('My Students')} ({myStudents.length})
                 </Typography>
 
                 {loading ? (
@@ -294,17 +294,17 @@ const ParentHome = ({ onStudentSelect }) => {
                     <Box textAlign="center" py={4}>
                         <People sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
                         <Typography variant="h6" color="text.secondary" gutterBottom>
-                            아직 추가된 학생이 없습니다
+                            {t('No students added yet')}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" mb={3}>
-                            학생을 검색하여 학습 활동 모니터링을 시작하세요.
+                            {t('Search for students to start monitoring their learning activities.')}
                         </Typography>
                         <Button
                             variant="contained"
                             startIcon={<Search />}
                             onClick={() => navigate('/parent/search')}
                         >
-                            학생 찾기
+                            {t('Find Students')}
                         </Button>
                     </Box>
                 ) : (
@@ -344,7 +344,7 @@ const ParentHome = ({ onStudentSelect }) => {
                                                     onStudentSelect && onStudentSelect(student);
                                                 }}
                                             >
-                                                모니터링
+                                                {t('Monitor')}
                                             </Button>
                                         </Box>
                                     </CardContent>

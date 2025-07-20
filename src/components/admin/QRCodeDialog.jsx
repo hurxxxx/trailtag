@@ -30,38 +30,38 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
     const [error, setError] = useState('');
     const [qrCodeDataURL, setQrCodeDataURL] = useState('');
 
-    // QR 코드 이미지 생성
+    // Generate QR code image
     const generateQRCodeImage = async (qrCodeData) => {
         try {
-            // 서버에서 생성한 실제 QR 코드 데이터 사용
-            // 형식: trailtag://checkin?program=123&location=Main&t=1234567890
+            // Use actual QR code data generated from server
+            // Format: trailtag://checkin?program=123&location=Main&t=1234567890
             const qrData = qrCodeData.qr_code_data;
 
             if (!qrData) {
-                throw new Error('QR 코드 데이터가 없습니다');
+                throw new Error(t('QR code data not found'));
             }
 
-            console.log('QR 코드 데이터:', qrData);
-            console.log('QR 이미지 버전:', qrCodeData.qr_image_version);
+            console.log('QR code data:', qrData);
+            console.log('QR image version:', qrCodeData.qr_image_version);
 
-            // QR 코드 이미지를 Data URL로 생성
+            // Generate QR code image as Data URL
             const dataURL = await QRCodeLib.toDataURL(qrData, {
                 width: 300,
                 margin: 2,
                 color: {
-                    dark: '#1976d2', // 파란색
-                    light: '#ffffff' // 흰색
+                    dark: '#1976d2', // Blue
+                    light: '#ffffff' // White
                 }
             });
 
             setQrCodeDataURL(dataURL);
         } catch (error) {
-            console.error('QR 코드 이미지 생성 실패:', error);
+            console.error('Failed to generate QR code image:', error);
             setError(t('Failed to generate QR code image'));
         }
     };
 
-    // QR 코드가 있을 때 이미지 생성
+    // Generate image when QR code is available
     useEffect(() => {
         if (qrCode && open) {
             generateQRCodeImage(qrCode);
@@ -91,15 +91,15 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
             const result = await qrCodeService.regenerateQRImage(qrCode.id);
 
             if (result.success) {
-                // QR 코드 데이터가 업데이트되었으므로 이미지 재생성
+                // Regenerate image since QR code data was updated
                 await generateQRCodeImage(result.qrCode);
                 onSuccess && onSuccess(result.qrCode);
             } else {
-                setError(result.message || 'QR 이미지 재생성에 실패했습니다');
+                setError(result.message || t('Failed to regenerate QR image'));
             }
         } catch (error) {
-            console.error('QR 이미지 재생성 오류:', error);
-            setError('QR 이미지 재생성 중 오류가 발생했습니다');
+            console.error('QR image regeneration error:', error);
+            setError(t('An error occurred while regenerating QR image'));
         } finally {
             setLoading(false);
         }
@@ -111,7 +111,7 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
             printWindow.document.write(`
                 <html>
                     <head>
-                        <title>QR 코드 - ${program?.name}</title>
+                        <title>${t('QR Code')} - ${program?.name}</title>
                         <style>
                             body {
                                 font-family: Arial, sans-serif;
@@ -154,7 +154,7 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
                                 <img src="${qrCodeDataURL}" alt="QR Code" />
                             </div>
                             <div class="qr-instructions">
-                                스마트폰으로 QR 코드를 스캔하여 체크인하세요
+${t('Scan the QR code with your smartphone to check in')}
                             </div>
                         </div>
                     </body>
@@ -212,7 +212,7 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
                 )}
 
                 {qrCode ? (
-                    // QR 코드 정보 표시
+                    // Display QR code information
                     <Box>
                         <Paper
                             elevation={0}
@@ -241,29 +241,29 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
                                         {program?.name}
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        스마트폰으로 QR 코드를 스캔하여 체크인하세요
+                                        {t('Scan the QR code with your smartphone to check in')}
                                     </Typography>
                                 </Box>
                             ) : (
                                 <Box>
                                     <CircularProgress sx={{ mb: 2 }} />
                                     <Typography variant="body2" color="text.secondary">
-                                        QR 코드를 생성하는 중...
+                                        {t('Generating QR code...')}
                                     </Typography>
                                 </Box>
                             )}
                         </Paper>
 
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                            생성일: {qrCode?.created_at && new Date(qrCode.created_at).toLocaleDateString('ko-KR')}
+                            {t('Created')}: {qrCode?.created_at && new Date(qrCode.created_at).toLocaleDateString('ko-KR')}
                         </Typography>
 
                         <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
                             <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                                QR 코드 재발급
+                                {t('Regenerate QR Code')}
                             </Typography>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                                새로운 QR 코드를 생성합니다. 기존 QR 코드는 무효화되어 보안이 강화됩니다.
+                                {t('Generate a new QR code. The existing QR code will be invalidated for enhanced security.')}
                             </Typography>
                             <Button
                                 variant="outlined"
@@ -272,18 +272,18 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
                                 disabled={loading}
                                 sx={{ textTransform: 'none' }}
                             >
-                                새 QR 코드 발급
+                                {t('Issue New QR Code')}
                             </Button>
                         </Box>
                     </Box>
                 ) : (
-                    // QR 코드가 없는 경우
+                    // When QR code is not available
                     <Box sx={{ textAlign: 'center', py: 4 }}>
                         <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
-                            QR 코드를 찾을 수 없습니다
+                            {t('QR code not found')}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            프로그램 생성 시 자동으로 QR 코드가 생성됩니다.
+                            {t('QR code is automatically generated when creating a program.')}
                         </Typography>
                     </Box>
                 )}
@@ -291,7 +291,7 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
 
             <DialogActions sx={{ p: 3, pt: 0, gap: 1 }}>
                 <Button onClick={handleClose} variant="outlined">
-                    닫기
+                    {t('Close')}
                 </Button>
 
                 {qrCode && qrCodeDataURL && (
@@ -301,7 +301,7 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
                             variant="outlined"
                             startIcon={<Print />}
                         >
-                            인쇄
+                            {t('Print')}
                         </Button>
                         <Button
                             onClick={handleDownload}
@@ -309,7 +309,7 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
                             disabled={loading}
                             startIcon={loading ? <CircularProgress size={16} /> : <Download />}
                         >
-                            {loading ? '처리 중...' : '다운로드'}
+                            {loading ? t('Processing...') : t('Download')}
                         </Button>
                     </>
                 )}

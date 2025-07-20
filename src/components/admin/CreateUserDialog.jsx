@@ -331,14 +331,14 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                     <TextField
                         fullWidth
                         name="phone"
-                        label="전화번호"
+                        label={t('Phone Number')}
                         value={formData.phone}
                         onChange={handleChange}
                         margin="normal"
                         required
                         disabled={loading}
                         placeholder="01012345678"
-                        helperText="숫자만 입력해주세요 (최소 3자)"
+                        helperText={t('Enter numbers only (minimum 3 characters)')}
                         slotProps={{
                             input: {
                                 startAdornment: (
@@ -351,23 +351,23 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                     />
 
                     <FormControl fullWidth margin="normal" required>
-                        <InputLabel>사용자 유형</InputLabel>
+                        <InputLabel>{t('User Type')}</InputLabel>
                         <Select
                             name="user_type"
                             value={formData.user_type}
                             onChange={handleChange}
                             disabled={loading}
-                            label="사용자 유형"
+                            label={t('User Type')}
                         >
-                            <MenuItem value="student">학생</MenuItem>
-                            <MenuItem value="parent">학부모</MenuItem>
+                            <MenuItem value="student">{t('Student')}</MenuItem>
+                            <MenuItem value="parent">{t('Parent')}</MenuItem>
                         </Select>
                     </FormControl>
                 </DialogContent>
 
                 <DialogActions sx={{ p: 3, pt: 0, gap: 1 }}>
                     <Button onClick={handleClose} disabled={loading}>
-                        취소
+                        {t('Cancel')}
                     </Button>
                     <Button
                         type="submit"
@@ -375,7 +375,7 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                         disabled={loading}
                         startIcon={loading ? <CircularProgress size={16} /> : getUserTypeIcon(formData.user_type)}
                     >
-                        {loading ? '생성 중...' : `${getUserTypeLabel(formData.user_type)} 생성`}
+                        {loading ? t('Creating...') : t('Create {{userType}}', { userType: getUserTypeLabel(formData.user_type) })}
                     </Button>
                 </DialogActions>
             </form>

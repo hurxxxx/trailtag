@@ -141,7 +141,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                     setError(result.message);
                 }
             } catch (error) {
-                setError('프로그램 삭제에 실패했습니다');
+                setError(t('Failed to delete program'));
             }
         }
         handleMenuClose();
@@ -150,7 +150,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
     const handleManageQRCodes = async (program) => {
         setSelectedProgramForQR(program);
 
-        // QR 코드가 아직 로드되지 않았다면 로드
+        // Load QR code if not loaded yet
         if (programQRCodes[program.id] === undefined) {
             try {
                 const result = await qrCodeService.getQRCodesByProgram(program.id);
@@ -182,7 +182,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
     };
 
     const handleQRSuccess = (qrCode) => {
-        // QR 코드 생성 성공 시 목록 업데이트
+        // Update list when QR code generation succeeds
         setProgramQRCodes(prev => ({
             ...prev,
             [selectedProgramForQR.id]: qrCode
@@ -232,7 +232,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                 </Alert>
             )}
 
-            {/* 헤더 및 검색 */}
+            {/* Header and Search */}
             <Box sx={{ mb: 4 }}>
                 <Box sx={{
                     display: 'flex',
@@ -317,13 +317,13 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                         </Avatar>
 
                         <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
-                            {searchTerm ? '검색 결과가 없습니다' : '프로그램이 없습니다'}
+                            {searchTerm ? t('No search results found') : t('No programs available')}
                         </Typography>
 
                         <Typography variant="body1" color="text.secondary" sx={{ mb: 3, maxWidth: 400, mx: 'auto' }}>
                             {searchTerm
-                                ? '다른 검색어로 다시 시도해보세요'
-                                : '첫 번째 학습 프로그램을 생성하여 시작해보세요'
+                                ? t('Try searching with different keywords')
+                                : t('Create your first learning program to get started')
                             }
                         </Typography>
 
@@ -345,7 +345,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                                     }
                                 }}
                             >
-                                첫 프로그램 생성하기
+                                {t('Create First Program')}
                             </Button>
                         )}
                     </CardContent>
@@ -387,7 +387,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                                             </Avatar>
                                         }
                                         action={
-                                            <Tooltip title="더 보기">
+                                            <Tooltip title={t('More Options')}>
                                                 <IconButton
                                                     size="small"
                                                     onClick={(e) => handleMenuOpen(e, program)}
@@ -480,7 +480,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                                                 flex: 1
                                             }}
                                         >
-                                            QR 보기
+                                            {t('View QR')}
                                         </Button>
                                         <Button
                                             variant="outlined"
@@ -494,7 +494,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                                                 flex: 1
                                             }}
                                         >
-                                            수정
+                                            {t('Edit')}
                                         </Button>
                                     </CardActions>
                                 </Card>
@@ -512,15 +512,15 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
             >
                 <MenuItem onClick={handleEdit}>
                     <Edit fontSize="small" sx={{ mr: 1 }} />
-                    프로그램 수정
+                    {t('Edit Program')}
                 </MenuItem>
                 <MenuItem onClick={() => handleManageQRCodes(selectedProgram)}>
                     <QrCode fontSize="small" sx={{ mr: 1 }} />
-                    QR 코드 관리
+                    {t('Manage QR Code')}
                 </MenuItem>
                 <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
                     <Delete fontSize="small" sx={{ mr: 1 }} />
-                    프로그램 삭제
+                    {t('Delete Program')}
                 </MenuItem>
             </Menu>
 
@@ -539,7 +539,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                 <Add />
             </Fab>
 
-            {/* QR 코드 다이얼로그 */}
+            {/* QR Code Dialog */}
             <QRCodeDialog
                 open={showQRDialog}
                 onClose={handleQRDialogClose}

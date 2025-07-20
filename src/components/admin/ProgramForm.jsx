@@ -204,7 +204,7 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
                     <TextField
                         fullWidth
                         name="end_datetime"
-                        label="종료 일시"
+                        label={t('End Date Time')}
                         type="datetime-local"
                         value={formData.end_datetime}
                         onChange={handleChange}
@@ -217,7 +217,7 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
 
                     <Box sx={{ mt: 2, mb: 2 }}>
                         <Typography variant="subtitle1" gutterBottom>
-                            프로그램 설명
+                            {t('Program Description')}
                         </Typography>
                         <TextField
                             fullWidth
@@ -225,7 +225,7 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
                             value={formData.description}
                             onChange={handleDescriptionChange}
                             disabled={loading}
-                            placeholder="프로그램에 대한 자세한 설명을 입력하세요..."
+                            placeholder={t('Enter detailed program description...')}
                             multiline
                             rows={6}
                             variant="outlined"
@@ -243,7 +243,7 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
                     disabled={loading}
                     variant="outlined"
                 >
-                    취소
+                    {t('Cancel')}
                 </Button>
                 <Button
                     onClick={handleSubmit}
