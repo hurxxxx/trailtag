@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Card,
@@ -42,13 +43,14 @@ import QRCodeDialog from './QRCodeDialog';
 const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
     const { user } = useAuth();
     const theme = useTheme();
+    const { t } = useTranslation();
     const [programs, setPrograms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedProgram, setSelectedProgram] = useState(null);
-    const [programQRCodes, setProgramQRCodes] = useState({}); // 프로그램별 QR 코드 정보 (1:1)
+    const [programQRCodes, setProgramQRCodes] = useState({}); // QR code info per program (1:1)
     const [showQRDialog, setShowQRDialog] = useState(false);
     const [selectedProgramForQR, setSelectedProgramForQR] = useState(null);
 
@@ -59,7 +61,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
             try {
                 const result = await qrCodeService.getQRCodesByProgram(program.id);
                 if (result.success && result.qrCodes.length > 0) {
-                    qrInfo[program.id] = result.qrCodes[0]; // 유일한 QR 코드
+                    qrInfo[program.id] = result.qrCodes[0]; // Unique QR code
                 } else {
                     qrInfo[program.id] = null;
                 }
@@ -81,17 +83,17 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
             if (result.success) {
                 setPrograms(result.programs);
                 setError('');
-                console.log('프로그램 로드 성공:', result.programs);
+                console.log('Program load success:', result.programs);
 
                 // Load QR codes for each program
                 await loadProgramQRCodes(result.programs);
             } else {
                 setError(result.message);
-                console.error('프로그램 로드 실패:', result.message);
+                console.error('Program load failed:', result.message);
             }
         } catch (error) {
-            console.error('프로그램 로드 오류:', error);
-            setError('프로그램을 불러오는데 실패했습니다');
+            console.error('Program load error:', error);
+            setError(t('Failed to load programs'));
         } finally {
             setLoading(false);
         }
@@ -213,10 +215,10 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
             >
                 <CircularProgress size={48} thickness={4} />
                 <Typography variant="h6" sx={{ mt: 2, fontWeight: 500 }}>
-                    프로그램을 불러오는 중...
+                    {t('Loading programs...')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                    잠시만 기다려주세요
+                    {t('Please wait a moment')}
                 </Typography>
             </Box>
         );
@@ -242,10 +244,10 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                 }}>
                     <Box>
                         <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
-                            프로그램 목록
+                            {t('Program List')}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            총 {programs.length}개의 프로그램이 있습니다
+                            {t('Total {{count}} programs', { count: programs.length })}
                         </Typography>
                     </Box>
 
@@ -265,13 +267,13 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                             }
                         }}
                     >
-                        새 프로그램 생성
+                        {t('Create New Program')}
                     </Button>
                 </Box>
 
                 <TextField
                     fullWidth
-                    placeholder="프로그램 이름, 설명, 위치로 검색..."
+                    placeholder={t('Search by program name, description, location...')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     slotProps={{

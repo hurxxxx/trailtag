@@ -5,7 +5,7 @@ class AdminDashboardService {
     async getDashboardStats() {
         try {
             const response = await apiClient.getDashboardStats();
-            
+
             if (response.success) {
                 return {
                     success: true,
@@ -28,7 +28,7 @@ class AdminDashboardService {
     async getRecentActivity() {
         try {
             const response = await apiClient.getRecentActivity();
-            
+
             if (response.success) {
                 return {
                     success: true,
@@ -64,9 +64,9 @@ class AdminDashboardService {
     getDefaultActivities() {
         return [
             {
-                title: '시스템 시작됨',
-                description: 'TrailTag 시스템이 정상적으로 시작되었습니다',
-                time: '방금 전',
+                title: 'System Started',
+                description: 'TrailTag system has started successfully',
+                time: 'Just now',
                 type: 'system'
             }
         ];
@@ -89,15 +89,15 @@ class AdminDashboardService {
         const diffInMinutes = Math.floor((now - date) / (1000 * 60));
 
         if (diffInMinutes < 1) {
-            return '방금 전';
+            return 'Just now';
         } else if (diffInMinutes < 60) {
-            return `${diffInMinutes}분 전`;
+            return `${diffInMinutes} minutes ago`;
         } else if (diffInMinutes < 1440) {
             const hours = Math.floor(diffInMinutes / 60);
-            return `${hours}시간 전`;
+            return `${hours} hours ago`;
         } else {
             const days = Math.floor(diffInMinutes / 1440);
-            return `${days}일 전`;
+            return `${days} days ago`;
         }
     }
 

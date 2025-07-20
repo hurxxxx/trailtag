@@ -1,13 +1,13 @@
 // Browser-compatible imports
 import apiClient from './apiClient.js';
 
-// 클라이언트에서는 서버 API만 사용하므로 JWT/bcrypt 구현 제거
+// Client only uses server API, so JWT/bcrypt implementation removed
 
 class AuthService {
     // Register a new user
     async register(userData) {
         try {
-            // 서버 API를 통해 사용자 등록
+            // Register user through server API
             const response = await apiClient.register(userData);
 
             if (response.success) {
@@ -30,7 +30,7 @@ class AuthService {
     // Login user
     async login(username, password) {
         try {
-            // 서버 API를 통해 로그인
+            // Login through server API
             const response = await apiClient.login(username, password);
 
             if (response.success) {
@@ -54,7 +54,7 @@ class AuthService {
     // Verify JWT token
     async verifyToken(token) {
         try {
-            // 서버 API를 통해 토큰 검증
+            // Verify token through server API
             const response = await apiClient.verifyToken(token);
 
             if (response.success) {
@@ -76,7 +76,7 @@ class AuthService {
     // Get user from token
     async getUserFromToken(token) {
         try {
-            // 서버 API를 통해 토큰에서 사용자 정보 가져오기
+            // Get user info from token through server API
             const response = await apiClient.getUserFromToken(token);
 
             if (response.success) {
@@ -98,7 +98,7 @@ class AuthService {
     // Logout user
     async logout(token) {
         try {
-            // 서버 API를 통해 로그아웃
+            // Logout through server API
             const response = await apiClient.logout(token);
 
             if (response.success) {
@@ -152,14 +152,14 @@ class AuthService {
 
     // Clean up expired sessions
     cleanupExpiredSessions() {
-        // 서버에서 처리하므로 클라이언트에서는 빈 메서드
+        // Empty method on client side as server handles this
         console.log('Session cleanup is handled by server');
     }
 
     // Change password
     async changePassword(userId, currentPassword, newPassword) {
         try {
-            // 서버 API를 통해 비밀번호 변경
+            // Change password through server API
             const response = await apiClient.changePassword({
                 userId,
                 currentPassword,
@@ -187,7 +187,7 @@ class AuthService {
         try {
             console.log('AuthService updateProfile called with:', updateData);
 
-            // 서버 API를 통해 프로필 업데이트
+            // Update profile through server API
             const response = await apiClient.updateProfile(updateData);
             console.log('API response:', response);
 

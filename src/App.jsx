@@ -11,10 +11,10 @@ import AdminDashboard from './pages/AdminDashboard';
 import I18nTest from './components/test/I18nTest';
 import theme from './theme/theme';
 
-// i18n 초기화
+// Initialize i18n
 import './i18n';
 
-// 현대적인 테마는 별도 파일에서 import
+// Modern theme imported from separate file
 
 function App() {
   return (

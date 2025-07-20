@@ -8,23 +8,23 @@ class CheckInService {
                 throw new Error('QR code data and student ID are required');
             }
 
-            // API를 통해 체크인 처리 (서버에서 QR 코드 검증 및 체크인 처리)
+            // Process check-in through API (server handles QR code verification and check-in)
             const response = await apiClient.checkIn(qrCodeData);
 
             if (response.success) {
                 return {
                     success: true,
-                    message: response.message || '체크인 성공!',
+                    message: response.message || 'Check-in successful!',
                     checkIn: response.checkIn
                 };
             } else {
-                throw new Error(response.message || '체크인 실패');
+                throw new Error(response.message || 'Check-in failed');
             }
         } catch (error) {
             console.error('Check-in error:', error);
             return {
                 success: false,
-                message: error.message || '체크인 처리 실패'
+                message: error.message || 'Check-in processing failed'
             };
         }
     }
@@ -45,7 +45,7 @@ class CheckInService {
         try {
             console.log('Getting check-in history for student:', studentId, 'isParentRequest:', isParentRequest);
 
-            // 부모가 특정 학생을 조회하는 경우
+            // When parent queries specific student
             if (studentId && isParentRequest) {
                 const response = await apiClient.getStudentCheckInHistory(studentId, limit);
                 console.log('Student check-in history response:', response);
@@ -59,7 +59,7 @@ class CheckInService {
                     throw new Error(response.message || 'Failed to fetch student check-in history');
                 }
             } else {
-                // 학생이 자신의 기록을 조회하는 경우
+                // When student queries their own records
                 const response = await apiClient.getCheckInHistory(limit);
 
                 if (response.success) {
@@ -84,7 +84,7 @@ class CheckInService {
     // Get check-in statistics for a student
     async getStudentStats(studentId) {
         try {
-            // API를 통해 학생 통계 가져오기
+            // Get student statistics through API
             const response = await apiClient.getStudentStats(studentId);
 
             if (response.success) {
@@ -110,7 +110,7 @@ class CheckInService {
         try {
             console.log('Getting today check-ins for student:', studentId, 'isParentRequest:', isParentRequest);
 
-            // 부모가 특정 학생을 조회하는 경우
+            // When parent queries specific student
             if (studentId && isParentRequest) {
                 const response = await apiClient.getStudentTodayCheckIns(studentId);
                 console.log('Student today check-ins response:', response);
@@ -124,7 +124,7 @@ class CheckInService {
                     throw new Error(response.message || 'Failed to fetch student today\'s check-ins');
                 }
             } else {
-                // 학생이 자신의 기록을 조회하는 경우
+                // When student queries their own records
                 const response = await apiClient.getTodayCheckIns();
 
                 if (response.success) {
@@ -182,7 +182,7 @@ class CheckInService {
     // Validate check-in eligibility
     async validateCheckInEligibility(studentId, programId) {
         try {
-            // API를 통해 체크인 자격 검증
+            // Validate check-in eligibility through API
             const response = await apiClient.validateCheckInEligibility(studentId, programId);
 
             if (response.success) {
@@ -207,7 +207,7 @@ class CheckInService {
     // Get check-in summary for admin dashboard
     async getCheckInSummary(dateRange = 7) {
         try {
-            // API를 통해 체크인 요약 정보 가져오기
+            // Get check-in summary information through API
             const response = await apiClient.getCheckInSummary(dateRange);
 
             if (response.success) {

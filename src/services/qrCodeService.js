@@ -6,38 +6,38 @@ class QRCodeService {
     async createQRCode(programId) {
         try {
             if (!programId) {
-                throw new Error('프로그램 ID가 필요합니다');
+                throw new Error('Program ID is required');
             }
 
-            console.log('QR 코드 생성 시도:', { programId });
+            console.log('Attempting QR code creation:', { programId });
 
-            // API를 통해 QR 코드 생성
+            // Create QR code through API
             const response = await apiClient.createQRCode({
                 program_id: programId
             });
 
-            console.log('QR 코드 생성 응답:', response);
+            console.log('QR code creation response:', response);
 
             if (response.success) {
-                // QR 코드 이미지 생성
+                // Generate QR code image
                 const qrCodeImage = await this.generateQRCodeImage(response.qrCode.qr_code_data);
 
                 return {
                     success: true,
-                    message: 'QR 코드가 성공적으로 생성되었습니다',
+                    message: 'QR code created successfully',
                     qrCode: {
                         ...response.qrCode,
                         qr_code_image: qrCodeImage
                     }
                 };
             } else {
-                throw new Error(response.message || 'QR 코드 생성에 실패했습니다');
+                throw new Error(response.message || 'Failed to create QR code');
             }
         } catch (error) {
-            console.error('QR 코드 생성 오류:', error);
+            console.error('QR code creation error:', error);
             return {
                 success: false,
-                message: error.message || 'QR 코드 생성에 실패했습니다'
+                message: error.message || 'Failed to create QR code'
             };
         }
     }
@@ -60,8 +60,8 @@ class QRCodeService {
 
             return qrCodeDataURL;
         } catch (error) {
-            console.error('QR 코드 이미지 생성 오류:', error);
-            throw new Error('QR 코드 이미지 생성에 실패했습니다');
+            console.error('QR code image generation error:', error);
+            throw new Error('Failed to generate QR code image');
         }
     }
 
@@ -87,13 +87,13 @@ class QRCodeService {
                     qrCodes: qrCodesWithImages
                 };
             } else {
-                throw new Error(response.message || 'QR 코드 목록을 가져오는데 실패했습니다');
+                throw new Error(response.message || 'Failed to fetch QR code list');
             }
         } catch (error) {
-            console.error('QR 코드 목록 조회 오류:', error);
+            console.error('QR code list query error:', error);
             return {
                 success: false,
-                message: error.message || 'QR 코드 목록을 가져오는데 실패했습니다',
+                message: error.message || 'Failed to fetch QR code list',
                 qrCodes: []
             };
         }
@@ -121,13 +121,13 @@ class QRCodeService {
                     qrCodes: qrCodesWithImages
                 };
             } else {
-                throw new Error(response.message || 'QR 코드 목록을 가져오는데 실패했습니다');
+                throw new Error(response.message || 'Failed to fetch QR code list');
             }
         } catch (error) {
-            console.error('전체 QR 코드 목록 조회 오류:', error);
+            console.error('All QR code list query error:', error);
             return {
                 success: false,
-                message: error.message || 'QR 코드 목록을 가져오는데 실패했습니다',
+                message: error.message || 'Failed to fetch QR code list',
                 qrCodes: []
             };
         }
@@ -140,14 +140,14 @@ class QRCodeService {
 
             return {
                 success: response.success,
-                message: response.message || 'QR 코드가 성공적으로 업데이트되었습니다',
+                message: response.message || 'QR code updated successfully',
                 qrCode: response.qrCode
             };
         } catch (error) {
-            console.error('QR 코드 업데이트 오류:', error);
+            console.error('QR code update error:', error);
             return {
                 success: false,
-                message: error.message || 'QR 코드 업데이트에 실패했습니다'
+                message: error.message || 'Failed to update QR code'
             };
         }
     }
@@ -159,13 +159,13 @@ class QRCodeService {
 
             return {
                 success: response.success,
-                message: response.message || 'QR 코드가 성공적으로 삭제되었습니다'
+                message: response.message || 'QR code deleted successfully'
             };
         } catch (error) {
-            console.error('QR 코드 삭제 오류:', error);
+            console.error('QR code deletion error:', error);
             return {
                 success: false,
-                message: error.message || 'QR 코드 삭제에 실패했습니다'
+                message: error.message || 'Failed to delete QR code'
             };
         }
     }
@@ -181,20 +181,20 @@ class QRCodeService {
 
                 return {
                     success: true,
-                    message: 'QR 이미지가 성공적으로 재생성되었습니다',
+                    message: 'QR image regenerated successfully',
                     qrCode: {
                         ...response.qrCode,
                         qr_code_image: qrCodeImage
                     }
                 };
             } else {
-                throw new Error(response.message || 'QR 이미지 재생성에 실패했습니다');
+                throw new Error(response.message || 'Failed to regenerate QR image');
             }
         } catch (error) {
-            console.error('QR 이미지 재생성 오류:', error);
+            console.error('QR image regeneration error:', error);
             return {
                 success: false,
-                message: error.message || 'QR 이미지 재생성에 실패했습니다'
+                message: error.message || 'Failed to regenerate QR image'
             };
         }
     }

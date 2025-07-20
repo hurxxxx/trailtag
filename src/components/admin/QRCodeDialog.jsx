@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -24,6 +25,7 @@ import QRCodeLib from 'qrcode';
 import qrCodeService from '../../services/qrCodeService';
 
 const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [qrCodeDataURL, setQrCodeDataURL] = useState('');
@@ -55,7 +57,7 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
             setQrCodeDataURL(dataURL);
         } catch (error) {
             console.error('QR 코드 이미지 생성 실패:', error);
-            setError('QR 코드 이미지 생성에 실패했습니다');
+            setError(t('Failed to generate QR code image'));
         }
     };
 
@@ -187,7 +189,7 @@ const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
                         </Avatar>
                         <Box>
                             <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                                QR 코드 정보
+                                {t('QR Code Information')}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                                 {program?.name}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Container,
@@ -41,6 +42,7 @@ const ParentDashboard = () => {
     const location = useLocation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const { t } = useTranslation();
     const [bottomNavValue, setBottomNavValue] = useState(0);
     const [selectedStudent, setSelectedStudent] = useState(null);
 
@@ -97,11 +99,11 @@ const ParentDashboard = () => {
             <AppBar position="sticky" elevation={2}>
                 <Toolbar>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        TrailTag 학부모
+                        {t('TrailTag Parent')}
                     </Typography>
                     <Button color="inherit" onClick={handleLogout}>
                         <Logout sx={{ mr: 1 }} />
-                        로그아웃
+                        {t('Logout')}
                     </Button>
                 </Toolbar>
             </AppBar>
@@ -224,10 +226,10 @@ const ParentHome = ({ onStudentSelect }) => {
         <Box>
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    환영합니다, {user?.full_name}님!
+                    {t('Welcome, {{name}}!', { name: user?.full_name })}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                    자녀의 학습 프로그램 참여와 활동을 모니터링하세요.
+                    {t('Monitor your child\'s learning program participation and activities')}
                 </Typography>
             </Paper>
 

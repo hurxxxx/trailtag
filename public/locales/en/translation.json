@@ -12,8 +12,11 @@
   "Add Admin": "",
   "Admin": "",
   "Admin {{admin}} | Student {{student}} | Parent {{parent}}": "",
+  "Admin Panel": "Admin Panel",
   "Align the QR code within the rectangle in the center of the screen": "Align the QR code within the rectangle in the center of the screen",
   "All": "All",
+  "All Check-ins": "All Check-ins",
+  "All History": "All History",
   "Already have an account? Login": "Already have an account? Login",
   "An error occurred": {
     " Please try again": "An error occurred. Please try again."
@@ -32,6 +35,7 @@
   "Changing": {
     "": "Changing..."
   },
+  "Check your participation history and statistics": "Check your participation history and statistics",
   "Check-in History": "Check-in History",
   "Check-in Time": "Check-in Time",
   "Check-ins in the last 7 days": "",
@@ -39,7 +43,6 @@
   "Close": "Close",
   "Confirm New Password": "",
   "Confirm Password": "",
-  "Create {{userType}}": "Create {{userType}}",
   "Create a new admin account": {
     " Please fill in all required information": "Create a new admin account. Please fill in all required information."
   },
@@ -48,12 +51,14 @@
     " Please fill in all required information": "Create a new user account. Please fill in all required information."
   },
   "Create Admin": "Create Admin",
+  "Create and manage learning programs with rich content and QR code integration": "Create and manage learning programs with rich content and QR code integration",
   "Create New {{userType}} Account": "Create New {{userType}} Account",
   "Create New Admin Account": "Create New Admin Account",
   "Create New Program": "Create New Program",
   "Create Program": "",
   "Create Student/Parent": "Create Student/Parent",
   "Create your TrailTag account": "Create your TrailTag account",
+  "created": "created",
   "Created Date": "Created Date",
   "Creating": {
     "": "Creating..."
@@ -61,6 +66,7 @@
   "Current Language": "Current Language",
   "Current Password": "",
   "Currently running programs": "",
+  "Dashboard": "Dashboard",
   "Data to be deleted": "Data to be deleted",
   "Delete User": "Delete User",
   "Deleting": {
@@ -76,12 +82,21 @@
   "Email Address": "Email Address",
   "English": "English",
   "Enter full name": "Enter full name",
+  "Enter phone number": "Enter phone number",
+  "Enter program location": "Enter program location",
+  "Enter program name": "Enter program name",
+  "Enter student full name": "Enter student full name",
   "Failed to change password": "",
+  "Failed to generate QR code image": "Failed to generate QR code image",
+  "Failed to load programs": "Failed to load programs",
   "Failed to update profile": "",
   "Generate Secure Password": "Generate Secure Password",
   "Hello, {{name}}! 👋": "Hello, {{name}}! 👋",
+  "History": "History",
+  "Home": "Home",
   "HTTPS connection is required to use camera in mobile browsers": "HTTPS connection is required to use camera in mobile browsers.",
   "i18n Test": "i18n Test",
+  "Instant check-in to programs": "Instant check-in to programs",
   "Invalid user type": "Invalid user type",
   "Japanese": "Japanese",
   "Key": "Key",
@@ -89,23 +104,37 @@
   "Language": "",
   "Learning Program Participation Tracking System": "Learning Program Participation Tracking System",
   "Letters and numbers (3+ characters)": "Letters and numbers (3+ characters)",
+  "Loading programs": {
+    "": "Loading programs..."
+  },
   "Loading user information": {
     "": ""
   },
+  "Location": "Location",
   "Login": "",
   "Login failed": {
     " Please try again": ""
   },
   "Login ID": "Login ID",
   "Login ID must be at least 3 characters": "Login ID must be at least 3 characters",
+  "Logout": "Logout",
   "Manage user accounts": "",
+  "Monitor student participation and activities in learning programs": "Monitor student participation and activities in learning programs",
+  "Monitor your child's learning program participation and activities": "Monitor your child's learning program participation and activities",
+  "Most Visited Programs": "Most Visited Programs",
+  "My Students": "My Students",
   "Name": "",
   "New Password": "",
   "No check-in history": "No check-in history",
+  "No check-ins recorded yet": "No check-ins recorded yet",
+  "No check-ins today yet": "No check-ins today yet",
+  "No programs checked in today yet": "No programs checked in today yet",
   "No recent activity": "",
   "No users found": "No users found",
   "Numbers only (minimum 3 digits)": "Numbers only (minimum 3 digits)",
   "Parent": "Parent",
+  "Participate in programs to build your history!": "Participate in programs to build your history!",
+  "Participation History": "Participation History",
   "Password": "",
   "Password changed successfully": "",
   "Password must be at least 6 characters": "Password must be at least 6 characters",
@@ -121,6 +150,7 @@
   "Please enter a valid email format": "",
   "Please enter a valid phone number": "",
   "Please enter numbers only": "Please enter numbers only",
+  "Please enter program name": "Please enter program name",
   "Please enter your current password": "",
   "Please enter your email": "Please enter your email",
   "Please enter your login ID": "Please enter your login ID",
@@ -131,19 +161,31 @@
   "Please fill in all required fields": "Please fill in all required fields",
   "Please select user type": "Please select user type",
   "Please type \"DELETE\" exactly to confirm": "Please type \"DELETE\" exactly to confirm",
+  "Please wait a moment": "Please wait a moment",
   "Position the QR code within the camera frame to scan": "Position the QR code within the camera frame to scan",
+  "processed": "processed",
   "Processing check-in": {
     "": "Processing check-in..."
   },
+  "Profile": "Profile",
   "Profile Information": "",
   "Profile updated successfully": "",
   "Program": "Program",
+  "Program has been successfully {{action}}!": "Program has been successfully {{action}}!",
+  "Program List": "Program List",
+  "Program Management": "Program Management",
+  "Program Name": "Program Name",
+  "Programs Visited": "Programs Visited",
+  "QR Code Information": "QR Code Information",
+  "QR Code Scan": "QR Code Scan",
+  "QR Scan": "QR Scan",
   "QR scanner initialization failed": {
     " Please refresh the page": "QR scanner initialization failed. Please refresh the page."
   },
   "Quick Actions": "",
   "Re-enter new password": "Re-enter new password",
   "Re-enter password": "Re-enter password",
+  "Ready to participate in learning programs? Scan QR codes to record your participation": "Ready to participate in learning programs? Scan QR codes to record your participation",
   "Recent Activity": "",
   "Refresh": "Refresh",
   "Registration failed": {
@@ -151,38 +193,74 @@
   },
   "Rows per page": "Rows per page",
   "Save": "",
+  "Saving": {
+    "": "Saving..."
+  },
+  "Scan": "Scan",
+  "Scan QR code to check in to programs!": "Scan QR code to check in to programs!",
+  "Search by program name, description, location": {
+    "": "Search by program name, description, location..."
+  },
   "Search by username, name, email": {
     "": "Search by username, name, email..."
   },
+  "Search for students by name or phone number to monitor their learning activities": "Search for students by name or phone number to monitor their learning activities",
+  "Search Students": "Search Students",
+  "Searching": {
+    "": "Searching..."
+  },
+  "Select Student": "Select Student",
   "Seoul (UTC+9)": "",
   "Set a new password for this user": {
     " Please securely share the changed password with the user": "Set a new password for this user. Please securely share the changed password with the user."
   },
   "Sign Up": "",
+  "Start Date Time": "Start Date Time",
   "Start Scan": "Start Scan",
+  "Start Scanning": "Start Scanning",
   "Status": "Status",
   "Stop Scan": "Stop Scan",
   "Student": "Student",
+  "Student Monitoring": "Student Monitoring",
+  "Student Name": "Student Name",
+  "Student Search": "Student Search",
   "System Settings": "",
   "System settings feature is under development": "",
+  "This Week": "This Week",
   "This Week Check-ins": "",
   "Timezone": "",
   "To continue type DELETE below": "To continue type DELETE below",
+  "Today": "Today",
   "Today Check-ins": "",
+  "Today's Activities": "Today's Activities",
+  "Today's Check-ins": "Today's Check-ins",
   "Toggle password visibility": "Toggle password visibility",
+  "Total {{count}} programs_one": "Total {{count}} programs",
+  "Total {{count}} programs_other": "Total {{count}} programs",
+  "Total Check-ins": "Total Check-ins",
   "Total Users": "",
   "TrailTag": "TrailTag",
+  "TrailTag Admin": "TrailTag Admin",
+  "TrailTag Parent": "TrailTag Parent",
   "Translation": "Translation",
   "Translation Key Test": "Translation Key Test",
   "Type": "Type",
+  "Unique Locations": "Unique Locations",
+  "Update Program": "Update Program",
+  "updated": "updated",
   "User": "User",
   "User Management": "",
   "User Type": "User Type",
   "Username": "Username",
   "Username for login": "Username for login",
   "View All Activities": "",
+  "View my participation history": "View my participation history",
   "Warning - This action cannot be undone": "Warning - This action cannot be undone",
   "We recommend changing your password regularly for security": "",
   "Welcome back to TrailTag": "Welcome back to TrailTag",
-  "Welcome to the TrailTag Admin Dashboard": "Welcome to the TrailTag Admin Dashboard."
+  "Welcome to the TrailTag Admin Dashboard": "Welcome to the TrailTag Admin Dashboard.",
+  "Welcome, {{name}}!": "Welcome, {{name}}!",
+  "You have not added any students to monitor yet": {
+    " Use the student search feature to find and add students": "You have not added any students to monitor yet. Use the student search feature to find and add students"
+  }
 }

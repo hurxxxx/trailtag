@@ -116,22 +116,22 @@ const StudentDashboard = () => {
                         >
                             <Tab
                                 icon={<Home />}
-                                label="홈"
+                                label={t('Home')}
                                 iconPosition="start"
                             />
                             <Tab
                                 icon={<QrCodeScanner />}
-                                label="QR 스캔"
+                                label={t('QR Scan')}
                                 iconPosition="start"
                             />
                             <Tab
                                 icon={<History />}
-                                label="기록"
+                                label={t('History')}
                                 iconPosition="start"
                             />
                             <Tab
                                 icon={<Person />}
-                                label="프로필"
+                                label={t('Profile')}
                                 iconPosition="start"
                             />
                         </Tabs>
@@ -166,19 +166,19 @@ const StudentDashboard = () => {
                         showLabels
                     >
                         <BottomNavigationAction
-                            label="홈"
+                            label={t('Home')}
                             icon={<Home />}
                         />
                         <BottomNavigationAction
-                            label="스캔"
+                            label={t('Scan')}
                             icon={<QrCodeScanner />}
                         />
                         <BottomNavigationAction
-                            label="기록"
+                            label={t('History')}
                             icon={<History />}
                         />
                         <BottomNavigationAction
-                            label="프로필"
+                            label={t('Profile')}
                             icon={<Person />}
                         />
                     </BottomNavigation>
@@ -224,10 +224,10 @@ const StudentHome = () => {
         <Box>
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    환영합니다, {user?.full_name}님!
+                    {t('Welcome, {{name}}!', { name: user?.full_name })}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                    학습 프로그램에 참여할 준비가 되셨나요? QR 코드를 스캔하여 참여를 기록하세요.
+                    {t('Ready to participate in learning programs? Scan QR codes to record your participation')}
                 </Typography>
             </Paper>
 
@@ -246,10 +246,10 @@ const StudentHome = () => {
                         <CardContent sx={{ textAlign: 'center', py: 4 }}>
                             <QrCodeScanner sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
                             <Typography variant="h6" gutterBottom>
-                                QR 코드 스캔
+                                {t('QR Code Scan')}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                프로그램에 즉시 체크인
+                                {t('Instant check-in to programs')}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -268,10 +268,10 @@ const StudentHome = () => {
                         <CardContent sx={{ textAlign: 'center', py: 4 }}>
                             <History sx={{ fontSize: 60, color: 'secondary.main', mb: 2 }} />
                             <Typography variant="h6" gutterBottom>
-                                참여 기록
+                                {t('Participation History')}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                나의 참여 기록 보기
+                                {t('View my participation history')}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -281,7 +281,7 @@ const StudentHome = () => {
             {/* Today's Activity */}
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h6" gutterBottom>
-                    오늘의 활동
+                    {t('Today\'s Activities')}
                 </Typography>
 
                 {loading ? (
@@ -291,7 +291,7 @@ const StudentHome = () => {
                 ) : todayCheckIns.length === 0 ? (
                     <Box textAlign="center" py={3}>
                         <Typography variant="body1" color="text.secondary">
-                            아직 오늘 체크인한 프로그램이 없습니다.
+                            {t('No programs checked in today yet')}
                         </Typography>
                         <Button
                             variant="contained"
@@ -299,7 +299,7 @@ const StudentHome = () => {
                             onClick={() => navigate('/student/scanner')}
                             sx={{ mt: 2 }}
                         >
-                            스캔 시작하기
+                            {t('Start Scanning')}
                         </Button>
                     </Box>
                 ) : (

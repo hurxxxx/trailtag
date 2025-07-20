@@ -18,7 +18,7 @@ import {
 const languages = [
   {
     code: 'ko',
-    name: '한국어',
+    name: 'Korean',
     flag: '🇰🇷'
   },
   {

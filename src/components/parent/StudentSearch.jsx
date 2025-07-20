@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Paper,
@@ -36,6 +37,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const StudentSearch = ({ onStudentSelect }) => {
     const { user } = useAuth();
+    const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
     const [phoneSearch, setPhoneSearch] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -79,7 +81,7 @@ const StudentSearch = ({ onStudentSelect }) => {
         try {
             console.log('Searching for students with:', { name: searchTerm.trim(), phone: phoneSearch.trim() });
 
-            // 서버 API를 통해 학생 검색
+            // Search students through server API
             const response = await apiClient.get('/users/students/search', {
                 name: searchTerm.trim() || undefined,
                 phone: phoneSearch.trim() || undefined
@@ -164,10 +166,10 @@ const StudentSearch = ({ onStudentSelect }) => {
         <Box>
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    학생 검색
+                    {t('Student Search')}
                 </Typography>
                 <Typography variant="body1" color="text.secondary" mb={3}>
-                    이름이나 전화번호로 학생을 검색하여 학습 활동을 모니터링하세요.
+                    {t('Search for students by name or phone number to monitor their learning activities')}
                 </Typography>
 
                 {error && (
@@ -181,11 +183,11 @@ const StudentSearch = ({ onStudentSelect }) => {
                     <Grid item xs={12} sm={6}>
                         <TextField
                             fullWidth
-                            label="학생 이름"
+                            label={t('Student Name')}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             onKeyPress={handleKeyPress}
-                            placeholder="학생의 전체 이름을 입력하세요"
+                            placeholder={t('Enter student full name')}
                             slotProps={{
                                 input: {
                                     startAdornment: (
@@ -200,11 +202,11 @@ const StudentSearch = ({ onStudentSelect }) => {
                     <Grid item xs={12} sm={6}>
                         <TextField
                             fullWidth
-                            label="전화번호"
+                            label={t('Phone Number')}
                             value={phoneSearch}
                             onChange={(e) => setPhoneSearch(e.target.value)}
                             onKeyPress={handleKeyPress}
-                            placeholder="전화번호를 입력하세요"
+                            placeholder={t('Enter phone number')}
                             slotProps={{
                                 input: {
                                     startAdornment: (
@@ -225,7 +227,7 @@ const StudentSearch = ({ onStudentSelect }) => {
                             disabled={loading || (!searchTerm.trim() && !phoneSearch.trim())}
                             fullWidth
                         >
-                            {loading ? '검색 중...' : '학생 검색'}
+                            {loading ? t('Searching...') : t('Search Students')}
                         </Button>
                     </Grid>
                 </Grid>
@@ -235,7 +237,7 @@ const StudentSearch = ({ onStudentSelect }) => {
             {myStudents.length > 0 && (
                 <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                     <Typography variant="h6" gutterBottom>
-                        내 학생들 ({myStudents.length})
+                        {t('My Students')} ({myStudents.length})
                     </Typography>
                     <Grid container spacing={2}>
                         {myStudents.map((student) => (

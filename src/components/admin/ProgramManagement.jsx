@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Typography,
@@ -12,6 +13,7 @@ import ProgramForm from './ProgramForm';
 
 const ProgramManagement = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [selectedProgram, setSelectedProgram] = useState(null);
     const [showProgramForm, setShowProgramForm] = useState(false);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -40,10 +42,10 @@ const ProgramManagement = () => {
 
     const handleProgramSuccess = (program, action) => {
         setRefreshTrigger(prev => prev + 1);
-        const actionText = action === 'created' ? '생성' : action === 'updated' ? '수정' : '처리';
+        const actionText = action === 'created' ? t('created') : action === 'updated' ? t('updated') : t('processed');
         setSnackbar({
             open: true,
-            message: `프로그램이 성공적으로 ${actionText}되었습니다!`,
+            message: t('Program has been successfully {{action}}!', { action: actionText }),
             severity: 'success'
         });
     };
@@ -54,9 +56,8 @@ const ProgramManagement = () => {
         setSnackbar(prev => ({ ...prev, open: false }));
     };
 
-    // 상태 변화 추적
     useEffect(() => {
-        console.log('ProgramManagement 상태 변화:', {
+        console.log('ProgramManagement state change:', {
             showProgramForm,
             selectedProgram,
             refreshTrigger
@@ -67,10 +68,10 @@ const ProgramManagement = () => {
         <Box>
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    프로그램 관리
+                    {t('Program Management')}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                    풍부한 콘텐츠와 QR 코드 통합을 통해 학습 프로그램을 생성하고 관리합니다.
+                    {t('Create and manage learning programs with rich content and QR code integration')}
                 </Typography>
             </Paper>
 

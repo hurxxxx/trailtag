@@ -37,10 +37,10 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        // 전화번호 필드는 숫자만 허용
+        // Phone field allows only numbers
         let processedValue = value;
         if (name === 'phone') {
-            processedValue = value.replace(/\D/g, ''); // 숫자가 아닌 문자 제거
+            processedValue = value.replace(/\D/g, ''); // Remove non-numeric characters
         }
 
         setFormData(prev => ({
@@ -97,8 +97,8 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
             errors.email = t('Please enter a valid email address');
         }
 
-        // Phone validation (숫자만, 3자 이상)
-        const phoneDigits = formData.phone.replace(/\D/g, ''); // 숫자만 추출
+        // Phone validation (numbers only, 3+ characters)
+        const phoneDigits = formData.phone.replace(/\D/g, ''); // Extract numbers only
         if (!formData.phone.trim()) {
             errors.phone = t('Please enter your phone number');
         } else if (phoneDigits.length < 3) {

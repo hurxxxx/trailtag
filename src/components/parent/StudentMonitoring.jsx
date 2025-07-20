@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Paper,
@@ -40,6 +41,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
     const { user } = useAuth();
+    const { t } = useTranslation();
     const [selectedStudent, setSelectedStudent] = useState(propSelectedStudent);
     const [myStudents, setMyStudents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -162,10 +164,10 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
         return (
             <Paper elevation={2} sx={{ p: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    학생 모니터링
+                    {t('Student Monitoring')}
                 </Typography>
                 <Alert severity="info">
-                    아직 모니터링할 학생을 추가하지 않았습니다. 학생 검색 기능을 사용하여 학생을 찾고 추가하세요.
+                    {t('You have not added any students to monitor yet. Use the student search feature to find and add students')}
                 </Alert>
             </Paper>
         );
@@ -175,20 +177,20 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
         <Box>
             <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
-                    학생 모니터링
+                    {t('Student Monitoring')}
                 </Typography>
                 <Typography variant="body1" color="text.secondary" mb={3}>
-                    학생의 학습 프로그램 참여와 활동을 모니터링하세요.
+                    {t('Monitor student participation and activities in learning programs')}
                 </Typography>
 
                 {/* Student Selector */}
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 3 }}>
                     <FormControl sx={{ minWidth: 200 }}>
-                        <InputLabel>학생 선택</InputLabel>
+                        <InputLabel>{t('Select Student')}</InputLabel>
                         <Select
                             value={selectedStudent?.id || ''}
                             onChange={handleStudentChange}
-                            label="학생 선택"
+                            label={t('Select Student')}
                         >
                             {myStudents.map((student) => (
                                 <MenuItem key={student.id} value={student.id}>
@@ -204,7 +206,7 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
                         onClick={loadStudentData}
                         disabled={loading || !selectedStudent}
                     >
-                        새로고침
+                        {t('Refresh')}
                     </Button>
                 </Box>
 

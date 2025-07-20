@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Container,
@@ -47,6 +48,7 @@ const AdminDashboard = () => {
     const location = useLocation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const { t } = useTranslation();
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const handleDrawerToggle = () => {
@@ -59,15 +61,15 @@ const AdminDashboard = () => {
     };
 
     const menuItems = [
-        { text: '대시보드', icon: <Dashboard />, path: '/admin' },
-        { text: '프로그램 관리', icon: <School />, path: '/admin/programs' },
-        { text: '사용자 관리', icon: <People />, path: '/admin/users' },
-        { text: '프로필', icon: <Person />, path: '/admin/profile' },
+        { text: t('Dashboard'), icon: <Dashboard />, path: '/admin' },
+        { text: t('Program Management'), icon: <School />, path: '/admin/programs' },
+        { text: t('User Management'), icon: <People />, path: '/admin/users' },
+        { text: t('Profile'), icon: <Person />, path: '/admin/profile' },
     ];
 
     const drawer = (
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            {/* 헤더 */}
+            {/* Header */}
             <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Avatar
@@ -86,13 +88,13 @@ const AdminDashboard = () => {
                             TrailTag
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                            관리자 패널
+                            {t('Admin Panel')}
                         </Typography>
                     </Box>
                 </Box>
             </Box>
 
-            {/* 메뉴 */}
+            {/* Menu */}
             <Box sx={{ flex: 1, py: 2 }}>
                 <List sx={{ px: 2 }}>
                     {menuItems.map((item) => {
@@ -165,7 +167,7 @@ const AdminDashboard = () => {
                                     {user?.full_name}
                                 </Typography>
                                 <Typography variant="caption" color="text.secondary">
-                                    관리자
+                                    {t('Admin')}
                                 </Typography>
                             </Box>
                         </Box>
@@ -197,10 +199,10 @@ const AdminDashboard = () => {
 
                     <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 600 }}>
-                            TrailTag 관리자
+                            {t('TrailTag Admin')}
                         </Typography>
                         <Chip
-                            label="관리자"
+                            label={t('Admin')}
                             size="small"
                             color="secondary"
                             sx={{ display: { xs: 'none', sm: 'flex' } }}
@@ -245,7 +247,7 @@ const AdminDashboard = () => {
                             }}
                         >
                             <Typography sx={{ display: { xs: 'none', sm: 'block' } }}>
-                                로그아웃
+                                {t('Logout')}
                             </Typography>
                         </Button>
                     </Box>
@@ -301,10 +303,6 @@ const AdminDashboard = () => {
         </Box>
     );
 };
-
-// ProgramManagement는 이제 컴포넌트에서 가져옴
-
-// QRCodeManagement는 이제 컴포넌트에서 가져옴
 
 const AdminProfile = () => {
     const ProfileEditor = React.lazy(() => import('../components/common/ProfileEditor'));

@@ -8,7 +8,7 @@ class ApiClient {
         this.baseURL = API_BASE_URL;
         this.token = localStorage.getItem('trailtag_token');
 
-        // 디버깅용 로그
+        // Debug logging
         console.log('API Client initialized:', {
             baseURL: this.baseURL,
             mode: import.meta.env.MODE,

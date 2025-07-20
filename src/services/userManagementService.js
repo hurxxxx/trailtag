@@ -189,9 +189,9 @@ class UserManagementService {
     // Format user type for display
     formatUserType(userType) {
         const types = {
-            'admin': '관리자',
-            'student': '학생',
-            'parent': '부모'
+            'admin': 'Admin',
+            'student': 'Student',
+            'parent': 'Parent'
         };
         return types[userType] || userType;
     }

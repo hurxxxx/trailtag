@@ -46,12 +46,12 @@ const ProfileEditor = () => {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
 
-    // 타임존 옵션
+    // Timezone options
     const timezones = [
         { value: 'Asia/Seoul', label: t('Seoul (UTC+9)') }
     ];
 
-    // 언어 옵션
+    // Language options
     const languages = [
         { value: 'ko', label: t('Korean') },
         { value: 'en', label: t('English') },
@@ -89,10 +89,10 @@ const ProfileEditor = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        // 전화번호 필드는 숫자만 허용
+        // Phone field allows only numbers
         let processedValue = value;
         if (name === 'phone') {
-            processedValue = value.replace(/\D/g, ''); // 숫자가 아닌 문자 제거
+            processedValue = value.replace(/\D/g, ''); // Remove non-numeric characters
         }
 
         setFormData(prev => ({
@@ -235,7 +235,7 @@ const ProfileEditor = () => {
             }
         } catch (error) {
             console.error('Password change error:', error);
-            // 서버에서 반환된 에러 메시지를 사용하거나 기본 메시지 표시
+            // Use server-returned error message or display default message
             setError(error.message || t('Failed to change password'));
         } finally {
             setLoading(false);

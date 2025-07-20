@@ -78,7 +78,7 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
         e.preventDefault();
 
         if (!formData.name.trim()) {
-            setError('프로그램 이름을 입력해주세요');
+            setError(t('Please enter program name'));
             return;
         }
 
@@ -86,29 +86,29 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
         setError('');
 
         try {
-            console.log('프로그램 폼 제출:', { program, formData, userId: user?.id });
+            console.log('Program form submit:', { program, formData, userId: user?.id });
 
             let result;
             if (program) {
                 // Update existing program
-                console.log('프로그램 수정 시도:', program.id, formData);
+                console.log('Program update attempt:', program.id, formData);
                 result = await programService.updateProgram(program.id, formData, user.id);
-                console.log('프로그램 수정 결과:', result);
+                console.log('Program update result:', result);
             } else {
                 // Create new program
-                console.log('프로그램 생성 시도:', formData);
+                console.log('Program creation attempt:', formData);
                 result = await programService.createProgram(formData, user.id);
-                console.log('프로그램 생성 결과:', result);
+                console.log('Program creation result:', result);
             }
 
             if (result.success) {
-                console.log('프로그램 처리 성공:', result.program);
+                console.log('Program processing success:', result.program);
                 if (onSuccess) {
                     onSuccess(result.program, program ? 'updated' : 'created');
                 }
                 onClose();
             } else {
-                console.error('프로그램 처리 실패:', result.message);
+                console.error('Program processing failed:', result.message);
                 setError(result.message);
             }
         } catch (error) {
@@ -165,32 +165,32 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
                     <TextField
                         fullWidth
                         name="name"
-                        label="프로그램 이름"
+                        label={t('Program Name')}
                         value={formData.name}
                         onChange={handleChange}
                         margin="normal"
                         required
                         disabled={loading}
-                        placeholder="프로그램 이름을 입력하세요"
+                        placeholder={t('Enter program name')}
 
                     />
 
                     <TextField
                         fullWidth
                         name="location"
-                        label="위치"
+                        label={t('Location')}
                         value={formData.location}
                         onChange={handleChange}
                         margin="normal"
                         disabled={loading}
-                        placeholder="프로그램 위치를 입력하세요"
+                        placeholder={t('Enter program location')}
 
                     />
 
                     <TextField
                         fullWidth
                         name="start_datetime"
-                        label="시작 일시"
+                        label={t('Start Date Time')}
                         type="datetime-local"
                         value={formData.start_datetime}
                         onChange={handleChange}
@@ -251,7 +251,7 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
                     variant="contained"
                     startIcon={loading ? <CircularProgress size={20} /> : null}
                 >
-                    {loading ? '저장 중...' : (program ? '프로그램 수정' : '프로그램 생성')}
+                    {loading ? t('Saving...') : (program ? t('Update Program') : t('Create Program'))}
                 </Button>
             </DialogActions>
         </Dialog>
