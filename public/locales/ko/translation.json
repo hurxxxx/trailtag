@@ -43,6 +43,8 @@
     " Please allow camera access in settings": ""
   },
   "Cancel": "취소",
+  "Cannot access camera - {{message}}": "",
+  "Cannot start QR scanner - {{message}}": "",
   "Change Password": "비밀번호 변경",
   "Change system settings": "시스템 설정 변경",
   "Change the language to check if translation works properly": "언어를 변경하여 번역이 제대로 작동하는지 확인해보세요",

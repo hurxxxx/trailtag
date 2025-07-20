@@ -100,7 +100,7 @@ const QRScanner = () => {
             } else if (error.name === 'NotSupportedError') {
                 setError(t('Camera functionality is not supported in this environment.'));
             } else {
-                setError(t('Cannot access camera: {{message}}', { message: error.message }));
+                setError(t('Cannot access camera - {{message}}', { message: error.message }));
             }
             return false;
         }
@@ -211,7 +211,7 @@ const QRScanner = () => {
             }
         } catch (error) {
             console.error('Scanner initialization error:', error);
-            setError(t('Cannot start QR scanner: {{message}}', { message: error.message }));
+            setError(t('Cannot start QR scanner - {{message}}', { message: error.message }));
             setScanning(false);
         }
     };

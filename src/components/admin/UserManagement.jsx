@@ -401,7 +401,7 @@ const UserManagement = () => {
                     rowsPerPage={rowsPerPage}
                     onRowsPerPageChange={handleRowsPerPageChange}
                     rowsPerPageOptions={[10, 25, 50, 100]}
-                    labelRowsPerPage={t('Rows per page:')}
+                    labelRowsPerPage={t('Rows per page')}
                     labelDisplayedRows={({ from, to, count }) => `${from}-${to} / ${count}`}
                 />
             </Paper>
