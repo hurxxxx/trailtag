@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     TextField,
@@ -19,6 +20,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
     const { register, loading, error, clearError } = useAuth();
+    const { t } = useTranslation();
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         username: '',
@@ -63,51 +65,51 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
 
         // Username validation
         if (!formData.username.trim()) {
-            errors.username = '로그인ID 를 입력해주세요';
+            errors.username = t('Please enter your login ID');
         } else if (formData.username.length < 3) {
-            errors.username = '로그인ID 는 최소 3자 이상이어야 합니다';
+            errors.username = t('Login ID must be at least 3 characters');
         }
 
         // Password validation
         if (!formData.password) {
-            errors.password = '비밀번호를 입력해주세요';
+            errors.password = t('Please enter your password');
         } else if (formData.password.length < 6) {
-            errors.password = '비밀번호는 최소 6자 이상이어야 합니다';
+            errors.password = t('Password must be at least 6 characters');
         }
 
         // Confirm password validation
         if (!formData.confirmPassword) {
-            errors.confirmPassword = '비밀번호를 다시 입력해주세요';
+            errors.confirmPassword = t('Please confirm your password');
         } else if (formData.password !== formData.confirmPassword) {
-            errors.confirmPassword = '비밀번호가 일치하지 않습니다';
+            errors.confirmPassword = t('Passwords do not match');
         }
 
         // Full name validation
         if (!formData.full_name.trim()) {
-            errors.full_name = '이름을 입력해주세요';
+            errors.full_name = t('Please enter your name');
         }
 
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!formData.email.trim()) {
-            errors.email = '이메일을 입력해주세요';
+            errors.email = t('Please enter your email');
         } else if (!emailRegex.test(formData.email)) {
-            errors.email = '올바른 이메일 주소를 입력해주세요';
+            errors.email = t('Please enter a valid email address');
         }
 
         // Phone validation (숫자만, 3자 이상)
         const phoneDigits = formData.phone.replace(/\D/g, ''); // 숫자만 추출
         if (!formData.phone.trim()) {
-            errors.phone = '전화번호를 입력해주세요';
+            errors.phone = t('Please enter your phone number');
         } else if (phoneDigits.length < 3) {
-            errors.phone = '전화번호는 최소 3자 이상이어야 합니다';
+            errors.phone = t('Phone number must be at least 3 digits');
         } else if (!/^\d+$/.test(phoneDigits)) {
-            errors.phone = '전화번호는 숫자만 입력해주세요';
+            errors.phone = t('Please enter numbers only');
         }
 
         // User type validation
         if (!formData.user_type) {
-            errors.user_type = '사용자 유형을 선택해주세요';
+            errors.user_type = t('Please select user type');
         }
 
         setFormErrors(errors);
@@ -133,7 +135,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
                 setSubmitError(result.message);
             }
         } catch (error) {
-            setSubmitError('회원가입에 실패했습니다. 다시 시도해주세요.');
+            setSubmitError(t('Registration failed. Please try again.'));
         }
     };
 
@@ -144,11 +146,11 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
     return (
         <Paper elevation={3} sx={{ p: 4, maxWidth: 500, mx: 'auto', mt: 2 }}>
             <Typography variant="h4" component="h1" gutterBottom align="center" color="primary">
-                회원가입
+                {t('Sign Up')}
             </Typography>
 
             <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}>
-                TrailTag 계정을 생성하세요
+                {t('Create your TrailTag account')}
             </Typography>
 
             {(error || submitError) && (
@@ -161,7 +163,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
                 <TextField
                     fullWidth
                     name="username"
-                    label="로그인ID "
+                    label={t('Login ID')}
                     value={formData.username}
                     onChange={handleChange}
                     error={!!formErrors.username}
@@ -182,7 +184,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
                 <TextField
                     fullWidth
                     name="password"
-                    label="비밀번호"
+                    label={t('Password')}
                     type={showPassword ? 'text' : 'password'}
                     value={formData.password}
                     onChange={handleChange}
@@ -195,7 +197,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
                             endAdornment: (
                                 <InputAdornment position="end">
                                     <IconButton
-                                        aria-label="비밀번호 표시 전환"
+                                        aria-label={t('Toggle password visibility')}
                                         onClick={togglePasswordVisibility}
                                         edge="end"
                                     >
@@ -210,7 +212,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
                 <TextField
                     fullWidth
                     name="confirmPassword"
-                    label="비밀번호 확인"
+                    label={t('Confirm Password')}
                     type={showPassword ? 'text' : 'password'}
                     value={formData.confirmPassword}
                     onChange={handleChange}
@@ -223,7 +225,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
                 <TextField
                     fullWidth
                     name="full_name"
-                    label="이름"
+                    label={t('Name')}
                     value={formData.full_name}
                     onChange={handleChange}
                     error={!!formErrors.full_name}
@@ -244,7 +246,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
                 <TextField
                     fullWidth
                     name="email"
-                    label="이메일 주소"
+                    label={t('Email Address')}
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
@@ -266,11 +268,11 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
                 <TextField
                     fullWidth
                     name="phone"
-                    label="전화번호"
+                    label={t('Phone Number')}
                     value={formData.phone}
                     onChange={handleChange}
                     error={!!formErrors.phone}
-                    helperText={formErrors.phone || '숫자만 입력해주세요 (최소 3자)'}
+                    helperText={formErrors.phone || t('Numbers only (minimum 3 digits)')}
                     margin="normal"
                     required
                     placeholder="01012345678"
@@ -286,15 +288,15 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
                 />
 
                 <FormControl fullWidth margin="normal" error={!!formErrors.user_type} required>
-                    <InputLabel>사용자 유형</InputLabel>
+                    <InputLabel>{t('User Type')}</InputLabel>
                     <Select
                         name="user_type"
                         value={formData.user_type}
                         onChange={handleChange}
-                        label="사용자 유형"
+                        label={t('User Type')}
                     >
-                        <MenuItem value="student">학생</MenuItem>
-                        <MenuItem value="parent">학부모</MenuItem>
+                        <MenuItem value="student">{t('Student')}</MenuItem>
+                        <MenuItem value="parent">{t('Parent')}</MenuItem>
                     </Select>
                     {formErrors.user_type && (
                         <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 2 }}>
@@ -311,7 +313,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
                     disabled={loading}
                     sx={{ mt: 3, mb: 2, py: 1.5 }}
                 >
-                    {loading ? <CircularProgress size={24} /> : '회원가입'}
+                    {loading ? <CircularProgress size={24} /> : t('Sign Up')}
                 </Button>
 
                 <Box textAlign="center">
@@ -320,7 +322,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
                         onClick={onSwitchToLogin}
                         disabled={loading}
                     >
-                        이미 계정이 있으신가요? 로그인
+                        {t('Already have an account? Login')}
                     </Button>
                 </Box>
             </Box>

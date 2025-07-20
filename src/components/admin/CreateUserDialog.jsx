@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -32,6 +33,7 @@ import {
 import userManagementService from '../../services/userManagementService';
 
 const CreateUserDialog = ({ open, onClose, onSuccess }) => {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -49,10 +51,10 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
     const handleChange = (event) => {
         const { name, value } = event.target;
 
-        // 전화번호 필드는 숫자만 허용
+        // Phone number field only allows digits
         let processedValue = value;
         if (name === 'phone') {
-            processedValue = value.replace(/\D/g, ''); // 숫자가 아닌 문자 제거
+            processedValue = value.replace(/\D/g, ''); // Remove non-digit characters
         }
 
         setFormData(prev => ({
@@ -76,17 +78,17 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
 
         // Basic validation
         if (!formData.username || !formData.password || !formData.full_name || !formData.email) {
-            setError('모든 필수 필드를 입력해주세요');
+            setError(t('Please fill in all required fields'));
             return;
         }
 
         if (formData.password !== formData.confirmPassword) {
-            setError('비밀번호가 일치하지 않습니다');
+            setError(t('Passwords do not match'));
             return;
         }
 
         if (formData.password.length < 6) {
-            setError('비밀번호는 최소 6자 이상이어야 합니다');
+            setError(t('Password must be at least 6 characters long'));
             return;
         }
 
@@ -111,7 +113,7 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                     result = await userManagementService.createParentUser(userData);
                     break;
                 default:
-                    setError('잘못된 사용자 유형입니다');
+                    setError(t('Invalid user type'));
                     return;
             }
 
@@ -122,7 +124,7 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                 setError(result.message);
             }
         } catch (error) {
-            setError('사용자 계정 생성 중 오류가 발생했습니다');
+            setError(t('An error occurred while creating user account'));
         } finally {
             setLoading(false);
         }
@@ -154,9 +156,9 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
 
     const getUserTypeLabel = (userType) => {
         switch (userType) {
-            case 'student': return '학생';
-            case 'parent': return '학부모';
-            default: return '사용자';
+            case 'student': return t('Student');
+            case 'parent': return t('Parent');
+            default: return t('User');
         }
     };
 
@@ -167,7 +169,7 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         {getUserTypeIcon(formData.user_type)}
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                            새 {getUserTypeLabel(formData.user_type)} 계정 생성
+                            {t('Create New {{userType}} Account', { userType: getUserTypeLabel(formData.user_type) })}
                         </Typography>
                     </Box>
                     <IconButton onClick={handleClose} size="small">
@@ -185,20 +187,20 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                     )}
 
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                        새로운 사용자 계정을 생성합니다. 모든 필수 정보를 입력해주세요.
+                        {t('Create a new user account. Please fill in all required information.')}
                     </Typography>
 
                     <TextField
                         fullWidth
                         name="username"
-                        label="로그인ID"
+                        label={t('Login ID')}
                         value={formData.username}
                         onChange={handleChange}
                         margin="normal"
                         required
                         disabled={loading}
-                        placeholder="영문, 숫자 조합 (3자 이상)"
-                        helperText="로그인 시 사용할 사용자명입니다"
+                        placeholder={t('Letters and numbers (3+ characters)')}
+                        helperText={t('Username for login')}
                         slotProps={{
                             input: {
                                 startAdornment: (
@@ -214,14 +216,14 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                         <TextField
                             fullWidth
                             name="password"
-                            label="비밀번호"
+                            label={t('Password')}
                             type={showPassword ? 'text' : 'password'}
                             value={formData.password}
                             onChange={handleChange}
                             margin="normal"
                             required
                             disabled={loading}
-                            placeholder="6자 이상"
+                            placeholder={t('6+ characters')}
                             slotProps={{
                                 input: {
                                     endAdornment: (
@@ -251,21 +253,21 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                                 fontSize: '0.75rem'
                             }}
                         >
-                            자동 생성
+                            {t('Auto Generate')}
                         </Button>
                     </Box>
 
                     <TextField
                         fullWidth
                         name="confirmPassword"
-                        label="비밀번호 확인"
+                        label={t('Confirm Password')}
                         type={showConfirmPassword ? 'text' : 'password'}
                         value={formData.confirmPassword}
                         onChange={handleChange}
                         margin="normal"
                         required
                         disabled={loading}
-                        placeholder="비밀번호를 다시 입력하세요"
+                        placeholder={t('Re-enter password')}
                         slotProps={{
                             input: {
                                 endAdornment: (
@@ -286,13 +288,13 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                     <TextField
                         fullWidth
                         name="full_name"
-                        label="이름"
+                        label={t('Name')}
                         value={formData.full_name}
                         onChange={handleChange}
                         margin="normal"
                         required
                         disabled={loading}
-                        placeholder="실명을 입력하세요"
+                        placeholder={t('Enter full name')}
                         slotProps={{
                             input: {
                                 startAdornment: (
@@ -307,7 +309,7 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                     <TextField
                         fullWidth
                         name="email"
-                        label="이메일 주소"
+                        label={t('Email Address')}
                         type="email"
                         value={formData.email}
                         onChange={handleChange}
@@ -329,14 +331,14 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                     <TextField
                         fullWidth
                         name="phone"
-                        label="전화번호"
+                        label={t('Phone Number')}
                         value={formData.phone}
                         onChange={handleChange}
                         margin="normal"
                         required
                         disabled={loading}
                         placeholder="01012345678"
-                        helperText="숫자만 입력해주세요 (최소 3자)"
+                        helperText={t('Numbers only (minimum 3 digits)')}
                         slotProps={{
                             input: {
                                 startAdornment: (
@@ -349,23 +351,23 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                     />
 
                     <FormControl fullWidth margin="normal" required>
-                        <InputLabel>사용자 유형</InputLabel>
+                        <InputLabel>{t('User Type')}</InputLabel>
                         <Select
                             name="user_type"
                             value={formData.user_type}
                             onChange={handleChange}
                             disabled={loading}
-                            label="사용자 유형"
+                            label={t('User Type')}
                         >
-                            <MenuItem value="student">학생</MenuItem>
-                            <MenuItem value="parent">학부모</MenuItem>
+                            <MenuItem value="student">{t('Student')}</MenuItem>
+                            <MenuItem value="parent">{t('Parent')}</MenuItem>
                         </Select>
                     </FormControl>
                 </DialogContent>
 
                 <DialogActions sx={{ p: 3, pt: 0, gap: 1 }}>
                     <Button onClick={handleClose} disabled={loading}>
-                        취소
+                        {t('Cancel')}
                     </Button>
                     <Button
                         type="submit"
@@ -373,7 +375,7 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                         disabled={loading}
                         startIcon={loading ? <CircularProgress size={16} /> : getUserTypeIcon(formData.user_type)}
                     >
-                        {loading ? '생성 중...' : `${getUserTypeLabel(formData.user_type)} 생성`}
+                        {loading ? t('Creating...') : t('Create {{userType}}', { userType: getUserTypeLabel(formData.user_type) })}
                     </Button>
                 </DialogActions>
             </form>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -29,13 +30,14 @@ import {
 import userManagementService from '../../services/userManagementService';
 
 const DeleteUserDialog = ({ open, user, onClose, onSuccess }) => {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [confirmText, setConfirmText] = useState('');
 
     const handleDelete = async () => {
         if (confirmText !== 'DELETE') {
-            setError('확인을 위해 "DELETE"를 정확히 입력해주세요');
+            setError(t('Please type "DELETE" exactly to confirm'));
             return;
         }
 
@@ -52,7 +54,7 @@ const DeleteUserDialog = ({ open, user, onClose, onSuccess }) => {
                 setError(result.message);
             }
         } catch (error) {
-            setError('사용자 삭제 중 오류가 발생했습니다');
+            setError(t('An error occurred while deleting user'));
         } finally {
             setLoading(false);
         }
@@ -122,7 +124,7 @@ const DeleteUserDialog = ({ open, user, onClose, onSuccess }) => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Delete color="error" />
                         <Typography variant="h6" sx={{ fontWeight: 600, color: 'error.main' }}>
-                            사용자 삭제
+                            {t('Delete User')}
                         </Typography>
                     </Box>
                     <IconButton onClick={handleClose} size="small">
@@ -141,18 +143,18 @@ const DeleteUserDialog = ({ open, user, onClose, onSuccess }) => {
                 {/* Warning Alert */}
                 <Alert severity="warning" sx={{ mb: 3 }}>
                     <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                        ⚠️ 주의: 이 작업은 되돌릴 수 없습니다!
+                        {t('Warning - This action cannot be undone')}
                     </Typography>
                     <Typography variant="body2">
-                        사용자를 삭제하면 관련된 모든 데이터가 영구적으로 삭제됩니다.
+                        {t('Deleting a user will permanently remove all related data')}
                     </Typography>
                 </Alert>
 
                 {/* User Info */}
-                <Box sx={{ 
-                    p: 2, 
-                    bgcolor: 'grey.50', 
-                    borderRadius: 2, 
+                <Box sx={{
+                    p: 2,
+                    bgcolor: 'grey.50',
+                    borderRadius: 2,
                     mb: 3,
                     display: 'flex',
                     alignItems: 'center',
@@ -176,7 +178,7 @@ const DeleteUserDialog = ({ open, user, onClose, onSuccess }) => {
 
                 {/* Data to be deleted */}
                 <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2 }}>
-                    삭제될 데이터:
+                    {t('Data to be deleted')}
                 </Typography>
                 <List dense sx={{ bgcolor: 'grey.50', borderRadius: 1, mb: 3 }}>
                     {deletedData.map((item, index) => (
@@ -184,7 +186,7 @@ const DeleteUserDialog = ({ open, user, onClose, onSuccess }) => {
                             <ListItemIcon sx={{ minWidth: 32 }}>
                                 <Cancel color="error" fontSize="small" />
                             </ListItemIcon>
-                            <ListItemText 
+                            <ListItemText
                                 primary={item}
                                 primaryTypographyProps={{ variant: 'body2' }}
                             />
@@ -194,7 +196,7 @@ const DeleteUserDialog = ({ open, user, onClose, onSuccess }) => {
 
                 {/* Confirmation Input */}
                 <Typography variant="body2" sx={{ mb: 2 }}>
-                    계속하려면 아래에 <strong>DELETE</strong>를 입력하세요:
+                    {t('To continue type DELETE below')}
                 </Typography>
                 <TextField
                     fullWidth
@@ -209,7 +211,7 @@ const DeleteUserDialog = ({ open, user, onClose, onSuccess }) => {
 
             <DialogActions sx={{ p: 3, pt: 0, gap: 1 }}>
                 <Button onClick={handleClose} disabled={loading}>
-                    취소
+                    {t('Cancel')}
                 </Button>
                 <Button
                     onClick={handleDelete}
@@ -218,7 +220,7 @@ const DeleteUserDialog = ({ open, user, onClose, onSuccess }) => {
                     disabled={loading || confirmText !== 'DELETE'}
                     startIcon={loading ? <CircularProgress size={16} /> : <Delete />}
                 >
-                    {loading ? '삭제 중...' : '영구 삭제'}
+                    {loading ? t('Deleting...') : t('Permanently Delete')}
                 </Button>
             </DialogActions>
         </Dialog>

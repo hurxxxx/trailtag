@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Paper,
@@ -28,6 +29,7 @@ import checkInService from '../../services/checkInService';
 import { useAuth } from '../../contexts/AuthContext';
 
 const QRScanner = () => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [scanning, setScanning] = useState(false);
     const [scanResult, setScanResult] = useState(null);
@@ -120,11 +122,11 @@ const QRScanner = () => {
 
     const initializeScanner = async () => {
         try {
-            // qr-reader 엘리먼트가 존재하는지 확인
+            // Check if qr-reader element exists
             const qrReaderElement = document.getElementById('qr-reader');
             if (!qrReaderElement) {
-                console.error('qr-reader 엘리먼트를 찾을 수 없습니다');
-                setError('QR 스캐너 초기화에 실패했습니다. 페이지를 새로고침해주세요.');
+                console.error('qr-reader element not found');
+                setError(t('QR scanner initialization failed. Please refresh the page.'));
                 setScanning(false);
                 return;
             }
@@ -360,37 +362,37 @@ const QRScanner = () => {
                             onClick={startScanning}
                             sx={{ mb: 2 }}
                         >
-                            스캔 시작
+                            {t('Start Scan')}
                         </Button>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                            QR 코드를 카메라 프레임 안에 위치시켜 스캔하세요
+                            {t('Position the QR code within the camera frame to scan')}
                         </Typography>
 
-                        {/* 모바일 카메라 사용 안내 */}
+                        {/* Mobile camera usage guide */}
                         <Card sx={{ mt: 2, bgcolor: 'info.50', border: '1px solid', borderColor: 'info.200' }}>
                             <CardContent sx={{ py: 2 }}>
                                 <Typography variant="body2" color="info.main" sx={{ fontWeight: 500, mb: 1 }}>
-                                    📱 카메라 사용 안내
+                                    {t('📱 Camera Usage Guide')}
                                 </Typography>
                                 <Typography variant="caption" color="text.secondary">
-                                    • 카메라 권한 요청 시 "허용"을 선택해주세요<br />
-                                    • 다른 앱에서 카메라 사용 중이면 종료 후 시도하세요<br />
-                                    • QR 코드를 화면 중앙에 맞춰주세요<br />
-                                    • <strong>모바일에서는 HTTPS 접속이 필요합니다</strong>
+                                    {t('• Select "Allow" when camera permission is requested')}<br />
+                                    {t('• Close other apps using the camera before trying')}<br />
+                                    {t('• Center the QR code on the screen')}<br />
+                                    {t('• HTTPS connection is required on mobile devices')}
                                 </Typography>
                             </CardContent>
                         </Card>
 
-                        {/* HTTPS 접속 안내 (HTTP인 경우만 표시) */}
+                        {/* HTTPS connection guide (shown only for HTTP) */}
                         {window.location.protocol === 'http:' && (
                             <Card sx={{ mt: 2, bgcolor: 'warning.50', border: '1px solid', borderColor: 'warning.200' }}>
                                 <CardContent sx={{ py: 2 }}>
                                     <Typography variant="body2" color="warning.main" sx={{ fontWeight: 500, mb: 1 }}>
-                                        ⚠️ HTTPS 접속 필요
+                                        {t('⚠️ HTTPS Connection Required')}
                                     </Typography>
                                     <Typography variant="caption" color="text.secondary">
-                                        모바일 브라우저에서 카메라를 사용하려면 HTTPS로 접속해야 합니다.<br />
-                                        주소창에서 http:// 를 https:// 로 변경해주세요.
+                                        {t('HTTPS connection is required to use camera in mobile browsers.')}<br />
+                                        {t('Please change http to https in the address bar.')}
                                     </Typography>
                                 </CardContent>
                             </Card>
@@ -402,7 +404,7 @@ const QRScanner = () => {
                     <Box textAlign="center" py={4}>
                         <CircularProgress size={60} />
                         <Typography variant="h6" mt={2}>
-                            체크인 처리 중...
+                            {t('Processing check-in...')}
                         </Typography>
                     </Box>
                 )}
@@ -416,7 +418,7 @@ const QRScanner = () => {
                                 startIcon={<Stop />}
                                 onClick={stopScanning}
                             >
-                                스캔 중지
+                                {t('Stop Scan')}
                             </Button>
                         </Box>
 
@@ -429,7 +431,7 @@ const QRScanner = () => {
                             }}
                         >
                             <Typography variant="body2" color="text.secondary" mb={2}>
-                                QR 코드를 화면 중앙의 사각형 안에 맞춰주세요
+                                {t('Align the QR code within the rectangle in the center of the screen')}
                             </Typography>
                             <div id="qr-reader" ref={scannerRef}></div>
                         </Paper>

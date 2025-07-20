@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -25,6 +26,7 @@ import {
 import userManagementService from '../../services/userManagementService';
 
 const ResetPasswordDialog = ({ open, user, onClose, onSuccess }) => {
+    const { t } = useTranslation();
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -50,14 +52,14 @@ const ResetPasswordDialog = ({ open, user, onClose, onSuccess }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
+
         if (!newPassword || newPassword.length < 6) {
-            setError('비밀번호는 6자 이상이어야 합니다');
+            setError(t('Password must be at least 6 characters long'));
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            setError('비밀번호가 일치하지 않습니다');
+            setError(t('Passwords do not match'));
             return;
         }
 
@@ -74,7 +76,7 @@ const ResetPasswordDialog = ({ open, user, onClose, onSuccess }) => {
                 setError(result.message);
             }
         } catch (error) {
-            setError('비밀번호 변경 중 오류가 발생했습니다');
+            setError(t('An error occurred while changing password'));
         } finally {
             setLoading(false);
         }
@@ -100,9 +102,9 @@ const ResetPasswordDialog = ({ open, user, onClose, onSuccess }) => {
 
     const formatUserType = (userType) => {
         const types = {
-            'admin': '관리자',
-            'student': '학생',
-            'parent': '부모'
+            'admin': t('Admin'),
+            'student': t('Student'),
+            'parent': t('Parent')
         };
         return types[userType] || userType;
     };
@@ -116,7 +118,7 @@ const ResetPasswordDialog = ({ open, user, onClose, onSuccess }) => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <VpnKey color="primary" />
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                            비밀번호 변경
+                            {t('Change Password')}
                         </Typography>
                     </Box>
                     <IconButton onClick={handleClose} size="small">
@@ -134,10 +136,10 @@ const ResetPasswordDialog = ({ open, user, onClose, onSuccess }) => {
                     )}
 
                     {/* User Info */}
-                    <Box sx={{ 
-                        p: 2, 
-                        bgcolor: 'grey.50', 
-                        borderRadius: 2, 
+                    <Box sx={{
+                        p: 2,
+                        bgcolor: 'grey.50',
+                        borderRadius: 2,
                         mb: 3,
                         display: 'flex',
                         alignItems: 'center',
@@ -160,19 +162,19 @@ const ResetPasswordDialog = ({ open, user, onClose, onSuccess }) => {
                     </Box>
 
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                        이 사용자의 비밀번호를 새로 설정합니다. 변경된 비밀번호를 사용자에게 안전하게 전달해주세요.
+                        {t('Set a new password for this user. Please securely share the changed password with the user.')}
                     </Typography>
 
                     <TextField
                         fullWidth
-                        label="새 비밀번호"
+                        label={t('New Password')}
                         type={showPassword ? 'text' : 'password'}
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         margin="normal"
                         required
                         disabled={loading}
-                        placeholder="6자 이상"
+                        placeholder={t('6+ characters')}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
@@ -190,14 +192,14 @@ const ResetPasswordDialog = ({ open, user, onClose, onSuccess }) => {
 
                     <TextField
                         fullWidth
-                        label="비밀번호 확인"
+                        label={t('Confirm Password')}
                         type={showConfirmPassword ? 'text' : 'password'}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         margin="normal"
                         required
                         disabled={loading}
-                        placeholder="새 비밀번호를 다시 입력하세요"
+                        placeholder={t('Re-enter new password')}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
@@ -221,14 +223,14 @@ const ResetPasswordDialog = ({ open, user, onClose, onSuccess }) => {
                             disabled={loading}
                             sx={{ textTransform: 'none' }}
                         >
-                            안전한 비밀번호 자동 생성
+                            {t('Generate Secure Password')}
                         </Button>
                     </Box>
                 </DialogContent>
 
                 <DialogActions sx={{ p: 3, pt: 0, gap: 1 }}>
                     <Button onClick={handleClose} disabled={loading}>
-                        취소
+                        {t('Cancel')}
                     </Button>
                     <Button
                         type="submit"
@@ -236,7 +238,7 @@ const ResetPasswordDialog = ({ open, user, onClose, onSuccess }) => {
                         disabled={loading || !newPassword || !confirmPassword}
                         startIcon={loading ? <CircularProgress size={16} /> : <VpnKey />}
                     >
-                        {loading ? '변경 중...' : '비밀번호 변경'}
+                        {loading ? t('Changing...') : t('Change Password')}
                     </Button>
                 </DialogActions>
             </form>

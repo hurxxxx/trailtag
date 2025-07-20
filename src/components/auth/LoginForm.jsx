@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     TextField,
@@ -15,6 +16,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
     const { login, loading, error, clearError } = useAuth();
+    const { t } = useTranslation();
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         username: '',
@@ -46,11 +48,11 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
         const errors = {};
 
         if (!formData.username.trim()) {
-            errors.username = '로그인ID 를 입력해주세요';
+            errors.username = t('Please enter your login ID');
         }
 
         if (!formData.password) {
-            errors.password = '비밀번호를 입력해주세요';
+            errors.password = t('Please enter your password');
         }
 
         setFormErrors(errors);
@@ -75,7 +77,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
                 setSubmitError(result.message);
             }
         } catch (error) {
-            setSubmitError('로그인에 실패했습니다. 다시 시도해주세요.');
+            setSubmitError(t('Login failed. Please try again.'));
         }
     };
 
@@ -86,11 +88,11 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
     return (
         <Paper elevation={3} sx={{ p: 4, maxWidth: 400, mx: 'auto', mt: 2 }}>
             <Typography variant="h4" component="h1" gutterBottom align="center" color="primary">
-                로그인
+                {t('Login')}
             </Typography>
 
             <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}>
-                TrailTag에 다시 오신 것을 환영합니다
+                {t('Welcome back to TrailTag')}
             </Typography>
 
             {(error || submitError) && (
@@ -103,7 +105,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
                 <TextField
                     fullWidth
                     name="username"
-                    label="로그인ID "
+                    label={t('Login ID')}
                     value={formData.username}
                     onChange={handleChange}
                     error={!!formErrors.username}
@@ -125,7 +127,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
                 <TextField
                     fullWidth
                     name="password"
-                    label="비밀번호"
+                    label={t('Password')}
                     type={showPassword ? 'text' : 'password'}
                     value={formData.password}
                     onChange={handleChange}
@@ -143,7 +145,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
                             endAdornment: (
                                 <InputAdornment position="end">
                                     <IconButton
-                                        aria-label="비밀번호 표시 전환"
+                                        aria-label={t('Toggle password visibility')}
                                         onClick={togglePasswordVisibility}
                                         edge="end"
                                     >
@@ -163,7 +165,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
                     disabled={loading}
                     sx={{ mt: 3, mb: 2, py: 1.5 }}
                 >
-                    {loading ? <CircularProgress size={24} /> : '로그인'}
+                    {loading ? <CircularProgress size={24} /> : t('Login')}
                 </Button>
 
                 <Box textAlign="center">
@@ -172,7 +174,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
                         onClick={onSwitchToRegister}
                         disabled={loading}
                     >
-                        계정이 없으신가요? 회원가입
+                        {t("Don't have an account? Sign up")}
                     </Button>
                 </Box>
             </Box>

@@ -8,7 +8,11 @@ import AuthPage from './pages/AuthPage';
 import StudentDashboard from './pages/StudentDashboard';
 import ParentDashboard from './pages/ParentDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import I18nTest from './components/test/I18nTest';
 import theme from './theme/theme';
+
+// i18n 초기화
+import './i18n';
 
 // 현대적인 테마는 별도 파일에서 import
 
@@ -22,6 +26,7 @@ function App() {
             <Routes>
               {/* Public routes */}
               <Route path="/auth" element={<AuthPage />} />
+              <Route path="/i18n-test" element={<I18nTest />} />
 
               {/* Protected routes */}
               <Route

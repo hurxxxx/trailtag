@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -18,6 +19,7 @@ import programService from '../../services/programService';
 import { useAuth } from '../../contexts/AuthContext';
 
 const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
+    const { t } = useTranslation();
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -110,8 +112,8 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
                 setError(result.message);
             }
         } catch (error) {
-            console.error('프로그램 폼 오류:', error);
-            setError('오류가 발생했습니다. 다시 시도해주세요.');
+            console.error('Program form error:', error);
+            setError(t('An error occurred. Please try again.'));
         } finally {
             setLoading(false);
         }
@@ -143,10 +145,10 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
         >
             <DialogTitle sx={{ pb: 1 }}>
                 <Typography variant="h5" component="h2">
-                    {program ? '프로그램 수정' : '새 프로그램 생성'}
+                    {program ? t('Edit Program') : t('Create New Program')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    {program ? '프로그램 정보를 수정합니다' : '새로운 학습 프로그램을 추가합니다'}
+                    {program ? t('Edit program information') : t('Add a new learning program')}
                 </Typography>
             </DialogTitle>
 

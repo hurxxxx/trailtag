@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -23,6 +24,7 @@ import {
 import userManagementService from '../../services/userManagementService';
 
 const CreateAdminDialog = ({ open, onClose, onSuccess }) => {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -53,7 +55,7 @@ const CreateAdminDialog = ({ open, onClose, onSuccess }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
+
         // Validate form data
         const validation = userManagementService.validateUserData(formData, true);
         if (!validation.isValid) {
@@ -100,7 +102,7 @@ const CreateAdminDialog = ({ open, onClose, onSuccess }) => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <PersonAdd color="primary" />
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                            새 관리자 계정 생성
+                            {t('Create New Admin Account')}
                         </Typography>
                     </Box>
                     <IconButton onClick={handleClose} size="small">
@@ -118,81 +120,83 @@ const CreateAdminDialog = ({ open, onClose, onSuccess }) => {
                     )}
 
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                        새로운 관리자 계정을 생성합니다. 모든 필수 정보를 입력해주세요.
+                        {t('Create a new admin account. Please fill in all required information.')}
                     </Typography>
 
                     <TextField
                         fullWidth
                         name="username"
-                        label="사용자명"
+                        label={t('Username')}
                         value={formData.username}
                         onChange={handleChange}
                         margin="normal"
                         required
                         disabled={loading}
-                        placeholder="영문, 숫자 조합 (3자 이상)"
-                        helperText="로그인 시 사용할 사용자명입니다"
+                        placeholder={t('Letters and numbers (3+ characters)')}
+                        helperText={t('Username for login')}
                     />
 
                     <Box sx={{ position: 'relative' }}>
                         <TextField
                             fullWidth
                             name="password"
-                            label="비밀번호"
+                            label={t('Password')}
                             type={showPassword ? 'text' : 'password'}
                             value={formData.password}
                             onChange={handleChange}
                             margin="normal"
                             required
                             disabled={loading}
-                            placeholder="6자 이상"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            edge="end"
-                                            size="small"
-                                        >
-                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
+                            placeholder={t('6+ characters')}
+                            slotProps={{
+                                input: {
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                edge="end"
+                                                size="small"
+                                            >
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }
                             }}
                         />
                         <Button
                             size="small"
                             onClick={handleGeneratePassword}
                             disabled={loading}
-                            sx={{ 
-                                position: 'absolute', 
-                                right: 0, 
+                            sx={{
+                                position: 'absolute',
+                                right: 0,
                                 top: '50%',
                                 transform: 'translateY(-50%)',
                                 textTransform: 'none',
                                 fontSize: '0.75rem'
                             }}
                         >
-                            자동 생성
+                            {t('Auto Generate')}
                         </Button>
                     </Box>
 
                     <TextField
                         fullWidth
                         name="full_name"
-                        label="이름"
+                        label={t('Name')}
                         value={formData.full_name}
                         onChange={handleChange}
                         margin="normal"
                         required
                         disabled={loading}
-                        placeholder="실명을 입력하세요"
+                        placeholder={t('Enter full name')}
                     />
 
                     <TextField
                         fullWidth
                         name="email"
-                        label="이메일"
+                        label={t('Email')}
                         type="email"
                         value={formData.email}
                         onChange={handleChange}
@@ -205,7 +209,7 @@ const CreateAdminDialog = ({ open, onClose, onSuccess }) => {
                     <TextField
                         fullWidth
                         name="phone"
-                        label="전화번호 (선택사항)"
+                        label={t('Phone Number (Optional)')}
                         value={formData.phone}
                         onChange={handleChange}
                         margin="normal"
@@ -216,7 +220,7 @@ const CreateAdminDialog = ({ open, onClose, onSuccess }) => {
 
                 <DialogActions sx={{ p: 3, pt: 0, gap: 1 }}>
                     <Button onClick={handleClose} disabled={loading}>
-                        취소
+                        {t('Cancel')}
                     </Button>
                     <Button
                         type="submit"
@@ -224,7 +228,7 @@ const CreateAdminDialog = ({ open, onClose, onSuccess }) => {
                         disabled={loading}
                         startIcon={loading ? <CircularProgress size={16} /> : <PersonAdd />}
                     >
-                        {loading ? '생성 중...' : '관리자 생성'}
+                        {loading ? t('Creating...') : t('Create Admin')}
                     </Button>
                 </DialogActions>
             </form>

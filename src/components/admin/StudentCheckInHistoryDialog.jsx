@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -31,6 +32,7 @@ import {
 import userManagementService from '../../services/userManagementService';
 
 const StudentCheckInHistoryDialog = ({ open, student, onClose }) => {
+    const { t } = useTranslation();
     const [checkIns, setCheckIns] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -65,7 +67,7 @@ const StudentCheckInHistoryDialog = ({ open, student, onClose }) => {
                 setError(result.message);
             }
         } catch (error) {
-            setError('체크인 이력을 불러오는 중 오류가 발생했습니다');
+            setError(t('An error occurred while loading check-in history'));
         } finally {
             setLoading(false);
         }
@@ -91,9 +93,9 @@ const StudentCheckInHistoryDialog = ({ open, student, onClose }) => {
         const date = new Date(dateTimeString);
         return {
             date: date.toLocaleDateString('ko-KR'),
-            time: date.toLocaleTimeString('ko-KR', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
+            time: date.toLocaleTimeString('ko-KR', {
+                hour: '2-digit',
+                minute: '2-digit'
             })
         };
     };
@@ -107,7 +109,7 @@ const StudentCheckInHistoryDialog = ({ open, student, onClose }) => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <History color="primary" />
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                            체크인 이력
+                            {t('Check-in History')}
                         </Typography>
                     </Box>
                     <IconButton onClick={handleClose} size="small">
@@ -118,10 +120,10 @@ const StudentCheckInHistoryDialog = ({ open, student, onClose }) => {
 
             <DialogContent>
                 {/* Student Info */}
-                <Box sx={{ 
-                    p: 2, 
-                    bgcolor: 'grey.50', 
-                    borderRadius: 2, 
+                <Box sx={{
+                    p: 2,
+                    bgcolor: 'grey.50',
+                    borderRadius: 2,
                     mb: 3,
                     display: 'flex',
                     alignItems: 'center',
@@ -159,10 +161,10 @@ const StudentCheckInHistoryDialog = ({ open, student, onClose }) => {
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>프로그램</TableCell>
-                                        <TableCell>설명</TableCell>
-                                        <TableCell>체크인 일시</TableCell>
-                                        <TableCell align="center">상태</TableCell>
+                                        <TableCell>{t('Program')}</TableCell>
+                                        <TableCell>{t('Description')}</TableCell>
+                                        <TableCell>{t('Check-in Time')}</TableCell>
+                                        <TableCell align="center">{t('Status')}</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -170,7 +172,7 @@ const StudentCheckInHistoryDialog = ({ open, student, onClose }) => {
                                         <TableRow>
                                             <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
                                                 <Typography color="text.secondary">
-                                                    체크인 이력이 없습니다
+                                                    {t('No check-in history')}
                                                 </Typography>
                                             </TableCell>
                                         </TableRow>
@@ -227,7 +229,7 @@ const StudentCheckInHistoryDialog = ({ open, student, onClose }) => {
                                 rowsPerPage={rowsPerPage}
                                 onRowsPerPageChange={handleRowsPerPageChange}
                                 rowsPerPageOptions={[5, 10, 25, 50]}
-                                labelRowsPerPage="페이지당 행 수:"
+                                labelRowsPerPage={t('Rows per page')}
                                 labelDisplayedRows={({ from, to, count }) => `${from}-${to} / ${count}`}
                             />
                         )}
@@ -237,7 +239,7 @@ const StudentCheckInHistoryDialog = ({ open, student, onClose }) => {
 
             <DialogActions sx={{ p: 3, pt: 0 }}>
                 <Button onClick={handleClose} variant="outlined">
-                    닫기
+                    {t('Close')}
                 </Button>
             </DialogActions>
         </Dialog>

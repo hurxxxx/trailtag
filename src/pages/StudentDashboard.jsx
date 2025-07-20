@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Container,
@@ -38,6 +39,7 @@ import CheckInHistory from '../components/student/CheckInHistory';
 import checkInService from '../services/checkInService';
 
 const StudentDashboard = () => {
+    const { t } = useTranslation();
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();

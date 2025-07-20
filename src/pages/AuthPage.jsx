@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { Box, Container, Typography, Alert, Fade } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import LoginForm from '../components/auth/LoginForm';
 import RegisterForm from '../components/auth/RegisterForm';
 import { useAuth } from '../contexts/AuthContext';
+import LanguageSwitcher from '../components/common/LanguageSwitcher';
 
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
     const { user } = useAuth();
+    const { t } = useTranslation();
 
     // Redirect if already authenticated
     React.useEffect(() => {
@@ -60,6 +63,11 @@ const AuthPage = () => {
                 py: 4
             }}
         >
+            {/* Language Switcher */}
+            <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
+                <LanguageSwitcher variant="compact" />
+            </Box>
+
             <Container maxWidth="sm">
                 <Box textAlign="center" mb={4}>
                     <Typography
@@ -72,7 +80,7 @@ const AuthPage = () => {
                             textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
                         }}
                     >
-                        TrailTag
+                        {t('TrailTag')}
                     </Typography>
                     <Typography
                         variant="h6"
@@ -81,7 +89,7 @@ const AuthPage = () => {
                             textShadow: '1px 1px 2px rgba(0,0,0,0.3)'
                         }}
                     >
-                        학습 프로그램 참여 추적 시스템
+                        {t('Learning Program Participation Tracking System')}
                     </Typography>
                 </Box>
 

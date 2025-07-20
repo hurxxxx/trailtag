@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Grid,
@@ -31,6 +32,7 @@ import adminDashboardService from '../../services/adminDashboardService';
 
 const AdminDashboardContent = () => {
     const { user } = useAuth();
+    const { t } = useTranslation();
     const [stats, setStats] = useState(null);
     const [recentActivity, setRecentActivity] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -59,7 +61,7 @@ const AdminDashboardContent = () => {
             }
 
         } catch (error) {
-            setError('대시보드 데이터를 불러오는 중 오류가 발생했습니다');
+            setError(t('An error occurred while loading dashboard data'));
         } finally {
             setLoading(false);
         }
@@ -119,10 +121,10 @@ const AdminDashboardContent = () => {
             {/* Welcome Section */}
             <Box sx={{ mb: 4 }}>
                 <Typography variant="h4" sx={{ fontWeight: 600, mb: 1 }}>
-                    안녕하세요, {user?.full_name}님! 👋
+                    {t('Hello, {{name}}! 👋', { name: user?.full_name })}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                    TrailTag 관리자 대시보드에 오신 것을 환영합니다.
+                    {t('Welcome to the TrailTag Admin Dashboard.')}
                 </Typography>
             </Box>
 
@@ -136,38 +138,42 @@ const AdminDashboardContent = () => {
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <StatCard
-                        title="전체 사용자"
+                        title={t('Total Users')}
                         value={stats?.totalUsers || 0}
                         icon={<People />}
                         color="primary"
-                        subtitle={`관리자 ${stats?.adminCount || 0} | 학생 ${stats?.studentCount || 0} | 부모 ${stats?.parentCount || 0}`}
+                        subtitle={t('Admin {{admin}} | Student {{student}} | Parent {{parent}}', {
+                            admin: stats?.adminCount || 0,
+                            student: stats?.studentCount || 0,
+                            parent: stats?.parentCount || 0
+                        })}
                     />
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <StatCard
-                        title="활성 프로그램"
+                        title={t('Active Programs')}
                         value={stats?.activePrograms || 0}
                         icon={<School />}
                         color="success"
-                        subtitle="현재 운영 중인 프로그램"
+                        subtitle={t('Currently running programs')}
                     />
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <StatCard
-                        title="오늘 체크인"
+                        title={t('Today Check-ins')}
                         value={stats?.todayCheckIns || 0}
                         icon={<CheckCircle />}
                         color="info"
-                        subtitle="오늘 발생한 체크인"
+                        subtitle={t('Check-ins occurred today')}
                     />
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <StatCard
-                        title="이번 주 체크인"
+                        title={t('This Week Check-ins')}
                         value={stats?.weekCheckIns || 0}
                         icon={<TrendingUp />}
                         color="warning"
-                        subtitle="지난 7일간 체크인"
+                        subtitle={t('Check-ins in the last 7 days')}
                     />
                 </Grid>
             </Grid>
@@ -177,13 +183,13 @@ const AdminDashboardContent = () => {
                 <Grid size={{ xs: 12, md: 6 }}>
                     <Paper sx={{ p: 3, height: '100%' }}>
                         <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
-                            빠른 작업
+                            {t('Quick Actions')}
                         </Typography>
                         <Grid container spacing={2}>
                             <Grid size={6}>
                                 <QuickActionCard
-                                    title="프로그램 생성"
-                                    description="새로운 학습 프로그램을 만들어보세요"
+                                    title={t('Create Program')}
+                                    description={t('Create a new learning program')}
                                     icon={<Add />}
                                     onClick={() => window.location.href = '/admin/programs'}
                                     color="primary"
@@ -191,8 +197,8 @@ const AdminDashboardContent = () => {
                             </Grid>
                             <Grid size={6}>
                                 <QuickActionCard
-                                    title="관리자 추가"
-                                    description="새로운 관리자 계정을 생성하세요"
+                                    title={t('Add Admin')}
+                                    description={t('Create a new admin account')}
                                     icon={<PersonAdd />}
                                     onClick={() => window.location.href = '/admin/users'}
                                     color="success"
@@ -200,8 +206,8 @@ const AdminDashboardContent = () => {
                             </Grid>
                             <Grid size={6}>
                                 <QuickActionCard
-                                    title="사용자 관리"
-                                    description="사용자 계정을 관리하세요"
+                                    title={t('User Management')}
+                                    description={t('Manage user accounts')}
                                     icon={<People />}
                                     onClick={() => window.location.href = '/admin/users'}
                                     color="info"
@@ -209,10 +215,10 @@ const AdminDashboardContent = () => {
                             </Grid>
                             <Grid size={6}>
                                 <QuickActionCard
-                                    title="시스템 설정"
-                                    description="시스템 설정을 변경하세요"
+                                    title={t('System Settings')}
+                                    description={t('Change system settings')}
                                     icon={<Settings />}
-                                    onClick={() => alert('시스템 설정 기능은 준비 중입니다')}
+                                    onClick={() => alert(t('System settings feature is under development'))}
                                     color="warning"
                                 />
                             </Grid>
@@ -224,11 +230,11 @@ const AdminDashboardContent = () => {
                 <Grid size={{ xs: 12, md: 6 }}>
                     <Paper sx={{ p: 3, height: '100%' }}>
                         <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
-                            최근 활동
+                            {t('Recent Activity')}
                         </Typography>
                         {recentActivity.length === 0 ? (
                             <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
-                                최근 활동이 없습니다
+                                {t('No recent activity')}
                             </Typography>
                         ) : (
                             <List>
@@ -262,7 +268,7 @@ const AdminDashboardContent = () => {
                         )}
                         <Box sx={{ textAlign: 'center', mt: 2 }}>
                             <Button variant="outlined" size="small">
-                                모든 활동 보기
+                                {t('View All Activities')}
                             </Button>
                         </Box>
                     </Paper>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Paper,
@@ -52,6 +53,7 @@ import StudentCheckInHistoryDialog from './StudentCheckInHistoryDialog';
 import DeleteUserDialog from './DeleteUserDialog';
 
 const UserManagement = () => {
+    const { t } = useTranslation();
     const [tabValue, setTabValue] = useState(0);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -104,7 +106,7 @@ const UserManagement = () => {
                 setError(result.message);
             }
         } catch (error) {
-            setError('사용자 목록을 불러오는 중 오류가 발생했습니다');
+            setError(t('An error occurred while loading user list'));
         } finally {
             setLoading(false);
         }
@@ -227,7 +229,7 @@ const UserManagement = () => {
             <Paper sx={{ p: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                     <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                        사용자 관리
+                        {t('User Management')}
                     </Typography>
                     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                         <Button
@@ -236,7 +238,7 @@ const UserManagement = () => {
                             onClick={handleCreateAdmin}
                             sx={{ textTransform: 'none' }}
                         >
-                            관리자 생성
+                            {t('Create Admin')}
                         </Button>
                         <Button
                             variant="contained"
@@ -245,7 +247,7 @@ const UserManagement = () => {
                             sx={{ textTransform: 'none' }}
                             color="success"
                         >
-                            학생/부모 생성
+                            {t('Create Student/Parent')}
                         </Button>
                         <Button
                             variant="outlined"
@@ -254,7 +256,7 @@ const UserManagement = () => {
                             disabled={loading}
                             sx={{ textTransform: 'none' }}
                         >
-                            새로고침
+                            {t('Refresh')}
                         </Button>
                     </Box>
                 </Box>
@@ -273,24 +275,26 @@ const UserManagement = () => {
 
                 <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
                     <Tabs value={tabValue} onChange={handleTabChange}>
-                        <Tab label="전체" />
-                        <Tab label="관리자" />
-                        <Tab label="학생" />
-                        <Tab label="부모" />
+                        <Tab label={t('All')} />
+                        <Tab label={t('Admin')} />
+                        <Tab label={t('Student')} />
+                        <Tab label={t('Parent')} />
                     </Tabs>
                 </Box>
 
                 <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
                     <TextField
-                        placeholder="사용자명, 이름, 이메일로 검색..."
+                        placeholder={t('Search by username, name, email...')}
                         value={search}
                         onChange={handleSearchChange}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <Search />
-                                </InputAdornment>
-                            ),
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Search />
+                                    </InputAdornment>
+                                ),
+                            }
                         }}
                         sx={{ flexGrow: 1 }}
                     />
@@ -300,13 +304,13 @@ const UserManagement = () => {
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>사용자명</TableCell>
-                                <TableCell>이름</TableCell>
-                                <TableCell>이메일</TableCell>
-                                <TableCell>전화번호</TableCell>
-                                <TableCell>유형</TableCell>
-                                <TableCell>생성일</TableCell>
-                                <TableCell align="center">작업</TableCell>
+                                <TableCell>{t('Username')}</TableCell>
+                                <TableCell>{t('Name')}</TableCell>
+                                <TableCell>{t('Email')}</TableCell>
+                                <TableCell>{t('Phone Number')}</TableCell>
+                                <TableCell>{t('Type')}</TableCell>
+                                <TableCell>{t('Created Date')}</TableCell>
+                                <TableCell align="center">{t('Actions')}</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -320,7 +324,7 @@ const UserManagement = () => {
                                 <TableRow>
                                     <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
                                         <Typography color="text.secondary">
-                                            사용자가 없습니다
+                                            {t('No users found')}
                                         </Typography>
                                     </TableCell>
                                 </TableRow>

@@ -15,7 +15,9 @@
     "start": "concurrently \"npm run server\" \"npm run dev\"",
     "start:https": "concurrently \"npm run server\" \"npm run dev:https\"",
     "start:prod": "concurrently \"npm run server:prod\" \"npm run preview\"",
-    "deploy": "npm run build:prod && npm run server:prod"
+    "deploy": "npm run build:prod && npm run server:prod",
+    "i18n:parse": "i18next-parser",
+    "i18n:extract": "i18next-parser --config i18next-parser.config.js"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -56,6 +58,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
+    "i18next-parser": "^9.3.0",
     "nodemon": "^3.1.10",
     "vite": "^7.0.4"
   }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Paper,
@@ -36,6 +37,7 @@ import apiClient from '../../services/apiClient';
 
 const ProfileEditor = () => {
     const { user, updateProfile } = useAuth();
+    const { t } = useTranslation();
     const [editing, setEditing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -46,12 +48,14 @@ const ProfileEditor = () => {
 
     // 타임존 옵션
     const timezones = [
-        { value: 'Asia/Seoul', label: '서울 (UTC+9)' }
+        { value: 'Asia/Seoul', label: t('Seoul (UTC+9)') }
     ];
 
     // 언어 옵션
     const languages = [
-        { value: 'ko', label: '한국어' }
+        { value: 'ko', label: t('Korean') },
+        { value: 'en', label: t('English') },
+        { value: 'ja', label: t('Japanese') }
     ];
 
     const [formData, setFormData] = useState({
@@ -128,19 +132,19 @@ const ProfileEditor = () => {
         const errors = {};
 
         if (!formData.full_name?.trim()) {
-            errors.full_name = '이름을 입력해주세요';
+            errors.full_name = t('Please enter your name');
         }
 
         if (!formData.email?.trim()) {
-            errors.email = '이메일을 입력해주세요';
+            errors.email = t('Please enter your email');
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            errors.email = '올바른 이메일 형식을 입력해주세요';
+            errors.email = t('Please enter a valid email format');
         }
 
         if (!formData.phone?.trim()) {
-            errors.phone = '전화번호를 입력해주세요';
+            errors.phone = t('Please enter your phone number');
         } else if (formData.phone.length < 10) {
-            errors.phone = '올바른 전화번호를 입력해주세요';
+            errors.phone = t('Please enter a valid phone number');
         }
 
         setFormErrors(errors);
@@ -151,17 +155,17 @@ const ProfileEditor = () => {
         const errors = {};
 
         if (!passwordData.currentPassword) {
-            errors.currentPassword = '현재 비밀번호를 입력해주세요';
+            errors.currentPassword = t('Please enter your current password');
         }
 
         if (!passwordData.newPassword) {
-            errors.newPassword = '새 비밀번호를 입력해주세요';
+            errors.newPassword = t('Please enter your new password');
         } else if (passwordData.newPassword.length < 6) {
-            errors.newPassword = '비밀번호는 최소 6자 이상이어야 합니다';
+            errors.newPassword = t('Password must be at least 6 characters');
         }
 
         if (passwordData.newPassword !== passwordData.confirmPassword) {
-            errors.confirmPassword = '비밀번호가 일치하지 않습니다';
+            errors.confirmPassword = t('Passwords do not match');
         }
 
         setFormErrors(errors);
@@ -188,14 +192,14 @@ const ProfileEditor = () => {
             console.log('UpdateProfile result:', result);
 
             if (result.success) {
-                setSuccess('프로필이 성공적으로 업데이트되었습니다');
+                setSuccess(t('Profile updated successfully'));
                 setEditing(false);
             } else {
-                setError(result.message || '프로필 업데이트에 실패했습니다');
+                setError(result.message || t('Failed to update profile'));
             }
         } catch (error) {
             console.error('Profile update error in component:', error);
-            setError(error.message || '프로필 업데이트에 실패했습니다');
+            setError(error.message || t('Failed to update profile'));
         } finally {
             setLoading(false);
         }
@@ -219,7 +223,7 @@ const ProfileEditor = () => {
             );
 
             if (response.success) {
-                setSuccess('비밀번호가 성공적으로 변경되었습니다');
+                setSuccess(t('Password changed successfully'));
                 setShowPasswordForm(false);
                 setPasswordData({
                     currentPassword: '',
@@ -227,12 +231,12 @@ const ProfileEditor = () => {
                     confirmPassword: ''
                 });
             } else {
-                setError(response.message || '비밀번호 변경에 실패했습니다');
+                setError(response.message || t('Failed to change password'));
             }
         } catch (error) {
             console.error('Password change error:', error);
             // 서버에서 반환된 에러 메시지를 사용하거나 기본 메시지 표시
-            setError(error.message || '비밀번호 변경에 실패했습니다');
+            setError(error.message || t('Failed to change password'));
         } finally {
             setLoading(false);
         }
@@ -265,7 +269,7 @@ const ProfileEditor = () => {
     if (!user) {
         return (
             <Paper elevation={2} sx={{ p: 4 }}>
-                <Typography>사용자 정보를 불러오는 중...</Typography>
+                <Typography>{t('Loading user information...')}</Typography>
             </Paper>
         );
     }
@@ -275,14 +279,14 @@ const ProfileEditor = () => {
             {/* Profile Information Card */}
             <Paper elevation={2} sx={{ p: 4, mb: 3 }}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                    <Typography variant="h5">프로필 정보</Typography>
+                    <Typography variant="h5">{t('Profile Information')}</Typography>
                     {!editing && (
                         <Button
                             variant="outlined"
                             startIcon={<Edit />}
                             onClick={() => setEditing(true)}
                         >
-                            편집
+                            {t('Edit')}
                         </Button>
                     )}
                 </Box>
@@ -311,8 +315,8 @@ const ProfileEditor = () => {
                                     </Avatar>
                                     <Typography variant="h6">{user.full_name}</Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        {user.user_type === 'student' ? '학생' :
-                                            user.user_type === 'parent' ? '학부모' : '관리자'}
+                                        {user.user_type === 'student' ? t('Student') :
+                                            user.user_type === 'parent' ? t('Parent') : t('Admin')}
                                     </Typography>
                                 </CardContent>
                             </Card>
@@ -323,7 +327,7 @@ const ProfileEditor = () => {
                                     <Person color="action" sx={{ mr: 2 }} />
                                     <Box>
                                         <Typography variant="body2" color="text.secondary">
-                                            이름
+                                            {t('Name')}
                                         </Typography>
                                         <Typography variant="body1">
                                             {user.full_name}
@@ -335,7 +339,7 @@ const ProfileEditor = () => {
                                     <Email color="action" sx={{ mr: 2 }} />
                                     <Box>
                                         <Typography variant="body2" color="text.secondary">
-                                            이메일
+                                            {t('Email')}
                                         </Typography>
                                         <Typography variant="body1">
                                             {user.email}
@@ -347,7 +351,7 @@ const ProfileEditor = () => {
                                     <Phone color="action" sx={{ mr: 2 }} />
                                     <Box>
                                         <Typography variant="body2" color="text.secondary">
-                                            전화번호
+                                            {t('Phone Number')}
                                         </Typography>
                                         <Typography variant="body1">
                                             {user.phone}
@@ -359,10 +363,10 @@ const ProfileEditor = () => {
                                     <AccessTime color="action" sx={{ mr: 2 }} />
                                     <Box>
                                         <Typography variant="body2" color="text.secondary">
-                                            타임존
+                                            {t('Timezone')}
                                         </Typography>
                                         <Typography variant="body1">
-                                            {timezones.find(tz => tz.value === user.timezone)?.label || user.timezone || '서울 (UTC+9)'}
+                                            {timezones.find(tz => tz.value === user.timezone)?.label || user.timezone || t('Seoul (UTC+9)')}
                                         </Typography>
                                     </Box>
                                 </Box>
@@ -371,10 +375,10 @@ const ProfileEditor = () => {
                                     <Language color="action" sx={{ mr: 2 }} />
                                     <Box>
                                         <Typography variant="body2" color="text.secondary">
-                                            언어
+                                            {t('Language')}
                                         </Typography>
                                         <Typography variant="body1">
-                                            {languages.find(lang => lang.value === user.language)?.label || user.language || '한국어'}
+                                            {languages.find(lang => lang.value === user.language)?.label || user.language || t('Korean')}
                                         </Typography>
                                     </Box>
                                 </Box>
@@ -388,7 +392,7 @@ const ProfileEditor = () => {
                                 <TextField
                                     fullWidth
                                     name="full_name"
-                                    label="이름"
+                                    label={t('Name')}
                                     value={formData.full_name}
                                     onChange={handleChange}
                                     error={!!formErrors.full_name}
@@ -407,7 +411,7 @@ const ProfileEditor = () => {
                                 <TextField
                                     fullWidth
                                     name="email"
-                                    label="이메일"
+                                    label={t('Email')}
                                     type="email"
                                     value={formData.email}
                                     onChange={handleChange}
@@ -427,7 +431,7 @@ const ProfileEditor = () => {
                                 <TextField
                                     fullWidth
                                     name="phone"
-                                    label="전화번호"
+                                    label={t('Phone Number')}
                                     value={formData.phone}
                                     onChange={handleChange}
                                     error={!!formErrors.phone}
@@ -445,12 +449,12 @@ const ProfileEditor = () => {
 
                             <Grid item xs={12} md={6}>
                                 <FormControl fullWidth>
-                                    <InputLabel>타임존</InputLabel>
+                                    <InputLabel>{t('Timezone')}</InputLabel>
                                     <Select
                                         name="timezone"
                                         value={formData.timezone}
                                         onChange={handleChange}
-                                        label="타임존"
+                                        label={t('Timezone')}
                                         startAdornment={
                                             <InputAdornment position="start">
                                                 <AccessTime />
@@ -468,12 +472,12 @@ const ProfileEditor = () => {
 
                             <Grid item xs={12} md={6}>
                                 <FormControl fullWidth>
-                                    <InputLabel>언어</InputLabel>
+                                    <InputLabel>{t('Language')}</InputLabel>
                                     <Select
                                         name="language"
                                         value={formData.language}
                                         onChange={handleChange}
-                                        label="언어"
+                                        label={t('Language')}
                                         startAdornment={
                                             <InputAdornment position="start">
                                                 <Language />
@@ -497,7 +501,7 @@ const ProfileEditor = () => {
                                 startIcon={<Save />}
                                 disabled={loading}
                             >
-                                {loading ? <CircularProgress size={20} /> : '저장'}
+                                {loading ? <CircularProgress size={20} /> : t('Save')}
                             </Button>
                             <Button
                                 variant="outlined"
@@ -505,7 +509,7 @@ const ProfileEditor = () => {
                                 onClick={handleCancel}
                                 disabled={loading}
                             >
-                                취소
+                                {t('Cancel')}
                             </Button>
                         </Box>
                     </Box>
@@ -515,21 +519,21 @@ const ProfileEditor = () => {
             {/* Password Change Card */}
             <Paper elevation={2} sx={{ p: 4 }}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                    <Typography variant="h5">비밀번호 변경</Typography>
+                    <Typography variant="h5">{t('Change Password')}</Typography>
                     {!showPasswordForm && (
                         <Button
                             variant="outlined"
                             startIcon={<Edit />}
                             onClick={() => setShowPasswordForm(true)}
                         >
-                            비밀번호 변경
+                            {t('Change Password')}
                         </Button>
                     )}
                 </Box>
 
                 {!showPasswordForm ? (
                     <Typography variant="body2" color="text.secondary">
-                        보안을 위해 정기적으로 비밀번호를 변경하는 것을 권장합니다.
+                        {t('We recommend changing your password regularly for security.')}
                     </Typography>
                 ) : (
                     <Box component="form" onSubmit={handlePasswordSubmit}>
@@ -538,7 +542,7 @@ const ProfileEditor = () => {
                                 <TextField
                                     fullWidth
                                     name="currentPassword"
-                                    label="현재 비밀번호"
+                                    label={t('Current Password')}
                                     type={showCurrentPassword ? 'text' : 'password'}
                                     value={passwordData.currentPassword}
                                     onChange={handlePasswordChange}
@@ -563,7 +567,7 @@ const ProfileEditor = () => {
                                 <TextField
                                     fullWidth
                                     name="newPassword"
-                                    label="새 비밀번호"
+                                    label={t('New Password')}
                                     type={showNewPassword ? 'text' : 'password'}
                                     value={passwordData.newPassword}
                                     onChange={handlePasswordChange}
@@ -588,7 +592,7 @@ const ProfileEditor = () => {
                                 <TextField
                                     fullWidth
                                     name="confirmPassword"
-                                    label="새 비밀번호 확인"
+                                    label={t('Confirm New Password')}
                                     type="password"
                                     value={passwordData.confirmPassword}
                                     onChange={handlePasswordChange}
@@ -606,7 +610,7 @@ const ProfileEditor = () => {
                                 startIcon={<Save />}
                                 disabled={loading}
                             >
-                                {loading ? <CircularProgress size={20} /> : '비밀번호 변경'}
+                                {loading ? <CircularProgress size={20} /> : t('Change Password')}
                             </Button>
                             <Button
                                 variant="outlined"
@@ -614,7 +618,7 @@ const ProfileEditor = () => {
                                 onClick={handleCancelPassword}
                                 disabled={loading}
                             >
-                                취소
+                                {t('Cancel')}
                             </Button>
                         </Box>
                     </Box>
