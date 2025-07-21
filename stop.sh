@@ -2,9 +2,6 @@
 
 # TrailTag 중지 스크립트
 
-# 프로젝트 루트로 이동
-cd "$(dirname "$0")/.."
-
 # PID 파일 확인
 if [ -f logs/app.pid ]; then
     PID=$(cat logs/app.pid)
