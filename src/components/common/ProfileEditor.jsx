@@ -35,7 +35,7 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
 import apiClient from '../../services/apiClient';
-import { getTimezonesByRegion, getTimezoneLabel } from '../../data/timezones';
+import { getTimezonesByRegion, getTimezoneLabel } from '../../data/timezones.js';
 import { timeFormats, dateFormats } from '../../data/timeFormats';
 
 const ProfileEditor = () => {
