@@ -17,3 +17,6 @@ echo "애플리케이션이 백그라운드에서 실행 중입니다."
 echo "PID: $(cat logs/app.pid)"
 echo "로그 확인: tail -f logs/app.log"
 echo "중지하려면: ./scripts/stop.sh"
+
+tail -f logs/app.log
+

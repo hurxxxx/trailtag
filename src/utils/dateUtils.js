@@ -1,10 +1,6 @@
-import { formatDistanceToNow, parseISO } from 'date-fns';
-import * as dateFnsTz from 'date-fns-tz';
+import { formatDistanceToNow } from 'date-fns';
 import { ko, enUS, ja } from 'date-fns/locale';
 import { getFormatString } from '../data/timeFormats';
-
-// date-fns-tz 함수들 추출
-const { zonedTimeToUtc, utcToZonedTime, formatInTimeZone } = dateFnsTz;
 
 // 로케일 매핑
 const localeMap = {
@@ -23,11 +19,17 @@ const localeMap = {
  */
 export const formatDateWithTimezone = (date, formatString, userTimezone = 'Asia/Seoul', userLocale = 'ko') => {
   try {
-    const dateObj = typeof date === 'string' ? parseISO(date) : date;
-    const locale = localeMap[userLocale] || ko;
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    const localeString = userLocale === 'ko' ? 'ko-KR' :
+      userLocale === 'ja' ? 'ja-JP' : 'en-US';
 
-    return formatInTimeZone(dateObj, userTimezone, formatString, {
-      locale
+    return dateObj.toLocaleString(localeString, {
+      timeZone: userTimezone,
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   } catch (error) {
     console.error('Date formatting error:', error);
@@ -44,11 +46,10 @@ export const formatDateWithTimezone = (date, formatString, userTimezone = 'Asia/
  */
 export const formatTimeAgo = (date, userTimezone = 'Asia/Seoul', userLocale = 'ko') => {
   try {
-    const dateObj = typeof date === 'string' ? parseISO(date) : date;
-    const zonedDate = utcToZonedTime(dateObj, userTimezone);
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
     const locale = localeMap[userLocale] || ko;
 
-    return formatDistanceToNow(zonedDate, {
+    return formatDistanceToNow(dateObj, {
       addSuffix: true,
       locale
     });
@@ -136,7 +137,7 @@ export const formatDateTime = (date, userTimezone = 'Asia/Seoul', userLocale = '
  * @returns {Date} 타임존이 적용된 현재 시간
  */
 export const getCurrentTimeInTimezone = (userTimezone = 'Asia/Seoul') => {
-  return utcToZonedTime(new Date(), userTimezone);
+  return new Date(); // 네이티브 Date 객체 반환 (브라우저가 자동으로 시간대 처리)
 };
 
 /**
