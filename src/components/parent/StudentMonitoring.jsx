@@ -39,7 +39,7 @@ import checkInService from '../../services/checkInService';
 import apiClient from '../../services/apiClient';
 import { useAuth } from '../../contexts/AuthContext';
 import { useUserLocale } from '../../hooks/useUserLocale';
-import { formatDateTime } from '../../utils/dateUtils';
+import { formatDateTime, formatTime } from '../../utils/dateUtils';
 
 const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
     const { user } = useAuth();
@@ -365,13 +365,7 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
                                                         </ListItemIcon>
                                                         <ListItemText
                                                             primary={checkIn.program_name}
-                                                            secondary={
-                                                                <Box>
-                                                                    <Typography variant="body2" component="span">
-                                                                        {checkIn.qr_location} • {formatTimeLocalized(checkIn.check_in_time)}
-                                                                    </Typography>
-                                                                </Box>
-                                                            }
+                                                            secondary={`${checkIn.location || 'Unknown Location'} • ${formatTimeLocalized(checkIn.check_in_time)}`}
                                                         />
                                                         <Chip
                                                             label="Today"
@@ -410,10 +404,10 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
                                                         <ListItemText
                                                             primary={checkIn.program_name}
                                                             secondary={
-                                                                <Box>
+                                                                <Box component="div">
                                                                     <Typography variant="body2" component="div">
                                                                         <LocationOn sx={{ fontSize: 16, mr: 0.5, verticalAlign: 'middle' }} />
-                                                                        {checkIn.qr_location}
+                                                                        {checkIn.location || 'Unknown Location'}
                                                                     </Typography>
                                                                     <Typography variant="body2" component="div">
                                                                         <AccessTime sx={{ fontSize: 16, mr: 0.5, verticalAlign: 'middle' }} />
@@ -421,6 +415,7 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
                                                                     </Typography>
                                                                 </Box>
                                                             }
+                                                            slotProps={{ secondary: { component: 'div' } }}
                                                         />
                                                     </ListItem>
                                                     {index < Math.min(checkIns.length, 20) - 1 && <Divider />}
