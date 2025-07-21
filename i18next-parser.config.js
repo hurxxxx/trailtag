@@ -52,8 +52,18 @@ module.exports = {
     }
   },
 
-  // 기존 번역 파일 유지 설정
-  resetDefaultValueLocale: null,
+  // 기본값 설정 - 영문 번역 파일에는 키와 동일한 값 사용
+  defaultValue: function (locale, _namespace, key) {
+    // 영문(en)의 경우 키를 기본값으로 사용
+    if (locale === 'en') {
+      return key;
+    }
+    // 다른 언어는 빈 문자열
+    return '';
+  },
+
+  // 기존 번역 파일 유지 설정 - 영문은 기본값으로 재설정
+  resetDefaultValueLocale: 'en',
 
   // 사용되지 않는 키 제거
   removeUnusedKeys: false,
