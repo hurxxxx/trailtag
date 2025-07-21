@@ -8,7 +8,7 @@ import {
     Paper,
     AppBar,
     Toolbar,
-    IconButton,
+
     Button,
     BottomNavigation,
     BottomNavigationAction,
@@ -66,7 +66,7 @@ const StudentDashboard = () => {
         navigate('/auth');
     };
 
-    const handleBottomNavChange = (event, newValue) => {
+    const handleBottomNavChange = (_event, newValue) => {
         setBottomNavValue(newValue);
         switch (newValue) {
             case 0:
@@ -191,6 +191,7 @@ const StudentDashboard = () => {
 // Student Home Component
 const StudentHome = () => {
     const { user } = useAuth();
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [todayCheckIns, setTodayCheckIns] = useState([]);
     const [stats, setStats] = useState(null);
@@ -304,7 +305,7 @@ const StudentHome = () => {
                     </Box>
                 ) : (
                     <List>
-                        {todayCheckIns.slice(0, 3).map((checkIn, index) => (
+                        {todayCheckIns.slice(0, 3).map((checkIn) => (
                             <ListItem key={checkIn.id}>
                                 <ListItemIcon>
                                     <CheckCircle color="success" />
