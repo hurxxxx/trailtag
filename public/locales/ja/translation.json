@@ -67,17 +67,14 @@
   "Confirm New Password": "",
   "Confirm Password": "",
   "Create {{userType}}": "",
-  "Create a new admin account": {
-    " Please fill in all required information": ""
-  },
+  "Create a new admin account - Please fill in all required information": "",
   "Create a new learning program": "",
-  "Create a new user account": {
-    " Please fill in all required information": ""
-  },
+  "Create a new user account - Please fill in all required information": "",
   "Create Admin": "",
   "Create and manage learning programs with rich content and QR code integration": "",
   "Create First Program": "",
   "Create New {{userType}} Account": "",
+  "Create new admin account": "",
   "Create New Admin Account": "",
   "Create New Program": "",
   "Create Program": "",

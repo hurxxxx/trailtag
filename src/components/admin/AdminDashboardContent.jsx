@@ -198,7 +198,7 @@ const AdminDashboardContent = () => {
                             <Grid size={6}>
                                 <QuickActionCard
                                     title={t('Add Admin')}
-                                    description={t('Create a new admin account')}
+                                    description={t('Create new admin account')}
                                     icon={<PersonAdd />}
                                     onClick={() => window.location.href = '/admin/users'}
                                     color="success"

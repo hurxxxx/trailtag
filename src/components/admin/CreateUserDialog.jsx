@@ -187,7 +187,7 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                     )}
 
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                        {t('Create a new user account. Please fill in all required information.')}
+                        {t('Create a new user account - Please fill in all required information')}
                     </Typography>
 
                     <TextField

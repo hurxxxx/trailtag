@@ -67,17 +67,14 @@
   "Confirm New Password": "새 비밀번호 확인",
   "Confirm Password": "비밀번호 확인",
   "Create {{userType}}": "",
-  "Create a new admin account": {
-    " Please fill in all required information": "새로운 관리자 계정을 생성합니다. 모든 필수 정보를 입력해주세요."
-  },
+  "Create a new admin account - Please fill in all required information": "",
   "Create a new learning program": "새로운 학습 프로그램 생성",
-  "Create a new user account": {
-    " Please fill in all required information": "새로운 사용자 계정을 생성합니다. 모든 필수 정보를 입력해주세요."
-  },
+  "Create a new user account - Please fill in all required information": "",
   "Create Admin": "관리자 생성",
   "Create and manage learning programs with rich content and QR code integration": "풍부한 콘텐츠와 QR 코드 통합을 통해 학습 프로그램을 생성하고 관리합니다",
   "Create First Program": "",
   "Create New {{userType}} Account": "새 {{userType}} 계정 생성",
+  "Create new admin account": "",
   "Create New Admin Account": "새 관리자 계정 생성",
   "Create New Program": "새 프로그램 생성",
   "Create Program": "프로그램 생성",
