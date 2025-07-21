@@ -1,101 +1,177 @@
 # TrailTag
 
-QR 코드를 활용한 프로그램 출석 관리 시스템
+📚 Learning Program Participation Tracking System with QR Code Integration
 
-## 개요
+[![React](https://img.shields.io/badge/React-19.1.0-blue.svg)](https://reactjs.org/)
+[![Material-UI](https://img.shields.io/badge/MUI-7.2.0-blue.svg)](https://mui.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-TrailTag는 QR 코드 스캔을 통해 프로그램 참여를 관리하는 웹 애플리케이션입니다. 관리자, 학생, 부모 역할을 지원하며 프로그램 생성, 출석 체크, 활동 모니터링 기능을 제공합니다.
+## 📋 Overview
 
-## 기능
+TrailTag is a web application for tracking learning program participation using QR codes. It supports admin, student, and parent roles for managing programs, attendance, and monitoring activities.
 
-- **관리자**: 프로그램 생성/관리, QR 코드 생성, 사용자 관리
-- **학생**: QR 코드 스캔으로 프로그램 체크인, 활동 기록 조회
-- **부모**: 자녀 활동 모니터링, 참여 통계 확인
+### ✨ Features
 
-## 기술 스택
+- 📱 QR code check-in system
+- 👥 Multi-role user management (Admin, Student, Parent)
+- 🌍 Internationalization (English, Korean, Japanese)
+- 📊 Participation tracking and statistics
+- 🔐 JWT authentication
+
+## 👥 User Roles
+
+### 🔧 Administrator
+- Create and manage learning programs
+- Generate QR codes for programs
+- Monitor student participation
+- Manage user accounts
+- View analytics and reports
+
+### 🎓 Student
+- Check-in to programs via QR code scanning
+- View participation history
+- Track progress across programs
+- Access program information
+
+### 👨‍👩‍👧‍👦 Parent
+- Monitor child's activities and participation
+- View attendance reports
+- Track multiple children's progress
+
+## 🛠️ Technology Stack
 
 ### Frontend
 - React 19.1.0
 - Material-UI (MUI) 7.2.0
 - React Router DOM 7.7.0
-- Vite (빌드 도구)
+- Vite
+- i18next
 
 ### Backend
 - Node.js
 - Express 5.1.0
 - SQLite (better-sqlite3)
-- JWT 인증
+- JWT
+- bcrypt
 
-### QR 코드
-- html5-qrcode (스캔)
-- qrcode (생성)
+### QR Code
+- html5-qrcode (scanning)
+- qrcode (generation)
 
-## 설치 및 실행
+## 🚀 Installation
 
-### 요구사항
-- Node.js 18 이상
+### 📋 Prerequisites
+- Node.js 18+
 - npm
 
-### 설치
+### 📦 Setup
+
+1. Clone the repository
 ```bash
 git clone https://github.com/hurxxxx/trailtag.git
 cd trailtag
+```
+
+2. Install dependencies
+```bash
 npm install
 ```
 
-### 개발 환경 실행
-```bash
-# 개발 서버 시작 (HTTP - 기본)
-npm run start
+### 🔧 Development
 
-# 개발 서버 시작 (HTTPS - 모바일 QR 스캔 테스트용)
+#### HTTP Mode (Default)
+```bash
+npm run start
+```
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:3001
+
+#### HTTPS Mode (Mobile QR Testing)
+```bash
 npm run start:https
 ```
+- Frontend: https://localhost:5173
+- Backend API: http://localhost:3001
 
-**참고**:
-- 일반 개발은 `npm run start` (HTTP) 사용
-- 모바일에서 QR 스캔 테스트가 필요한 경우만 `npm run start:https` 사용
+📱 Note: HTTPS is required for camera access on mobile browsers.
 
-### 프로덕션 빌드 및 배포
+### 🏗️ Production
+
+#### Build and Deploy
 ```bash
-# 프로덕션 빌드
 npm run build:prod
-
-# 프로덕션 서버 시작
 npm run server:prod
+```
 
-# 또는 한 번에 빌드 + 배포
+Or use the combined command:
+```bash
 npm run deploy
 ```
 
-## 접속 정보
+Production server: http://localhost:9883
 
-### 개발 환경
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:3001
-- HTTPS 모드: https://localhost:5173 (QR 스캔 테스트용)
+## 🔐 Default Admin Account
 
-### 프로덕션 환경
-- 통합 서버: http://localhost:9883
+| Field | Value |
+|-------|-------|
+| Username | `admin` |
+| Password | `admin123` |
 
-### 기본 관리자 계정
-- 사용자명: `admin`
-- 비밀번호: `admin123`
+⚠️ Change the default password in production environments.
 
+## ⚙️ Configuration
 
-## 환경 설정
+### Environment Files
+- `.env` - Development configuration
+- `.env.production` - Production configuration
 
-- `.env` - 개발 환경 설정
-- `.env.production` - 프로덕션 환경 설정
+### API URL Configuration
+```bash
+# Development
+VITE_API_URL=http://localhost:3001/api
 
-### API URL 설정
-- **개발 환경**: `VITE_API_URL=http://localhost:3001/api`
-- **프로덕션 환경**: `VITE_API_URL=/api` (상대 경로)
+# Production
+VITE_API_URL=/api
+```
 
-## 사용법
+## 📚 Usage
 
-자세한 사용법은 [매뉴얼](MANUAL.md)을 참조하세요.
+### Getting Started
+1. Login with the default admin account
+2. Create your first learning program
+3. QR codes are automatically generated for each program
+4. Add student and parent accounts
+5. Students can check in by scanning QR codes
 
-## 라이선스
+### Available Scripts
 
-MIT
+| Command | Description |
+|---------|-------------|
+| `npm run start` | Start development server (HTTP) |
+| `npm run start:https` | Start development server (HTTPS) |
+| `npm run build:prod` | Build for production |
+| `npm run server:prod` | Start production server |
+| `npm run deploy` | Build and deploy |
+| `npm run i18n:extract` | Extract translation keys |
+
+### 🌍 Internationalization
+
+Supported languages:
+- English (en)
+- Korean (ko)
+- Japanese (ja)
+
+Translation files: `public/locales/{language}/translation.json`
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/NewFeature`)
+3. Commit your changes (`git commit -m 'Add NewFeature'`)
+4. Push to the branch (`git push origin feature/NewFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+MIT License - see the [LICENSE](LICENSE) file for details.
