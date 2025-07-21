@@ -245,13 +245,7 @@ const CheckInHistory = () => {
                                                 </ListItemIcon>
                                                 <ListItemText
                                                     primary={checkIn.program_name}
-                                                    secondary={
-                                                        <Box>
-                                                            <Typography variant="body2" component="span">
-                                                                {checkIn.qr_location} • {formatTimeLocalized(checkIn.check_in_time)}
-                                                            </Typography>
-                                                        </Box>
-                                                    }
+                                                    secondary={`${checkIn.location || 'Unknown Location'} • ${formatTimeLocalized(checkIn.check_in_time)}`}
                                                 />
                                                 <Chip
                                                     label={t('Today')}
@@ -293,10 +287,10 @@ const CheckInHistory = () => {
                                                 <ListItemText
                                                     primary={checkIn.program_name}
                                                     secondary={
-                                                        <Box>
+                                                        <Box component="div">
                                                             <Typography variant="body2" component="div">
                                                                 <LocationOn sx={{ fontSize: 16, mr: 0.5, verticalAlign: 'middle' }} />
-                                                                {checkIn.qr_location}
+                                                                {checkIn.location || 'Unknown Location'}
                                                             </Typography>
                                                             <Typography variant="body2" component="div">
                                                                 <AccessTime sx={{ fontSize: 16, mr: 0.5, verticalAlign: 'middle' }} />
@@ -304,6 +298,7 @@ const CheckInHistory = () => {
                                                             </Typography>
                                                         </Box>
                                                     }
+                                                    slotProps={{ secondary: { component: 'div' } }}
                                                 />
                                             </ListItem>
                                             {index < checkIns.length - 1 && <Divider />}
