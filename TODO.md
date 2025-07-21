@@ -1,26 +1,28 @@
 # TrailTag 개발 TODO 리스트
 
-## 🌍 최우선 과제: 메시지 국제화 (i18n)
+## 🌍 ✅ 완료: 메시지 국제화 (i18n)
 
-### 1. i18n 기본 설정
-- [ ] i18n 설정 파일 생성 (`src/i18n/index.js`)
-- [ ] 언어별 번역 파일 구조 생성 (`src/i18n/locales/`)
-  - [ ] `ko.json` (한국어 - 기본)
-  - [ ] `en.json` (영어)
-  - [ ] `ja.json` (일본어)
-- [ ] App.jsx에 i18n Provider 추가
-- [ ] 언어 감지 및 저장 로직 구현
+### 1. ✅ i18n 기본 설정 (완료)
+- [x] i18n 설정 파일 생성 (`src/i18n/index.js`)
+- [x] 언어별 번역 파일 구조 생성 (`public/locales/`)
+  - [x] `ko/translation.json` (한국어 - 296개 키 완료)
+  - [x] `en/translation.json` (영어 - 296개 키 완료)
+  - [x] `ja/translation.json` (일본어 - 구조 완료)
+- [x] App.jsx에 i18n Provider 추가
+- [x] 언어 감지 및 저장 로직 구현
+- [x] 사용자 프로필 기반 언어 설정 자동 적용
 
-### 2. 프론트엔드 텍스트 국제화
-- [ ] 하드코딩된 한국어 텍스트 추출 및 번역키 변환
-  - [ ] 인증 페이지 (`AuthPage.jsx`)
-  - [ ] 관리자 대시보드 (`AdminDashboard.jsx`, `AdminDashboardContent.jsx`)
-  - [ ] 학생 대시보드 (`StudentDashboard.jsx`)
-  - [ ] 부모 대시보드 (`ParentDashboard.jsx`)
-  - [ ] 공통 컴포넌트들 (`ProfileEditor.jsx`, `ProtectedRoute.jsx` 등)
-  - [ ] 프로그램 관리 컴포넌트들
-  - [ ] QR 코드 관련 컴포넌트들
-- [ ] 언어 전환 UI 컴포넌트 개발
+### 2. ✅ 프론트엔드 텍스트 국제화 (완료)
+- [x] 하드코딩된 한국어 텍스트 추출 및 번역키 변환
+  - [x] 인증 페이지 (`AuthPage.jsx`, `LoginForm.jsx`, `SignUpForm.jsx`)
+  - [x] 관리자 대시보드 (`AdminDashboard.jsx`, `AdminDashboardContent.jsx`)
+  - [x] 학생 대시보드 (`StudentDashboard.jsx`) - useTranslation 훅 추가
+  - [x] 부모 대시보드 (`ParentDashboard.jsx`) - useTranslation 훅 추가
+  - [x] 공통 컴포넌트들 (`ProfileEditor.jsx`, `LanguageSwitcher.jsx` 등)
+  - [x] 프로그램 관리 컴포넌트들 (`ProgramForm.jsx`, `ProgramList.jsx` 등)
+  - [x] QR 코드 관련 컴포넌트들 (`QRScanner.jsx`, `QRCodeList.jsx` 등)
+- [x] 언어 전환 UI 컴포넌트 개발 (프로필 설정 통합)
+- [x] i18next-scanner 도구로 자동 번역키 추출 시스템 구축
 - [ ] 날짜/시간 형식 국제화
 - [ ] 숫자 형식 국제화
 
@@ -30,6 +32,19 @@
 - [ ] 에러 메시지 국제화
 - [ ] 성공 메시지 국제화
 - [ ] 클라이언트 언어 헤더 처리 로직
+
+## 🔧 즉시 해결 필요한 이슈들
+
+### 3.1 번역 완성
+- [ ] 일본어 번역 완료 (현재 빈 문자열 상태)
+- [ ] 번역 품질 검토 및 개선
+- [ ] 컨텍스트에 맞는 번역 조정
+
+### 3.2 UI/UX 개선
+- [x] MUI Grid v2 마이그레이션 완료 (item, xs, sm props → size prop)
+- [ ] 날짜/시간 형식 국제화 구현
+- [ ] 숫자 형식 국제화 구현
+- [ ] 모바일 반응형 디자인 점검
 
 ## 🧪 테스트 시스템 구축
 
@@ -178,10 +193,13 @@
 ## 우선순위 가이드
 
 **🔴 높음 (즉시 시작)**
-- 메시지 국제화 (1-3)
+- ✅ ~~메시지 국제화 (1-2) - 완료~~
+- 일본어 번역 완료 (3.1)
+- 날짜/시간/숫자 형식 국제화 (3.2)
 - 기본 테스트 환경 설정 (4)
 
 **🟡 중간 (다음 스프린트)**
+- 백엔드 API 메시지 국제화 (3)
 - 테스트 작성 (5-7)
 - UX 개선 (8)
 - 보안 강화 (10)
@@ -193,4 +211,20 @@
 
 ---
 
-*마지막 업데이트: 2025-07-19*
+*마지막 업데이트: 2025-07-21*
+
+## 📈 최근 완료된 주요 작업들
+
+### 🌍 국제화 (i18n) 시스템 완전 구축 (2025-07-21)
+- **i18next 설정 완료**: 브라우저 언어 감지, localStorage 저장
+- **번역 파일 구조 완성**: 영어/한국어 296개 키 완료
+- **자동 번역키 추출**: i18next-scanner로 개발 워크플로우 최적화
+- **사용자 언어 설정**: 프로필에서 언어 변경 시 자동 적용 및 영구 저장
+- **컴포넌트 국제화**: 모든 주요 컴포넌트에 useTranslation 훅 적용
+- **MUI Grid v2 마이그레이션**: 구식 props 제거로 경고 해결
+
+### 🔧 기술적 개선사항
+- **AuthContext 개선**: 사용자 로그인 시 언어 설정 자동 적용
+- **ProfileEditor 개선**: 실시간 언어 변경 및 폼 상태 관리 최적화
+- **에러 해결**: useTranslation 훅 누락 문제 해결
+- **코드 품질**: 사용하지 않는 매개변수 정리, 경고 제거
