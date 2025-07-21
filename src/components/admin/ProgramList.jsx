@@ -38,12 +38,15 @@ import {
 import programService from '../../services/programService';
 import qrCodeService from '../../services/qrCodeService';
 import { useAuth } from '../../contexts/AuthContext';
+import { useUserLocale } from '../../hooks/useUserLocale';
+import { formatDate } from '../../utils/dateUtils';
 import QRCodeDialog from './QRCodeDialog';
 
 const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
     const { user } = useAuth();
     const theme = useTheme();
     const { t } = useTranslation();
+    const { language, timezone } = useUserLocale();
     const [programs, setPrograms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -189,12 +192,8 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
         }));
     };
 
-    const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('ko-KR', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
+    const formatDateLocalized = (dateString) => {
+        return formatDate(dateString, timezone, language);
     };
 
     const stripHtml = (html) => {
@@ -459,7 +458,7 @@ const ProgramList = ({ onEditProgram, onCreateProgram, refreshTrigger }) => {
                                             />
                                             <Chip
                                                 icon={<AccessTime />}
-                                                label={formatDate(program.created_at)}
+                                                label={formatDateLocalized(program.created_at)}
                                                 size="small"
                                                 variant="outlined"
                                                 sx={{ fontSize: '0.75rem' }}

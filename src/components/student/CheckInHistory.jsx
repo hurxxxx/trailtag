@@ -30,10 +30,13 @@ import {
 } from '@mui/icons-material';
 import checkInService from '../../services/checkInService';
 import { useAuth } from '../../contexts/AuthContext';
+import { useUserLocale } from '../../hooks/useUserLocale';
+import { formatDate, formatTime, formatDateTime } from '../../utils/dateUtils';
 
 const CheckInHistory = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
+    const { language, timezone } = useUserLocale();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [checkIns, setCheckIns] = useState([]);
@@ -75,33 +78,10 @@ const CheckInHistory = () => {
         }
     };
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
-    };
-
-    const formatTime = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
-    const formatDateTime = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
+    // 사용자 로케일에 맞는 날짜/시간 포맷팅 함수들
+    const formatDateLocalized = (dateString) => formatDate(dateString, timezone, language);
+    const formatTimeLocalized = (dateString) => formatTime(dateString, timezone, language);
+    const formatDateTimeLocalized = (dateString) => formatDateTime(dateString, timezone, language);
 
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
@@ -268,7 +248,7 @@ const CheckInHistory = () => {
                                                     secondary={
                                                         <Box>
                                                             <Typography variant="body2" component="span">
-                                                                {checkIn.qr_location} • {formatTime(checkIn.check_in_time)}
+                                                                {checkIn.qr_location} • {formatTimeLocalized(checkIn.check_in_time)}
                                                             </Typography>
                                                         </Box>
                                                     }
@@ -320,7 +300,7 @@ const CheckInHistory = () => {
                                                             </Typography>
                                                             <Typography variant="body2" component="div">
                                                                 <AccessTime sx={{ fontSize: 16, mr: 0.5, verticalAlign: 'middle' }} />
-                                                                {formatDateTime(checkIn.check_in_time)}
+                                                                {formatDateTimeLocalized(checkIn.check_in_time)}
                                                             </Typography>
                                                         </Box>
                                                     }

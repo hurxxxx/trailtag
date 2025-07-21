@@ -18,7 +18,8 @@ import {
     FormControl,
     InputLabel,
     Select,
-    MenuItem
+    MenuItem,
+    ListSubheader
 } from '@mui/material';
 import {
     Person,
@@ -34,6 +35,8 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
 import apiClient from '../../services/apiClient';
+import { getTimezonesByRegion, getTimezoneLabel } from '../../data/timezones';
+import { timeFormats, dateFormats } from '../../data/timeFormats';
 
 const ProfileEditor = () => {
     const { user, updateProfile } = useAuth();
@@ -46,10 +49,8 @@ const ProfileEditor = () => {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
 
-    // Timezone options
-    const timezones = [
-        { value: 'Asia/Seoul', label: t('Seoul (UTC+9)') }
-    ];
+    // Timezone options - grouped by region
+    const timezonesByRegion = getTimezonesByRegion();
 
     // Language options
     const languages = [
@@ -63,7 +64,9 @@ const ProfileEditor = () => {
         email: '',
         phone: '',
         timezone: '',
-        language: ''
+        language: '',
+        timeFormat: '',
+        dateFormat: ''
     });
 
     const [passwordData, setPasswordData] = useState({
@@ -81,7 +84,9 @@ const ProfileEditor = () => {
                 email: user.email || '',
                 phone: user.phone || '',
                 timezone: user.timezone || 'Asia/Seoul',
-                language: user.language || 'ko'
+                language: user.language || 'ko',
+                timeFormat: user.timeFormat || '12h',
+                dateFormat: user.dateFormat || 'long'
             });
         }
     }, [user, editing]);
@@ -383,7 +388,7 @@ const ProfileEditor = () => {
                                             {t('Timezone')}
                                         </Typography>
                                         <Typography variant="body1">
-                                            {timezones.find(tz => tz.value === user.timezone)?.label || user.timezone || t('Seoul (UTC+9)')}
+                                            {getTimezoneLabel(user.timezone) || user.timezone || 'Seoul (UTC+9)'}
                                         </Typography>
                                     </Box>
                                 </Box>
@@ -478,11 +483,14 @@ const ProfileEditor = () => {
                                             </InputAdornment>
                                         }
                                     >
-                                        {timezones.map((tz) => (
-                                            <MenuItem key={tz.value} value={tz.value}>
-                                                {tz.label}
-                                            </MenuItem>
-                                        ))}
+                                        {Object.entries(timezonesByRegion).map(([region, timezones]) => [
+                                            <ListSubheader key={`region-${region}`}>{region}</ListSubheader>,
+                                            ...timezones.map((tz) => (
+                                                <MenuItem key={`tz-${tz.value}`} value={tz.value}>
+                                                    {tz.label}
+                                                </MenuItem>
+                                            ))
+                                        ])}
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -504,6 +512,44 @@ const ProfileEditor = () => {
                                         {languages.map((lang) => (
                                             <MenuItem key={lang.value} value={lang.value}>
                                                 {lang.label}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+
+                            {/* Time Format */}
+                            <Grid size={{ xs: 12, sm: 6 }}>
+                                <FormControl fullWidth>
+                                    <InputLabel>{t('Time Format')}</InputLabel>
+                                    <Select
+                                        name="timeFormat"
+                                        value={formData.timeFormat}
+                                        onChange={handleChange}
+                                        label={t('Time Format')}
+                                    >
+                                        {timeFormats[formData.language]?.map((format) => (
+                                            <MenuItem key={format.value} value={format.value}>
+                                                {format.label}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+
+                            {/* Date Format */}
+                            <Grid size={{ xs: 12, sm: 6 }}>
+                                <FormControl fullWidth>
+                                    <InputLabel>{t('Date Format')}</InputLabel>
+                                    <Select
+                                        name="dateFormat"
+                                        value={formData.dateFormat}
+                                        onChange={handleChange}
+                                        label={t('Date Format')}
+                                    >
+                                        {dateFormats[formData.language]?.map((format) => (
+                                            <MenuItem key={format.value} value={format.value}>
+                                                {format.label}
                                             </MenuItem>
                                         ))}
                                     </Select>

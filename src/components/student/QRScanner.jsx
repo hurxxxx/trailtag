@@ -27,10 +27,13 @@ import {
 import { Html5Qrcode } from 'html5-qrcode';
 import checkInService from '../../services/checkInService';
 import { useAuth } from '../../contexts/AuthContext';
+import { useUserLocale } from '../../hooks/useUserLocale';
+import { formatDateTime } from '../../utils/dateUtils';
 
 const QRScanner = () => {
     const { t } = useTranslation();
     const { user } = useAuth();
+    const { language, timezone } = useUserLocale();
     const [scanning, setScanning] = useState(false);
     const [scanResult, setScanResult] = useState(null);
     const [error, setError] = useState('');
@@ -505,7 +508,7 @@ const QRScanner = () => {
                                                 Time:
                                             </Typography>
                                             <Typography variant="body1">
-                                                {new Date(scanResult.checkIn.check_in_time).toLocaleString()}
+                                                {formatDateTime(scanResult.checkIn.check_in_time, timezone, language)}
                                             </Typography>
                                         </Box>
 

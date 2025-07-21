@@ -38,10 +38,13 @@ import {
 import checkInService from '../../services/checkInService';
 import apiClient from '../../services/apiClient';
 import { useAuth } from '../../contexts/AuthContext';
+import { useUserLocale } from '../../hooks/useUserLocale';
+import { formatDateTime } from '../../utils/dateUtils';
 
 const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
     const { user } = useAuth();
     const { t } = useTranslation();
+    const { language, timezone } = useUserLocale();
     const [selectedStudent, setSelectedStudent] = useState(propSelectedStudent);
     const [myStudents, setMyStudents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -149,15 +152,8 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
         });
     };
 
-    const formatDateTime = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+    const formatDateTimeLocalized = (dateString) => {
+        return formatDateTime(dateString, timezone, language);
     };
 
     if (myStudents.length === 0) {
@@ -433,7 +429,7 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
                                                                     </Typography>
                                                                     <Typography variant="body2" component="div">
                                                                         <AccessTime sx={{ fontSize: 16, mr: 0.5, verticalAlign: 'middle' }} />
-                                                                        {formatDateTime(checkIn.check_in_time)}
+                                                                        {formatDateTimeLocalized(checkIn.check_in_time)}
                                                                     </Typography>
                                                                 </Box>
                                                             }

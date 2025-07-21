@@ -30,9 +30,12 @@ import {
 } from '@mui/icons-material';
 
 import userManagementService from '../../services/userManagementService';
+import { useUserLocale } from '../../hooks/useUserLocale';
+import { formatDate, formatTime } from '../../utils/dateUtils';
 
 const StudentCheckInHistoryDialog = ({ open, student, onClose }) => {
     const { t } = useTranslation();
+    const { language, timezone } = useUserLocale();
     const [checkIns, setCheckIns] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -90,13 +93,9 @@ const StudentCheckInHistoryDialog = ({ open, student, onClose }) => {
     };
 
     const formatDateTime = (dateTimeString) => {
-        const date = new Date(dateTimeString);
         return {
-            date: date.toLocaleDateString('ko-KR'),
-            time: date.toLocaleTimeString('ko-KR', {
-                hour: '2-digit',
-                minute: '2-digit'
-            })
+            date: formatDate(dateTimeString, timezone, language),
+            time: formatTime(dateTimeString, timezone, language)
         };
     };
 

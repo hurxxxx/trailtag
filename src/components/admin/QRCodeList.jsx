@@ -33,8 +33,11 @@ import {
     Visibility
 } from '@mui/icons-material';
 import qrCodeService from '../../services/qrCodeService';
+import { useUserLocale } from '../../hooks/useUserLocale';
+import { formatDateTime } from '../../utils/dateUtils';
 
 const QRCodeList = ({ onCreateQRCode, refreshTrigger, selectedProgram = null }) => {
+    const { language, timezone } = useUserLocale();
     const [qrCodes, setQRCodes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -123,14 +126,8 @@ const QRCodeList = ({ onCreateQRCode, refreshTrigger, selectedProgram = null }) 
         handleMenuClose();
     };
 
-    const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+    const formatDateLocalized = (dateString) => {
+        return formatDateTime(dateString, timezone, language);
     };
 
     if (loading) {
@@ -265,7 +262,7 @@ const QRCodeList = ({ onCreateQRCode, refreshTrigger, selectedProgram = null }) 
                                     <Box display="flex" alignItems="center" gap={1}>
                                         <AccessTime fontSize="small" color="action" />
                                         <Typography variant="caption" color="text.secondary">
-                                            {formatDate(qrCode.created_at)}
+                                            {formatDateLocalized(qrCode.created_at)}
                                         </Typography>
                                     </Box>
 

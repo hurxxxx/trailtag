@@ -46,6 +46,8 @@ import {
 } from '@mui/icons-material';
 
 import userManagementService from '../../services/userManagementService';
+import { useUserLocale } from '../../hooks/useUserLocale';
+import { formatDate } from '../../utils/dateUtils';
 import CreateAdminDialog from './CreateAdminDialog';
 import CreateUserDialog from './CreateUserDialog';
 import ResetPasswordDialog from './ResetPasswordDialog';
@@ -54,6 +56,7 @@ import DeleteUserDialog from './DeleteUserDialog';
 
 const UserManagement = () => {
     const { t } = useTranslation();
+    const { language, timezone } = useUserLocale();
     const [tabValue, setTabValue] = useState(0);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -351,7 +354,7 @@ const UserManagement = () => {
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            {new Date(user.created_at).toLocaleDateString('ko-KR')}
+                                            {formatDate(user.created_at, timezone, language)}
                                         </TableCell>
                                         <TableCell align="center">
                                             <Box sx={{ display: 'flex', gap: 0.5 }}>

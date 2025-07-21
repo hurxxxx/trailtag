@@ -23,9 +23,12 @@ import {
 } from '@mui/icons-material';
 import QRCodeLib from 'qrcode';
 import qrCodeService from '../../services/qrCodeService';
+import { useUserLocale } from '../../hooks/useUserLocale';
+import { formatDate } from '../../utils/dateUtils';
 
 const QRCodeDialog = ({ open, onClose, program, qrCode, onSuccess }) => {
     const { t } = useTranslation();
+    const { language, timezone } = useUserLocale();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [qrCodeDataURL, setQrCodeDataURL] = useState('');
@@ -255,7 +258,7 @@ ${t('Scan the QR code with your smartphone to check in')}
                         </Paper>
 
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                            {t('Created')}: {qrCode?.created_at && new Date(qrCode.created_at).toLocaleDateString('ko-KR')}
+                            {t('Created')}: {qrCode?.created_at && formatDate(qrCode.created_at, timezone, language)}
                         </Typography>
 
                         <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
