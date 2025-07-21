@@ -135,21 +135,9 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
         setTabValue(newValue);
     };
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
-    };
-
-    const formatTime = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+    // 사용자 로케일에 맞는 시간 포맷팅 함수
+    const formatTimeLocalized = (dateString) => {
+        return formatTime(dateString, timezone, language);
     };
 
     const formatDateTimeLocalized = (dateString) => {
@@ -380,7 +368,7 @@ const StudentMonitoring = ({ selectedStudent: propSelectedStudent }) => {
                                                             secondary={
                                                                 <Box>
                                                                     <Typography variant="body2" component="span">
-                                                                        {checkIn.qr_location} • {formatTime(checkIn.check_in_time)}
+                                                                        {checkIn.qr_location} • {formatTimeLocalized(checkIn.check_in_time)}
                                                                     </Typography>
                                                                 </Box>
                                                             }

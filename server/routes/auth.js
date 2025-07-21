@@ -793,7 +793,7 @@ router.get('/admin/dashboard/activity', authenticateToken, requireRole('admin'),
             activities.push({
                 title: `${checkIn.student_name}님이 체크인했습니다`,
                 description: `프로그램: ${checkIn.program_name}`,
-                time: formatTimeAgo(checkIn.check_in_time),
+                time: checkIn.check_in_time, // 원본 날짜 전송
                 type: 'checkin'
             });
         });
@@ -809,12 +809,12 @@ router.get('/admin/dashboard/activity', authenticateToken, requireRole('admin'),
             activities.push({
                 title: `새 ${userTypeKorean} 계정이 생성되었습니다`,
                 description: `${user.full_name}님이 가입했습니다`,
-                time: formatTimeAgo(user.created_at),
+                time: user.created_at, // 원본 날짜 전송
                 type: 'user'
             });
         });
 
-        // Sort by time and limit
+        // Sort by time and limit (newest first)
         activities.sort((a, b) => new Date(b.time) - new Date(a.time));
 
         res.json({
@@ -831,23 +831,6 @@ router.get('/admin/dashboard/activity', authenticateToken, requireRole('admin'),
     }
 });
 
-// Helper function to format time ago
-function formatTimeAgo(dateString) {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMinutes = Math.floor((now - date) / (1000 * 60));
-
-    if (diffInMinutes < 1) {
-        return '방금 전';
-    } else if (diffInMinutes < 60) {
-        return `${diffInMinutes}분 전`;
-    } else if (diffInMinutes < 1440) {
-        const hours = Math.floor(diffInMinutes / 60);
-        return `${hours}시간 전`;
-    } else {
-        const days = Math.floor(diffInMinutes / 1440);
-        return `${days}일 전`;
-    }
-}
+// Note: Time formatting is now handled on the client side for internationalization
 
 module.exports = router;

@@ -28,11 +28,14 @@ import {
 } from '@mui/icons-material';
 
 import { useAuth } from '../../contexts/AuthContext';
+import { useUserLocale } from '../../hooks/useUserLocale';
+import { formatTimeAgo } from '../../utils/dateUtils';
 import adminDashboardService from '../../services/adminDashboardService';
 
 const AdminDashboardContent = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
+    const { language, timezone } = useUserLocale();
     const [stats, setStats] = useState(null);
     const [recentActivity, setRecentActivity] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -254,7 +257,7 @@ const AdminDashboardContent = () => {
                                                             {activity.description}
                                                         </Typography>
                                                         <Typography variant="caption" color="text.secondary">
-                                                            {activity.time}
+                                                            {formatTimeAgo(activity.time, timezone, language)}
                                                         </Typography>
                                                     </Box>
                                                 }
