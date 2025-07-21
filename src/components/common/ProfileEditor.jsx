@@ -37,7 +37,7 @@ import apiClient from '../../services/apiClient';
 
 const ProfileEditor = () => {
     const { user, updateProfile } = useAuth();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [editing, setEditing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -99,6 +99,11 @@ const ProfileEditor = () => {
             ...prev,
             [name]: processedValue
         }));
+
+        // 언어 설정이 변경되면 즉시 UI 언어도 변경
+        if (name === 'language') {
+            i18n.changeLanguage(processedValue);
+        }
 
         // Clear field error when user starts typing
         if (formErrors[name]) {
@@ -192,6 +197,11 @@ const ProfileEditor = () => {
             console.log('UpdateProfile result:', result);
 
             if (result.success) {
+                // 언어 설정이 변경되었다면 i18n 언어도 변경
+                if (formData.language && formData.language !== i18n.language) {
+                    await i18n.changeLanguage(formData.language);
+                }
+
                 setSuccess(t('Profile updated successfully'));
                 setEditing(false);
             } else {
