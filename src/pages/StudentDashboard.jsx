@@ -43,11 +43,13 @@ import checkInService from '../services/checkInService';
 const StudentDashboard = () => {
     const { t } = useTranslation();
     const { user, logout } = useAuth();
-    const { language, timezone } = useUserLocale();
+    const { language = 'ko', timezone = 'Asia/Seoul' } = useUserLocale() || {};
     const navigate = useNavigate();
     const location = useLocation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+
     const [bottomNavValue, setBottomNavValue] = useState(0);
 
     // Set tab value based on current route
@@ -315,7 +317,7 @@ const StudentHome = () => {
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={checkIn.program_name}
-                                    secondary={`${checkIn.qr_location || 'Unknown Location'} • ${formatTime(checkIn.check_in_time, timezone, language)}`}
+                                    secondary={`${checkIn.qr_location || 'Unknown Location'} • ${timezone && language ? formatTime(checkIn.check_in_time, timezone, language) : new Date(checkIn.check_in_time).toLocaleTimeString()}`}
                                 />
                             </ListItem>
                         ))}

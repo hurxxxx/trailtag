@@ -10,16 +10,20 @@ export const useUserLocale = () => {
   const { user } = useAuth();
   const { i18n } = useTranslation();
 
+  // 안전한 기본값들
+  const defaultLanguage = 'ko';
+  const defaultTimezone = 'Asia/Seoul';
+
   // 사용자 언어 (프로필 설정 > i18n 현재 언어 > 기본값 'ko')
-  const userLanguage = user?.language || i18n.language || 'ko';
+  const userLanguage = user?.language || i18n?.language || defaultLanguage;
 
   // 사용자 타임존 (프로필 설정 > 기본값 'Asia/Seoul')
-  const userTimezone = user?.timezone || 'Asia/Seoul';
+  const userTimezone = user?.timezone || defaultTimezone;
 
   // 사용자 시간/날짜 포맷 (프로필 설정 > 기본값)
   const defaultFormats = getDefaultFormats(userLanguage);
-  const userTimeFormat = user?.timeFormat || defaultFormats.timeFormat;
-  const userDateFormat = user?.dateFormat || defaultFormats.dateFormat;
+  const userTimeFormat = user?.timeFormat || defaultFormats?.timeFormat || '12h';
+  const userDateFormat = user?.dateFormat || defaultFormats?.dateFormat || 'long';
 
   return {
     language: userLanguage,
