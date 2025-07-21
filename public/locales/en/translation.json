@@ -47,7 +47,6 @@
   "Cannot start QR scanner - {{message}}": "Cannot start QR scanner - {{message}}",
   "Change Password": "",
   "Change system settings": "",
-  "Change the language to check if translation works properly": "Change the language to check if translation works properly.",
   "Changing": {
     "": "Changing..."
   },
@@ -87,7 +86,6 @@
   "Creating": {
     "": "Creating..."
   },
-  "Current Language": "Current Language",
   "Current Password": "",
   "Currently running programs": "",
   "Dashboard": "Dashboard",
@@ -135,12 +133,10 @@
   "History": "History",
   "Home": "Home",
   "HTTPS connection is required to use camera in mobile browsers": "HTTPS connection is required to use camera in mobile browsers.",
-  "i18n Test": "i18n Test",
   "Instant check-in to programs": "Instant check-in to programs",
   "Invalid user type": "Invalid user type",
   "Issue New QR Code": "Issue New QR Code",
   "Japanese": "Japanese",
-  "Key": "Key",
   "Korean": "",
   "Language": "",
   "Learning Program Participation Tracking System": "Learning Program Participation Tracking System",
@@ -314,8 +310,6 @@
   "TrailTag": "TrailTag",
   "TrailTag Admin": "TrailTag Admin",
   "TrailTag Parent": "TrailTag Parent",
-  "Translation": "Translation",
-  "Translation Key Test": "Translation Key Test",
   "Try searching with different keywords": "Try searching with different keywords",
   "Type": "Type",
   "Unique Locations": "Unique Locations",

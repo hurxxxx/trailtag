@@ -8,7 +8,7 @@ import AuthPage from './pages/AuthPage';
 import StudentDashboard from './pages/StudentDashboard';
 import ParentDashboard from './pages/ParentDashboard';
 import AdminDashboard from './pages/AdminDashboard';
-import I18nTest from './components/test/I18nTest';
+
 import theme from './theme/theme';
 
 // Initialize i18n
@@ -26,7 +26,6 @@ function App() {
             <Routes>
               {/* Public routes */}
               <Route path="/auth" element={<AuthPage />} />
-              <Route path="/i18n-test" element={<I18nTest />} />
 
               {/* Protected routes */}
               <Route

@@ -47,7 +47,6 @@
   "Cannot start QR scanner - {{message}}": "",
   "Change Password": "",
   "Change system settings": "",
-  "Change the language to check if translation works properly": "",
   "Changing": {
     "": ""
   },
@@ -87,7 +86,6 @@
   "Creating": {
     "": ""
   },
-  "Current Language": "",
   "Current Password": "",
   "Currently running programs": "",
   "Dashboard": "",
@@ -135,12 +133,10 @@
   "History": "",
   "Home": "",
   "HTTPS connection is required to use camera in mobile browsers": "",
-  "i18n Test": "",
   "Instant check-in to programs": "",
   "Invalid user type": "",
   "Issue New QR Code": "",
   "Japanese": "",
-  "Key": "",
   "Korean": "",
   "Language": "",
   "Learning Program Participation Tracking System": "",
@@ -313,8 +309,6 @@
   "TrailTag": "TrailTag",
   "TrailTag Admin": "",
   "TrailTag Parent": "",
-  "Translation": "",
-  "Translation Key Test": "",
   "Try searching with different keywords": "",
   "Type": "",
   "Unique Locations": "",
