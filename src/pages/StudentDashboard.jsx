@@ -34,8 +34,6 @@ import {
     CheckCircle
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
-import { useUserLocale } from '../hooks/useUserLocale';
-import { formatTime } from '../utils/dateUtils';
 import QRScanner from '../components/student/QRScanner';
 import CheckInHistory from '../components/student/CheckInHistory';
 import checkInService from '../services/checkInService';
@@ -43,7 +41,7 @@ import checkInService from '../services/checkInService';
 const StudentDashboard = () => {
     const { t } = useTranslation();
     const { user, logout } = useAuth();
-    const { language = 'ko', timezone = 'Asia/Seoul' } = useUserLocale() || {};
+
     const navigate = useNavigate();
     const location = useLocation();
     const theme = useTheme();
@@ -317,7 +315,7 @@ const StudentHome = () => {
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={checkIn.program_name}
-                                    secondary={`${checkIn.qr_location || 'Unknown Location'} • ${timezone && language ? formatTime(checkIn.check_in_time, timezone, language) : new Date(checkIn.check_in_time).toLocaleTimeString()}`}
+                                    secondary={`${checkIn.location || 'Unknown Location'} • ${new Date(checkIn.check_in_time).toLocaleTimeString()}`}
                                 />
                             </ListItem>
                         ))}
