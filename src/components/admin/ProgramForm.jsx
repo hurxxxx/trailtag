@@ -251,7 +251,7 @@ const ProgramForm = ({ open, onClose, program = null, onSuccess }) => {
                     variant="contained"
                     startIcon={loading ? <CircularProgress size={20} /> : null}
                 >
-                    {loading ? t('Saving...') : (program ? t('Update Program') : t('Create Program'))}
+                    {loading ? t('Saving... Please wait.') : (program ? t('Update Program') : t('Create Program'))}
                 </Button>
             </DialogActions>
         </Dialog>

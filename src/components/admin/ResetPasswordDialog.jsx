@@ -162,7 +162,7 @@ const ResetPasswordDialog = ({ open, user, onClose, onSuccess }) => {
                     </Box>
 
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                        {t('Set a new password for this user. Please securely share the changed password with the user.')}
+                        {t('Set a new password for this user - Please securely share the changed password with the user')}
                     </Typography>
 
                     <TextField

@@ -283,7 +283,7 @@ const ParentHome = ({ onStudentSelect }) => {
             {/* My Students */}
             <Paper elevation={2} sx={{ p: 3 }}>
                 <Typography variant="h6" gutterBottom>
-                    {t('My Students')} ({myStudents.length})
+                    {t('My Students (Total: {{count}})', { count: myStudents.length })}
                 </Typography>
 
                 {loading ? (

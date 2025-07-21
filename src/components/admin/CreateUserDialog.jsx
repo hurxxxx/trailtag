@@ -375,7 +375,7 @@ const CreateUserDialog = ({ open, onClose, onSuccess }) => {
                         disabled={loading}
                         startIcon={loading ? <CircularProgress size={16} /> : getUserTypeIcon(formData.user_type)}
                     >
-                        {loading ? t('Creating...') : t('Create {{userType}}', { userType: getUserTypeLabel(formData.user_type) })}
+                        {loading ? t('Status: Creating user account...') : t('Create {{userType}}', { userType: getUserTypeLabel(formData.user_type) })}
                     </Button>
                 </DialogActions>
             </form>

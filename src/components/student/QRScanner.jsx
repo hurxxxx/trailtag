@@ -452,7 +452,7 @@ const QRScanner = () => {
                 <DialogTitle sx={{ textAlign: 'center', pb: 1 }}>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                         <Typography variant="h5">
-                            {scanResult?.success ? t('Check-in Successful!') : t('Check-in Failed')}
+                            {scanResult?.success ? t('Success! Check-in completed.') : t('Error: Check-in failed!')}
                         </Typography>
                         <IconButton onClick={handleCloseResult}>
                             <Close />
