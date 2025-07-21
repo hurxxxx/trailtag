@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 import authService from '../services/authService';
+import i18n from '../i18n';
 
 const AuthContext = createContext();
 
@@ -18,6 +19,15 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Helper function to set user and apply language setting
+    const setUserWithLanguage = (userData) => {
+        setUser(userData);
+        // Apply user's language setting to i18n
+        if (userData && userData.language) {
+            i18n.changeLanguage(userData.language);
+        }
+    };
+
     // Initialize auth state from localStorage
     useEffect(() => {
         const initializeAuth = async () => {
@@ -33,7 +43,7 @@ export const AuthProvider = ({ children }) => {
                     const result = await apiClient.getCurrentUser();
                     if (result.success) {
                         setToken(storedToken);
-                        setUser(result.user);
+                        setUserWithLanguage(result.user);
                     } else {
                         // Token is invalid, clear storage
                         apiClient.setToken(null);
@@ -61,7 +71,7 @@ export const AuthProvider = ({ children }) => {
 
             if (result.success) {
                 setToken(result.token);
-                setUser(result.user);
+                setUserWithLanguage(result.user);
 
                 // Store user in localStorage (token is handled by apiClient)
                 localStorage.setItem('trailtag_user', JSON.stringify(result.user));
@@ -130,7 +140,7 @@ export const AuthProvider = ({ children }) => {
             console.log('Profile update result:', result);
 
             if (result.success) {
-                setUser(result.user);
+                setUserWithLanguage(result.user);
                 localStorage.setItem('trailtag_user', JSON.stringify(result.user));
                 return { success: true, message: result.message };
             } else {

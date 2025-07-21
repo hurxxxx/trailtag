@@ -75,7 +75,7 @@ const ProfileEditor = () => {
     const [formErrors, setFormErrors] = useState({});
 
     useEffect(() => {
-        if (user) {
+        if (user && !editing) {
             setFormData({
                 full_name: user.full_name || '',
                 email: user.email || '',
@@ -84,7 +84,7 @@ const ProfileEditor = () => {
                 language: user.language || 'ko'
             });
         }
-    }, [user]);
+    }, [user, editing]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -294,7 +294,14 @@ const ProfileEditor = () => {
                         <Button
                             variant="outlined"
                             startIcon={<Edit />}
-                            onClick={() => setEditing(true)}
+                            onClick={() => {
+                                setEditing(true);
+                                // 편집 모드 진입 시 현재 i18n 언어를 폼에 반영
+                                setFormData(prev => ({
+                                    ...prev,
+                                    language: i18n.language
+                                }));
+                            }}
                         >
                             {t('Edit')}
                         </Button>
@@ -388,7 +395,7 @@ const ProfileEditor = () => {
                                             {t('Language')}
                                         </Typography>
                                         <Typography variant="body1">
-                                            {languages.find(lang => lang.value === user.language)?.label || user.language || t('Korean')}
+                                            {languages.find(lang => lang.value === (editing ? formData.language : user.language))?.label || (editing ? formData.language : user.language) || t('Korean')}
                                         </Typography>
                                     </Box>
                                 </Box>
