@@ -180,7 +180,7 @@ const StudentSearch = ({ onStudentSelect }) => {
 
                 {/* Search Form */}
                 <Grid container spacing={2} sx={{ mb: 3 }}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                             fullWidth
                             label={t('Student Name')}
@@ -199,7 +199,7 @@ const StudentSearch = ({ onStudentSelect }) => {
                             }}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                             fullWidth
                             label={t('Phone Number')}
@@ -218,7 +218,7 @@ const StudentSearch = ({ onStudentSelect }) => {
                             }}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={{ xs: 12 }}>
                         <Button
                             variant="contained"
                             size="large"

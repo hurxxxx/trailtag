@@ -316,7 +316,7 @@ const ProfileEditor = () => {
 
                 {!editing ? (
                     <Grid container spacing={3}>
-                        <Grid item xs={12} md={4}>
+                        <Grid size={{ xs: 12, md: 4 }}>
                             <Card elevation={1}>
                                 <CardContent sx={{ textAlign: 'center' }}>
                                     <Avatar
@@ -338,7 +338,7 @@ const ProfileEditor = () => {
                                 </CardContent>
                             </Card>
                         </Grid>
-                        <Grid item xs={12} md={8}>
+                        <Grid size={{ xs: 12, md: 8 }}>
                             <Box>
                                 <Box display="flex" alignItems="center" mb={2}>
                                     <Person color="action" sx={{ mr: 2 }} />
@@ -405,7 +405,7 @@ const ProfileEditor = () => {
                 ) : (
                     <Box component="form" onSubmit={handleSubmit}>
                         <Grid container spacing={3}>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <TextField
                                     fullWidth
                                     name="full_name"
@@ -424,7 +424,7 @@ const ProfileEditor = () => {
                                     }}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <TextField
                                     fullWidth
                                     name="email"
@@ -444,7 +444,7 @@ const ProfileEditor = () => {
                                     }}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <TextField
                                     fullWidth
                                     name="phone"
@@ -464,7 +464,7 @@ const ProfileEditor = () => {
                                 />
                             </Grid>
 
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <FormControl fullWidth>
                                     <InputLabel>{t('Timezone')}</InputLabel>
                                     <Select
@@ -487,7 +487,7 @@ const ProfileEditor = () => {
                                 </FormControl>
                             </Grid>
 
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <FormControl fullWidth>
                                     <InputLabel>{t('Language')}</InputLabel>
                                     <Select
@@ -555,7 +555,7 @@ const ProfileEditor = () => {
                 ) : (
                     <Box component="form" onSubmit={handlePasswordSubmit}>
                         <Grid container spacing={3}>
-                            <Grid item xs={12}>
+                            <Grid size={{ xs: 12 }}>
                                 <TextField
                                     fullWidth
                                     name="currentPassword"
@@ -580,7 +580,7 @@ const ProfileEditor = () => {
                                     }}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <TextField
                                     fullWidth
                                     name="newPassword"
@@ -605,7 +605,7 @@ const ProfileEditor = () => {
                                     }}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <TextField
                                     fullWidth
                                     name="confirmPassword"

@@ -196,6 +196,7 @@ const ParentDashboard = () => {
 // Parent Home Component
 const ParentHome = ({ onStudentSelect }) => {
     const { user } = useAuth();
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [myStudents, setMyStudents] = useState([]);
     const [loading, setLoading] = useState(true);
